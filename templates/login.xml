@@ -1,0 +1,14 @@
+<fest:template xmlns:fest="http://fest.mail.ru">
+	<div class = "container">
+			<h1>Login</h1>
+
+        <form method="post" action="/auth/signin">
+            <div class = "min_wrapper"><input  type="text"     name="username" /></div>
+            <div class = "min_wrapper"><input  type="password" name="password" /></div>
+            <div class = "min_wrapper"><button type="submit" class = "btn btn-primary" >GO!</button></div>
+        </form>
+   
+	</div>
+	<button  class="js-back btn btn-primary">Back to the Future</button>
+</fest:template>
+
