@@ -26,6 +26,7 @@ public class SignInServlet extends HttpServlet {
         this.accountService = accountService;
     }
 
+    @SuppressWarnings("TooBroadScope")
     @Override
     public void doPost(HttpServletRequest request,
                        HttpServletResponse response) throws ServletException, IOException {

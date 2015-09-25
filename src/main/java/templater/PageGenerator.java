@@ -29,6 +29,7 @@ public class PageGenerator {
         }
         return stream.toString();
     }
+    @SuppressWarnings("unchecked")
     public static String setResponseDataUser(int status, String login, String password)
     {
         JSONObject jsonData = new JSONObject();
@@ -41,6 +42,8 @@ public class PageGenerator {
 
         return jsonData.toJSONString();
     }
+
+    @SuppressWarnings("unchecked")
     public static String setResponseDataAdmin(int status, int countUsers, int countOnlineUsers)
     {
         JSONObject jsonData = new JSONObject();
