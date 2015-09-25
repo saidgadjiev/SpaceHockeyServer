@@ -32,4 +32,12 @@ public class AccountService {
     public UserProfile getSessions(String sessionId) {
         return sessions.get(sessionId);
     }
+
+    public int getCountUsers() {
+        return users.size();
+    }
+
+    public int getCountOnlineUsers() {
+        return sessions.size();
+    }
 }

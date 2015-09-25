@@ -8,8 +8,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Created by said on 21.09.15.
@@ -21,17 +19,19 @@ public class SignOutServlet extends HttpServlet {
         this.accountService = accountService;
     }
 
+    @Override
     public void doGet(HttpServletRequest request,
                       HttpServletResponse response) throws ServletException, IOException {
-        Map<String, Object> pageVariables = new HashMap<>();
+        int status = HttpServletResponse.SC_OK;
 
         if (request.getSession().getAttribute("login") != null) {
             accountService.deleteSession(request.getSession().getId());
             request.getSession().invalidate();
-            pageVariables.put("loginStatus", "Logout");
         } else {
-            pageVariables.put("loginStatus", "You don't log in");
+            status = HttpServletResponse.SC_UNAUTHORIZED;
         }
-        response.getWriter().println(PageGenerator.getPage("authstatus.html", pageVariables));
+
+        response.setStatus(HttpServletResponse.SC_OK);
+        response.getWriter().println(PageGenerator.setResponseDataUser(status, "", ""));
     }
 }

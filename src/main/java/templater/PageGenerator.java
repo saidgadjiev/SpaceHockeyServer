@@ -3,6 +3,8 @@ package templater;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
+import org.json.simple.JSONObject;
+
 
 import java.io.File;
 import java.io.IOException;
@@ -26,5 +28,29 @@ public class PageGenerator {
             e.printStackTrace();
         }
         return stream.toString();
+    }
+    public static String setResponseDataUser(int status, String login, String password)
+    {
+        JSONObject jsonData = new JSONObject();
+        JSONObject jsonBody = new JSONObject();
+
+        jsonData.put("status", status);
+        jsonBody.put("username", login);
+        jsonBody.put("password", password);
+        jsonData.put("body", jsonBody);
+
+        return jsonData.toJSONString();
+    }
+    public static String setResponseDataAdmin(int status, int countUsers, int countOnlineUsers)
+    {
+        JSONObject jsonData = new JSONObject();
+        JSONObject jsonBody = new JSONObject();
+
+        jsonData.put("status", status);
+        jsonBody.put("countUsers", countUsers);
+        jsonBody.put("countOnlineUsers", countOnlineUsers);
+        jsonData.put("body", jsonBody);
+
+        return jsonData.toJSONString();
     }
 }
