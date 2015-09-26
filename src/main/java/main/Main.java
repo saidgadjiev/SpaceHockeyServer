@@ -1,6 +1,6 @@
 package main;
 
-import frontend.AdminPageServlet;
+import admin.AdminPageServlet;
 import frontend.SignInServlet;
 import frontend.SignOutServlet;
 import frontend.SignUpServlet;

@@ -1,59 +1,30 @@
 package templater;
 
-import freemarker.template.Configuration;
-import freemarker.template.Template;
-import freemarker.template.TemplateException;
-import org.json.simple.JSONObject;
-
-
-import java.io.File;
-import java.io.IOException;
-import java.io.StringWriter;
-import java.io.Writer;
-import java.util.Map;
+import java.util.HashMap;
 
 /**
  * @author v.chibrikov
  */
 public class PageGenerator {
-    private static final String HTML_DIR = "server_tml";
-    private static final Configuration CFG = new Configuration();
-
-    public static String getPage(String filename, Map<String, Object> data) {
-        Writer stream = new StringWriter();
-        try {
-            Template template = CFG.getTemplate(HTML_DIR + File.separator + filename);
-            template.process(data, stream);
-        } catch (IOException | TemplateException e) {
-            e.printStackTrace();
-        }
-        return stream.toString();
-    }
-    @SuppressWarnings("unchecked")
-    public static String setResponseDataUser(int status, String login, String password)
+    public static HashMap<String, String> setResponseDataUser(int status, String login, String password)
     {
-        JSONObject jsonData = new JSONObject();
-        JSONObject jsonBody = new JSONObject();
+        HashMap<String, String> jsonData = new HashMap<>();
 
-        jsonData.put("status", status);
-        jsonBody.put("username", login);
-        jsonBody.put("password", password);
-        jsonData.put("body", jsonBody);
+        jsonData.put("status", Integer.toString(status));
+        jsonData.put("login", login);
+        jsonData.put("password", password);
 
-        return jsonData.toJSONString();
+        return jsonData;
     }
 
-    @SuppressWarnings("unchecked")
-    public static String setResponseDataAdmin(int status, int countUsers, int countOnlineUsers)
+    public static HashMap<String, String> setResponseDataAdmin(int status, int countUsers, int countOnlineUsers)
     {
-        JSONObject jsonData = new JSONObject();
-        JSONObject jsonBody = new JSONObject();
+        HashMap<String, String> jsonData = new HashMap<>();
 
-        jsonData.put("status", status);
-        jsonBody.put("countUsers", countUsers);
-        jsonBody.put("countOnlineUsers", countOnlineUsers);
-        jsonData.put("body", jsonBody);
+        jsonData.put("status", Integer.toString(status));
+        jsonData.put("login", Integer.toString(countUsers));
+        jsonData.put("password", Integer.toString(countOnlineUsers));
 
-        return jsonData.toJSONString();
+        return jsonData;
     }
 }

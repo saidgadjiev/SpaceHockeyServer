@@ -1,5 +1,6 @@
 package frontend;
 
+import com.google.gson.Gson;
 import main.AccountService;
 import templater.PageGenerator;
 
@@ -32,6 +33,6 @@ public class SignOutServlet extends HttpServlet {
         }
 
         response.setStatus(HttpServletResponse.SC_OK);
-        response.getWriter().println(PageGenerator.setResponseDataUser(status, "", ""));
+        response.getWriter().println(new Gson().toJson(PageGenerator.setResponseDataUser(status, "", "")));
     }
 }

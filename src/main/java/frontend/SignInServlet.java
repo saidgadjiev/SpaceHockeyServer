@@ -1,10 +1,10 @@
 package frontend;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonSyntaxException;
+import com.google.gson.reflect.TypeToken;
 import main.AccountService;
 import main.UserProfile;
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
 import templater.PageGenerator;
 
 import javax.servlet.ServletException;
@@ -12,8 +12,10 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import java.io.IOException;
 import java.io.BufferedReader;
+import java.io.IOException;
+import java.lang.reflect.Type;
+import java.util.HashMap;
 
 /**
  * @author v.chibrikov
@@ -26,35 +28,40 @@ public class SignInServlet extends HttpServlet {
         this.accountService = accountService;
     }
 
-    @SuppressWarnings("TooBroadScope")
     @Override
     public void doPost(HttpServletRequest request,
                        HttpServletResponse response) throws ServletException, IOException {
         int status = HttpServletResponse.SC_OK;
-        String login = "";
-        String password = "";
-        String line = "";
         StringBuffer parametrsBuffer = new StringBuffer();
-        JSONObject jsonData = null;
+        Gson gson = new Gson();
 
         try {
             BufferedReader reader = request.getReader();
+            String line = "";
+
             while ((line = reader.readLine()) != null)
                 parametrsBuffer.append(line);
         } catch (IOException e) {
             status = HttpServletResponse.SC_BAD_REQUEST;
         }
+        HashMap<String, String> jsonData = null;
+
         try {
-            jsonData = (JSONObject) new JSONParser().parse(parametrsBuffer.toString());
-        } catch (ParseException e) {
+            Type type = new TypeToken<HashMap<String, String>>(){}.getType();
+            jsonData = gson.fromJson(parametrsBuffer.toString(), type);
+        } catch (JsonSyntaxException e) {
             status = HttpServletResponse.SC_BAD_REQUEST;
         }
+        String login = "";
+        String password = "";
+
         try {
-            login = jsonData.get("login").toString();
-            password = jsonData.get("password").toString();
+            login = jsonData.get("login");
+            password = jsonData.get("password");
         } catch (NullPointerException e) {
             status = HttpServletResponse.SC_BAD_REQUEST;
         }
+        System.out.print(jsonData.toString());
         if (status == HttpServletResponse.SC_OK) {
             if (request.getSession().getAttribute("login") != null) {
                 login = "";
@@ -77,6 +84,6 @@ public class SignInServlet extends HttpServlet {
         }
 
         response.setStatus(HttpServletResponse.SC_OK);
-        response.getWriter().println(PageGenerator.setResponseDataUser(status, login, password));
+        response.getWriter().println(gson.toJson(PageGenerator.setResponseDataUser(status, login, password)));
     }
 }
