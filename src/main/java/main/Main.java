@@ -10,6 +10,7 @@ import org.eclipse.jetty.server.handler.HandlerList;
 import org.eclipse.jetty.server.handler.ResourceHandler;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
+import org.jetbrains.annotations.Nullable;
 
 import javax.servlet.Servlet;
 
@@ -21,7 +22,7 @@ public class Main {
 
     public static void main(String[] args) throws Exception {
         int port = DEFAULT_PORT;
-        if (args.length == 1) {
+        if (args != null) {
             String portString = args[0];
             port = Integer.valueOf(portString);
         }

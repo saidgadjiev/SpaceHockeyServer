@@ -1,5 +1,7 @@
 package main;
 
+import org.jetbrains.annotations.Nullable;
+
 /**
  * Created by v.chibrikov on 13.09.2014.
  */
@@ -14,14 +16,17 @@ public class UserProfile {
         this.email = email;
     }
 
+    @Nullable
     public String getLogin() {
         return login;
     }
 
+    @Nullable
     public String getPassword() {
         return password;
     }
 
+    @Nullable
     public String getEmail() {
         return email;
     }

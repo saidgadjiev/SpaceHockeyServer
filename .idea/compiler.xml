@@ -22,19 +22,10 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <processorPath useClasspath="true" />
-        <module name="L1.2" />
         <module name="Server" />
-      </profile>
-      <profile default="false" name="Annotation profile for json-simple" enabled="true">
-        <sourceOutputDir name="target/generated-sources/annotations" />
-        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
-        <outputRelativeToContentRoot value="true" />
-        <processorPath useClasspath="true" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
-      <module name="json-simple" target="1.2" />
-      <module name="L1.2" target="1.8" />
       <module name="Server" target="1.8" />
     </bytecodeTargetLevel>
   </component>

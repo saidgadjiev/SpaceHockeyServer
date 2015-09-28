@@ -31,8 +31,14 @@ public class SignInServlet extends HttpServlet {
     @Override
     public void doGet(HttpServletRequest request,
                        HttpServletResponse response) throws ServletException, IOException {
-        String login = request.getParameter("login");
-        String password = request.getParameter("password");
+        String login = null;
+        if (request != null) {
+            login = request.getParameter("login");
+        }
+        String password = null;
+        if (request != null) {
+            password = request.getParameter("password");
+        }
         int status = HttpServletResponse.SC_OK;
         Gson gson = new Gson();
 
