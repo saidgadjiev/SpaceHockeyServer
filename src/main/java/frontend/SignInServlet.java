@@ -29,6 +29,36 @@ public class SignInServlet extends HttpServlet {
     }
 
     @Override
+    public void doGet(HttpServletRequest request,
+                       HttpServletResponse response) throws ServletException, IOException {
+        String login = request.getParameter("login");
+        String password = request.getParameter("password");
+        int status = HttpServletResponse.SC_OK;
+        Gson gson = new Gson();
+
+        if (request.getSession().getAttribute("login") != null) {
+            login = "";
+            password = "";
+            status = HttpServletResponse.SC_FOUND;
+        } else {
+            UserProfile profile = accountService.getUser(login);
+
+            if (profile != null && profile.getPassword().equals(password)) {
+                HttpSession currentSession = request.getSession(true);
+
+                currentSession.setAttribute("login", profile.getLogin());
+                accountService.addSessions(currentSession.getId(), profile);
+            } else {
+                login = "";
+                password = "";
+                status = HttpServletResponse.SC_BAD_REQUEST;
+            }
+        }
+
+        response.setStatus(HttpServletResponse.SC_OK);
+        response.getWriter().println(gson.toJson(PageGenerator.setResponseDataUser(status, login, password)));
+    }
+    @Override
     public void doPost(HttpServletRequest request,
                        HttpServletResponse response) throws ServletException, IOException {
         int status = HttpServletResponse.SC_OK;
@@ -37,7 +67,7 @@ public class SignInServlet extends HttpServlet {
 
         try {
             BufferedReader reader = request.getReader();
-            String line = "";
+            String line;
 
             while ((line = reader.readLine()) != null)
                 parametrsBuffer.append(line);
@@ -54,14 +84,12 @@ public class SignInServlet extends HttpServlet {
         }
         String login = "";
         String password = "";
-
         try {
             login = jsonData.get("login");
             password = jsonData.get("password");
         } catch (NullPointerException e) {
             status = HttpServletResponse.SC_BAD_REQUEST;
         }
-        System.out.print(jsonData.toString());
         if (status == HttpServletResponse.SC_OK) {
             if (request.getSession().getAttribute("login") != null) {
                 login = "";

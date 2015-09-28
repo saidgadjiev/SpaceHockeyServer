@@ -27,6 +27,23 @@ public class SignUpServlet extends HttpServlet {
     }
 
     @Override
+    public void doGet(HttpServletRequest request,
+                       HttpServletResponse response) throws ServletException, IOException {
+        String login = request.getParameter("login");
+        String password = request.getParameter("password");
+        int status = HttpServletResponse.SC_OK;
+        Gson gson = new Gson();
+
+        if (!accountService.addUser(login, new UserProfile(login, password, ""))) {
+            status = HttpServletResponse.SC_INTERNAL_SERVER_ERROR;
+            login = "";
+            password = "";
+        }
+
+        response.setStatus(HttpServletResponse.SC_OK);
+        response.getWriter().println(gson.toJson(PageGenerator.setResponseDataUser(status, login, password)));
+    }
+    @Override
     public void doPost(HttpServletRequest request,
                        HttpServletResponse response) throws ServletException, IOException {
         int status = HttpServletResponse.SC_OK;
@@ -35,12 +52,12 @@ public class SignUpServlet extends HttpServlet {
 
         try {
             BufferedReader reader = request.getReader();
-            String line = "";
+            String line;
 
             while ((line = reader.readLine()) != null)
                 parametrsBuffer.append(line);
         } catch (IOException e) {
-            status = HttpServletResponse.SC_BAD_REQUEST;;
+            status = HttpServletResponse.SC_BAD_REQUEST;
         }
         HashMap<String, String> jsonData = null;
 
@@ -48,7 +65,7 @@ public class SignUpServlet extends HttpServlet {
             Type type = new TypeToken<HashMap<String, String>>(){}.getType();
             jsonData = gson.fromJson(parametrsBuffer.toString(), type);
         } catch (JsonSyntaxException e) {
-            status = HttpServletResponse.SC_BAD_REQUEST;;
+            status = HttpServletResponse.SC_BAD_REQUEST;
         }
         String password = "";
         String login = "";

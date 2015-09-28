@@ -1,2 +1,6 @@
 <fest:template xmlns:fest="http://fest.mail.ru">
+<div class = "container">
+	<h1>ScoreBoard</h1>
+</div>
+	<button  class="js-back btn btn-primary">Back to the Future</button>
 </fest:template>
