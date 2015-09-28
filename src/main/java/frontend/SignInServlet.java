@@ -1,5 +1,8 @@
 package frontend;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonSyntaxException;
+import com.google.gson.reflect.TypeToken;
 import main.AccountService;
 import main.UserProfile;
 import templater.PageGenerator;
@@ -11,8 +14,8 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.lang.reflect.Type;
 import java.util.HashMap;
-import java.util.Map;
 
 /**
  * @author v.chibrikov
@@ -25,49 +28,90 @@ public class SignInServlet extends HttpServlet {
         this.accountService = accountService;
     }
 
+    @Override
     public void doGet(HttpServletRequest request,
-                      HttpServletResponse response) throws ServletException, IOException {
-        String name = request.getParameter("name");
+                       HttpServletResponse response) throws ServletException, IOException {
+        String login = request.getParameter("login");
         String password = request.getParameter("password");
+        int status = HttpServletResponse.SC_OK;
+        Gson gson = new Gson();
 
-        response.setStatus(HttpServletResponse.SC_OK);
-
-        Map<String, Object> pageVariables = new HashMap<>();
         if (request.getSession().getAttribute("login") != null) {
-            pageVariables.put("loginStatus", "Loged in");
+            login = "";
+            password = "";
+            status = HttpServletResponse.SC_FOUND;
         } else {
-            UserProfile profile = accountService.getUser(name);
+            UserProfile profile = accountService.getUser(login);
 
             if (profile != null && profile.getPassword().equals(password)) {
                 HttpSession currentSession = request.getSession(true);
 
-                currentSession.setAttribute("login", profile.getPassword());
+                currentSession.setAttribute("login", profile.getLogin());
                 accountService.addSessions(currentSession.getId(), profile);
-                pageVariables.put("loginStatus", "Login passed");
             } else {
-                pageVariables.put("loginStatus", "Wrong login/password");
+                login = "";
+                password = "";
+                status = HttpServletResponse.SC_BAD_REQUEST;
             }
         }
-        response.getWriter().println(PageGenerator.getPage("authstatus.html", pageVariables));
-    }
-
-    public void doPost(HttpServletRequest request,
-                       HttpServletResponse response) throws ServletException, IOException {
-        String username = "";
-        String email = "";
-        String password = "";
-        String line = "";
-        BufferedReader reader = request.getReader();
-        while ((line = reader.readLine()) != null)
-            System.out.print(line);
 
         response.setStatus(HttpServletResponse.SC_OK);
+        response.getWriter().println(gson.toJson(PageGenerator.setResponseDataUser(status, login, password)));
+    }
+    @Override
+    public void doPost(HttpServletRequest request,
+                       HttpServletResponse response) throws ServletException, IOException {
+        int status = HttpServletResponse.SC_OK;
+        StringBuffer parametrsBuffer = new StringBuffer();
+        Gson gson = new Gson();
 
-        Map<String, Object> pageVariables = new HashMap<>();
-        pageVariables.put("email", email == null ? "" : email);
-        pageVariables.put("password", password == null ? "" : password);
-        pageVariables.put("username", password == null ? "" : username);
+        try {
+            BufferedReader reader = request.getReader();
+            String line;
 
-        response.getWriter().println(PageGenerator.getPage("authresponse.txt", pageVariables));
+            while ((line = reader.readLine()) != null)
+                parametrsBuffer.append(line);
+        } catch (IOException e) {
+            status = HttpServletResponse.SC_BAD_REQUEST;
+        }
+        HashMap<String, String> jsonData = null;
+
+        try {
+            Type type = new TypeToken<HashMap<String, String>>(){}.getType();
+            jsonData = gson.fromJson(parametrsBuffer.toString(), type);
+        } catch (JsonSyntaxException e) {
+            status = HttpServletResponse.SC_BAD_REQUEST;
+        }
+        String login = "";
+        String password = "";
+        try {
+            login = jsonData.get("login");
+            password = jsonData.get("password");
+        } catch (NullPointerException e) {
+            status = HttpServletResponse.SC_BAD_REQUEST;
+        }
+        if (status == HttpServletResponse.SC_OK) {
+            if (request.getSession().getAttribute("login") != null) {
+                login = "";
+                password = "";
+                status = HttpServletResponse.SC_FOUND;
+            } else {
+                UserProfile profile = accountService.getUser(login);
+
+                if (profile != null && profile.getPassword().equals(password)) {
+                    HttpSession currentSession = request.getSession(true);
+
+                    currentSession.setAttribute("login", profile.getLogin());
+                    accountService.addSessions(currentSession.getId(), profile);
+                } else {
+                    login = "";
+                    password = "";
+                    status = HttpServletResponse.SC_BAD_REQUEST;
+                }
+            }
+        }
+
+        response.setStatus(HttpServletResponse.SC_OK);
+        response.getWriter().println(gson.toJson(PageGenerator.setResponseDataUser(status, login, password)));
     }
 }

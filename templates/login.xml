@@ -3,7 +3,7 @@
 			<h1>Login</h1>
 
         <form method="post" action="/auth/signin">
-            <div class = "min_wrapper"><input  type="text"     name="username" /></div>
+            <div class = "min_wrapper"><input  type="text"     name="login" /></div>
             <div class = "min_wrapper"><input  type="password" name="password" /></div>
             <div class = "min_wrapper"><button type="submit" class = "btn btn-primary" >GO!</button></div>
         </form>
