@@ -22,8 +22,8 @@ public class PageGenerator {
         HashMap<String, String> jsonData = new HashMap<>();
 
         jsonData.put("status", Integer.toString(status));
-        jsonData.put("login", Integer.toString(countUsers));
-        jsonData.put("password", Integer.toString(countOnlineUsers));
+        jsonData.put("countUsers", Integer.toString(countUsers));
+        jsonData.put("countOnlineUsers", Integer.toString(countOnlineUsers));
 
         return jsonData;
     }
