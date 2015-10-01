@@ -14,7 +14,7 @@ import org.eclipse.jetty.servlet.ServletHolder;
 import javax.servlet.Servlet;
 
 /**
- * @author v.chibrikov
+ * @author S. Gadjiev
  */
 public class Main {
     public static final int DEFAULT_PORT = 8000;

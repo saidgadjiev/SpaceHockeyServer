@@ -1,7 +1,7 @@
 package main;
 
 /**
- * Created by v.chibrikov on 13.09.2014.
+ * Created by said on 13.09.2014.
  */
 public class UserProfile {
     private String login;
@@ -13,7 +13,6 @@ public class UserProfile {
         this.password = password;
         this.email = email;
     }
-
     public String getLogin() {
         return login;
     }

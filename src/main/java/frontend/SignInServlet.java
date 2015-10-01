@@ -16,7 +16,6 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.HashMap;
-
 /**
  * @author v.chibrikov
  */
@@ -62,7 +61,7 @@ public class SignInServlet extends HttpServlet {
     public void doPost(HttpServletRequest request,
                        HttpServletResponse response) throws ServletException, IOException {
         int status = HttpServletResponse.SC_OK;
-        StringBuffer parametrsBuffer = new StringBuffer();
+        StringBuffer parametersBuffer = new StringBuffer();
         Gson gson = new Gson();
 
         try {
@@ -70,7 +69,7 @@ public class SignInServlet extends HttpServlet {
             String line;
 
             while ((line = reader.readLine()) != null)
-                parametrsBuffer.append(line);
+                parametersBuffer.append(line);
         } catch (IOException e) {
             status = HttpServletResponse.SC_BAD_REQUEST;
         }
@@ -78,7 +77,7 @@ public class SignInServlet extends HttpServlet {
 
         try {
             Type type = new TypeToken<HashMap<String, String>>(){}.getType();
-            jsonData = gson.fromJson(parametrsBuffer.toString(), type);
+            jsonData = gson.fromJson(parametersBuffer.toString(), type);
         } catch (JsonSyntaxException e) {
             status = HttpServletResponse.SC_BAD_REQUEST;
         }

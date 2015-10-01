@@ -3,7 +3,7 @@ package templater;
 import java.util.HashMap;
 
 /**
- * @author v.chibrikov
+ * @author said
  */
 public class PageGenerator {
     public static HashMap<String, String> setResponseDataUser(int status, String login, String password)
