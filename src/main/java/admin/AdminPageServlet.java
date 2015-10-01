@@ -23,7 +23,10 @@ public class AdminPageServlet extends HttpServlet {
     @Override
     public void doGet(HttpServletRequest request,
                       HttpServletResponse response) throws ServletException, IOException {
-        String timeShutdown = request.getParameter("shutdown");
+        String timeShutdown = null;
+        if (request != null) {
+            timeShutdown = request.getParameter("shutdown");
+        }
         int status = HttpServletResponse.SC_OK;
 
         if (timeShutdown != null) {
@@ -37,8 +40,10 @@ public class AdminPageServlet extends HttpServlet {
             status = HttpServletResponse.SC_BAD_REQUEST;
         }
 
-        response.setStatus(HttpServletResponse.SC_OK);
-        response.getWriter().println(PageGenerator.setResponseDataAdmin(status,
-                accountService.getCountUsers(), accountService.getCountOnlineUsers()));
+        if (response != null) {
+            response.setStatus(HttpServletResponse.SC_OK);
+            response.getWriter().println(PageGenerator.setResponseDataAdmin(status,
+                    accountService.getCountUsers(), accountService.getCountOnlineUsers()));
+        }
     }
 }
