@@ -2,6 +2,7 @@ package frontend;
 
 import com.google.gson.Gson;
 import main.AccountService;
+import org.jetbrains.annotations.NotNull;
 import templater.PageGenerator;
 
 import javax.servlet.ServletException;
@@ -21,8 +22,8 @@ public class SignOutServlet extends HttpServlet {
     }
 
     @Override
-    public void doGet(HttpServletRequest request,
-                      HttpServletResponse response) throws ServletException, IOException {
+    public void doGet(@NotNull HttpServletRequest request,
+                      @NotNull HttpServletResponse response) throws ServletException, IOException {
         int status = HttpServletResponse.SC_OK;
 
         if (request.getSession().getAttribute("login") != null) {
@@ -35,6 +36,7 @@ public class SignOutServlet extends HttpServlet {
         }
 
         response.setStatus(HttpServletResponse.SC_OK);
+        //noinspection ConstantConditions
         response.getWriter().println(new Gson().toJson(PageGenerator.setResponseDataUser(status, "", "")));
     }
 }

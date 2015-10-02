@@ -1,4 +1,4 @@
 <fest:template xmlns:fest="http://fest.mail.ru">
 	<h1>Let's go! </h1>
-	<button  class="js-back btn btn-primary">Back to the Future</button>
+	<a href="#main" class="btn btn-primary">Back to the Future</a>
 </fest:template>

@@ -1,38 +1,43 @@
-body{
-	color: #00f;
+#page{
+	margin: 20px;
 }
 
-#header{
+.header{
 	background-color: #0660ff;
 	color:#fff;
 	margin: 0 auto;
 	text-align: center;
 	padding: 20px;
-	margin: 20px;
 	font-size: 36px;
 	border-radius: 15px;
-}
-
-#page{
-	margin: 20px;
 }
 
 .container{
 	text-align: center;
 }
 
-button{
-	min-width: 200px;
-}
-
-.min_wrapper{
+.menu-item{
 	margin: 10px;
 
 }
 
-input {
+.menu-item__link{
+	min-width: 300px;
+	padding: 15px !important;
+	border-radius: 10px/15px !important;
+}
+
+.form-div{
+	margin: 10px
+}
+
+.form-div__input{
 	min-width: 200px;	
 	border-radius: 5px;
+}
+
+.submit-btn{
+	min-width: 200px;
 }
 
 

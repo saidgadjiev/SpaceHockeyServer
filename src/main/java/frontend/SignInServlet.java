@@ -5,6 +5,7 @@ import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
 import main.AccountService;
 import main.UserProfile;
+import org.jetbrains.annotations.NotNull;
 import templater.PageGenerator;
 
 import javax.servlet.ServletException;
@@ -16,20 +17,20 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.HashMap;
+
 /**
  * @author v.chibrikov
  */
-
 public class SignInServlet extends HttpServlet {
-    private AccountService accountService;
+    @NotNull private AccountService accountService;
 
-    public SignInServlet(AccountService accountService) {
+    public SignInServlet(@NotNull AccountService accountService) {
         this.accountService = accountService;
     }
 
     @Override
-    public void doGet(HttpServletRequest request,
-                       HttpServletResponse response) throws ServletException, IOException {
+    public void doGet(@NotNull HttpServletRequest request,
+                      @NotNull HttpServletResponse response) throws ServletException, IOException {
         String login =  request.getParameter("login");
         String password = request.getParameter("password");
         int status = HttpServletResponse.SC_OK;
@@ -42,9 +43,11 @@ public class SignInServlet extends HttpServlet {
         } else {
             UserProfile profile = accountService.getUser(login);
 
+            //noinspection ConstantConditions
             if (profile != null && profile.getPassword().equals(password)) {
                 HttpSession currentSession = request.getSession(true);
 
+                assert currentSession != null;
                 currentSession.setAttribute("login", profile.getLogin());
                 accountService.addSessions(currentSession.getId(), profile);
             } else {
@@ -55,19 +58,22 @@ public class SignInServlet extends HttpServlet {
         }
 
         response.setStatus(HttpServletResponse.SC_OK);
+        //noinspection ConstantConditions
         response.getWriter().println(gson.toJson(PageGenerator.setResponseDataUser(status, login, password)));
     }
     @Override
-    public void doPost(HttpServletRequest request,
-                       HttpServletResponse response) throws ServletException, IOException {
+    public void doPost(@NotNull HttpServletRequest request,
+                       @NotNull HttpServletResponse response) throws ServletException, IOException {
+        //System.out.print("OK");
         int status = HttpServletResponse.SC_OK;
-        StringBuffer parametersBuffer = new StringBuffer();
+        @SuppressWarnings("StringBufferMayBeStringBuilder") StringBuffer parametersBuffer = new StringBuffer();
         Gson gson = new Gson();
 
         try {
             BufferedReader reader = request.getReader();
-            String line;
 
+            assert reader != null;
+            String line;
             while ((line = reader.readLine()) != null)
                 parametersBuffer.append(line);
         } catch (IOException e) {
@@ -76,7 +82,7 @@ public class SignInServlet extends HttpServlet {
         HashMap<String, String> jsonData = null;
 
         try {
-            Type type = new TypeToken<HashMap<String, String>>(){}.getType();
+            @SuppressWarnings("AnonymousInnerClassMayBeStatic") Type type = new TypeToken<HashMap<String, String>>(){}.getType();
             jsonData = gson.fromJson(parametersBuffer.toString(), type);
         } catch (JsonSyntaxException e) {
             status = HttpServletResponse.SC_BAD_REQUEST;
@@ -84,6 +90,7 @@ public class SignInServlet extends HttpServlet {
         String login = "";
         String password = "";
         try {
+            assert jsonData != null;
             login = jsonData.get("login");
             password = jsonData.get("password");
         } catch (NullPointerException e) {
@@ -97,9 +104,11 @@ public class SignInServlet extends HttpServlet {
             } else {
                 UserProfile profile = accountService.getUser(login);
 
+                //noinspection ConstantConditions
                 if (profile != null && profile.getPassword().equals(password)) {
                     HttpSession currentSession = request.getSession(true);
 
+                    assert currentSession != null;
                     currentSession.setAttribute("login", profile.getLogin());
                     accountService.addSessions(currentSession.getId(), profile);
                 } else {
@@ -111,6 +120,7 @@ public class SignInServlet extends HttpServlet {
         }
 
         response.setStatus(HttpServletResponse.SC_OK);
+        //noinspection ConstantConditions
         response.getWriter().println(gson.toJson(PageGenerator.setResponseDataUser(status, login, password)));
     }
 }

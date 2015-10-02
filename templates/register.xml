@@ -1,0 +1,33 @@
+<fest:template xmlns:fest="http://fest.mail.ru" context_name="json">
+
+	<div class = "header"> Space Hockey</div>
+	<div class = "container">
+	<h1>Registration</h1>
+
+		      <form id = "idForm" >
+		          <div class = "form-div">
+									<label for="login">Login*:<br/>
+									<input type="text" class = "form-div__input" name="login" id = "login" /></label>
+							</div>
+							
+							<div class = "form-div">
+									<label for="email">Email*:<br/>
+									<input type="email" class = "form-div__input" name="email" id = "email" /></label>
+							</div>
+
+				      <div class = "form-div">
+									<label for="password">Password*:<br/>
+									<input type="password" class = "form-div__input" name="password" id = "password" /></label>
+							</div>
+							
+							<div class = "form-div">
+									<label for="password2">Input your password again*:<br/>
+									<input type="password" class = "form-div__input" name="password2" id = "password2" /></label>
+							</div>
+						
+				
+		          <div class = "form-div"><button type="submit"   class = "submit-btn btn btn-success  " >GO!</button></div>
+		      </form>
+  </div>
+	<a href="#main" class="btn btn-primary">Back to the Future</a>
+</fest:template>

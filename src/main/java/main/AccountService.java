@@ -1,33 +1,38 @@
 package main;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 import java.util.HashMap;
 
 /**
  * Created by said on 13.09.2014.
  */
 public class AccountService {
-    private HashMap<String, UserProfile> users = new HashMap<>();
-    private HashMap<String, UserProfile> sessions = new HashMap<>();
+    @NotNull private HashMap<String, UserProfile> users = new HashMap<>();
+    @NotNull private HashMap<String, UserProfile> sessions = new HashMap<>();
 
-    public boolean addUser(String userName, UserProfile userProfile) {
+    public boolean addUser(@NotNull String userName, UserProfile userProfile) {
         if (users.containsKey(userName))
             return false;
         users.put(userName, userProfile);
         return true;
     }
 
-    public void addSessions(String sessionId, UserProfile userProfile) {
+    public void addSessions(@Nullable String sessionId, UserProfile userProfile) {
         sessions.put(sessionId, userProfile);
     }
 
-    public void deleteSession(String sessionId) {
+    public void deleteSession(@Nullable String sessionId) {
         sessions.remove(sessionId);
     }
 
-    public UserProfile getUser(String userName) {
+    @Nullable
+    public UserProfile getUser(@Nullable String userName) {
         return users.get(userName);
     }
 
+    @Nullable
     public UserProfile getSessions(String sessionId) {
         return sessions.get(sessionId);
     }

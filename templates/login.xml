@@ -1,14 +1,24 @@
-<fest:template xmlns:fest="http://fest.mail.ru">
+<fest:template xmlns:fest="http://fest.mail.ru" context_name="json">
+	<div class = "header"> Space Hockey</div>
 	<div class = "container">
 			<h1>Login</h1>
 
-        <form method="post" action="/auth/signin">
-            <div class = "min_wrapper"><input  type="text"     name="login" /></div>
-            <div class = "min_wrapper"><input  type="password" name="password" /></div>
-            <div class = "min_wrapper"><button type="submit" class = "btn btn-primary" >GO!</button></div>
+        <form method="GET" action="/auth/signin" >
+            <div class = "form-div">
+								<label for="login">Login:<br/>
+								<input type="text" class = "form-div__input" name="login" id = "login" /></label>
+						</div>
+							
+		        <div class = "form-div">
+								<label for="password">Password:<br/>
+								<input type="password" class = "form-div__input" name="password" id = "password" /></label>
+						</div>
+				
+            <div class = "form-div"><button type="submit"   class = "submit-btn btn btn-success" >GO!</button></div>
+						<a class="submit-btn btn btn-primary" href="#register">Register</a>
         </form>
    
 	</div>
-	<button  class="js-back btn btn-primary">Back to the Future</button>
+	<a href="#main" class="btn btn-primary">Back to the Future</a>
 </fest:template>
 

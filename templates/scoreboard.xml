@@ -1,6 +1,7 @@
-<fest:template xmlns:fest="http://fest.mail.ru">
+<fest:template xmlns:fest="http://fest.mail.ru" context_name="json">
+<div class = "header"> Space Hockey</div>
 <div class = "container">
 	<h1>ScoreBoard</h1>
 </div>
-	<button  class="js-back btn btn-primary">Back to the Future</button>
+	<a href="#main" class="btn btn-primary">Back to the Future</a>
 </fest:template>

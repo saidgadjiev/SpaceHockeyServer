@@ -2,6 +2,7 @@ package admin;
 
 import main.AccountService;
 import main.TimeHelper;
+import org.jetbrains.annotations.NotNull;
 import templater.PageGenerator;
 
 import javax.servlet.ServletException;
@@ -21,12 +22,13 @@ public class AdminPageServlet extends HttpServlet {
     }
 
     @Override
-    public void doGet(HttpServletRequest request,
-                      HttpServletResponse response) throws ServletException, IOException {
+    public void doGet(@NotNull HttpServletRequest request,
+                      @NotNull HttpServletResponse response) throws ServletException, IOException {
         String timeShutdown = request.getParameter("shutdown");
         int status = HttpServletResponse.SC_OK;
 
         if (timeShutdown != null) {
+            //noinspection ConstantConditions
             int timeMS = Integer.valueOf(timeShutdown);
 
             System.out.print("Server will be down after: "+ timeMS + " ms");
@@ -38,6 +40,7 @@ public class AdminPageServlet extends HttpServlet {
         }
 
         response.setStatus(HttpServletResponse.SC_OK);
+        //noinspection ConstantConditions
         response.getWriter().println(PageGenerator.setResponseDataAdmin(status,
                     accountService.getCountUsers(), accountService.getCountOnlineUsers()));
     }
