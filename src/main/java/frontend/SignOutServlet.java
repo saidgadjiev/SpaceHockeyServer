@@ -25,22 +25,16 @@ public class SignOutServlet extends HttpServlet {
                       HttpServletResponse response) throws ServletException, IOException {
         int status = HttpServletResponse.SC_OK;
 
-        if (request != null) {
-            if (request.getSession().getAttribute("login") != null) {
-                if (accountService != null) {
-                    accountService.deleteSession(request.getSession().getId());
-                }
-                request.getSession().invalidate();
-            } else {
-                status = HttpServletResponse.SC_UNAUTHORIZED;
+        if (request.getSession().getAttribute("login") != null) {
+            if (accountService != null) {
+                accountService.deleteSession(request.getSession().getId());
             }
+            request.getSession().invalidate();
+        } else {
+            status = HttpServletResponse.SC_UNAUTHORIZED;
         }
 
-        if (response != null) {
-            response.setStatus(HttpServletResponse.SC_OK);
-        }
-        if (response != null) {
-            response.getWriter().println(new Gson().toJson(PageGenerator.setResponseDataUser(status, "", "")));
-        }
+        response.setStatus(HttpServletResponse.SC_OK);
+        response.getWriter().println(new Gson().toJson(PageGenerator.setResponseDataUser(status, "", "")));
     }
 }
