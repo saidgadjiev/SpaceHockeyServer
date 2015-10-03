@@ -5,7 +5,6 @@ import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
 import main.AccountService;
 import main.UserProfile;
-import org.jetbrains.annotations.NotNull;
 import templater.PageGenerator;
 
 import javax.servlet.ServletException;
@@ -21,20 +20,19 @@ import java.util.HashMap;
  * Created by g.said on 13.09.2014.
  */
 public class SignUpServlet extends HttpServlet {
-    @NotNull private AccountService accountService;
+    private AccountService accountService;
 
-    public SignUpServlet(@NotNull AccountService accountService) {
+    public SignUpServlet(AccountService accountService) {
         this.accountService = accountService;
     }
 
     @Override
-    public void doGet(@NotNull HttpServletRequest request,
-                       @NotNull HttpServletResponse response) throws ServletException, IOException {
+    public void doGet(HttpServletRequest request,
+                      HttpServletResponse response) throws ServletException, IOException {
         String login = request.getParameter("login");
         String password = request.getParameter("password");
         Gson gson = new Gson();
 
-        assert login != null;
         int status = HttpServletResponse.SC_OK;
         if (!accountService.addUser(login, new UserProfile(login, password, ""))) {
             status = HttpServletResponse.SC_INTERNAL_SERVER_ERROR;
@@ -43,12 +41,11 @@ public class SignUpServlet extends HttpServlet {
         }
 
         response.setStatus(HttpServletResponse.SC_OK);
-        //noinspection ConstantConditions
         response.getWriter().println(gson.toJson(PageGenerator.setResponseDataUser(status, login, password)));
     }
     @Override
-    public void doPost(@NotNull HttpServletRequest request,
-                       @NotNull HttpServletResponse response) throws ServletException, IOException {
+    public void doPost(HttpServletRequest request,
+                       HttpServletResponse response) throws ServletException, IOException {
         int status = HttpServletResponse.SC_OK;
         @SuppressWarnings("StringBufferMayBeStringBuilder") StringBuffer parametrsBuffer = new StringBuffer();
         Gson gson = new Gson();
@@ -56,7 +53,6 @@ public class SignUpServlet extends HttpServlet {
         try {
             BufferedReader reader = request.getReader();
 
-            assert reader != null;
             String line;
             while ((line = reader.readLine()) != null)
                 parametrsBuffer.append(line);
@@ -75,7 +71,7 @@ public class SignUpServlet extends HttpServlet {
         String login = "";
 
         try {
-            assert jsonData != null;
+            //noinspection ConstantConditions
             login = jsonData.get("login");
             password = jsonData.get("password");
         } catch (NullPointerException e) {
@@ -83,7 +79,6 @@ public class SignUpServlet extends HttpServlet {
         }
 
         if (status == HttpServletResponse.SC_OK) {
-            assert login != null;
             if (!accountService.addUser(login, new UserProfile(login, password, ""))) {
                 status = HttpServletResponse.SC_INTERNAL_SERVER_ERROR;
                 login = "";
@@ -92,7 +87,6 @@ public class SignUpServlet extends HttpServlet {
         }
 
         response.setStatus(HttpServletResponse.SC_OK);
-        //noinspection ConstantConditions
         response.getWriter().println(gson.toJson(PageGenerator.setResponseDataUser(status, login, password)));
     }
 }

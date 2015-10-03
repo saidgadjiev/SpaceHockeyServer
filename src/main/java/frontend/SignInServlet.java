@@ -5,7 +5,6 @@ import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
 import main.AccountService;
 import main.UserProfile;
-import org.jetbrains.annotations.NotNull;
 import templater.PageGenerator;
 
 import javax.servlet.ServletException;
@@ -22,15 +21,15 @@ import java.util.HashMap;
  * @author v.chibrikov
  */
 public class SignInServlet extends HttpServlet {
-    @NotNull private AccountService accountService;
+    private AccountService accountService;
 
-    public SignInServlet(@NotNull AccountService accountService) {
+    public SignInServlet(AccountService accountService) {
         this.accountService = accountService;
     }
 
     @Override
-    public void doGet(@NotNull HttpServletRequest request,
-                      @NotNull HttpServletResponse response) throws ServletException, IOException {
+    public void doGet(HttpServletRequest request,
+                      HttpServletResponse response) throws ServletException, IOException {
         String login =  request.getParameter("login");
         String password = request.getParameter("password");
         int status = HttpServletResponse.SC_OK;
@@ -43,11 +42,9 @@ public class SignInServlet extends HttpServlet {
         } else {
             UserProfile profile = accountService.getUser(login);
 
-            //noinspection ConstantConditions
             if (profile != null && profile.getPassword().equals(password)) {
                 HttpSession currentSession = request.getSession(true);
 
-                assert currentSession != null;
                 currentSession.setAttribute("login", profile.getLogin());
                 accountService.addSessions(currentSession.getId(), profile);
             } else {
@@ -58,13 +55,11 @@ public class SignInServlet extends HttpServlet {
         }
 
         response.setStatus(HttpServletResponse.SC_OK);
-        //noinspection ConstantConditions
         response.getWriter().println(gson.toJson(PageGenerator.setResponseDataUser(status, login, password)));
     }
     @Override
-    public void doPost(@NotNull HttpServletRequest request,
-                       @NotNull HttpServletResponse response) throws ServletException, IOException {
-        //System.out.print("OK");
+    public void doPost(HttpServletRequest request,
+                       HttpServletResponse response) throws ServletException, IOException {
         int status = HttpServletResponse.SC_OK;
         @SuppressWarnings("StringBufferMayBeStringBuilder") StringBuffer parametersBuffer = new StringBuffer();
         Gson gson = new Gson();
@@ -72,7 +67,6 @@ public class SignInServlet extends HttpServlet {
         try {
             BufferedReader reader = request.getReader();
 
-            assert reader != null;
             String line;
             while ((line = reader.readLine()) != null)
                 parametersBuffer.append(line);
@@ -90,7 +84,7 @@ public class SignInServlet extends HttpServlet {
         String login = "";
         String password = "";
         try {
-            assert jsonData != null;
+            //noinspection ConstantConditions
             login = jsonData.get("login");
             password = jsonData.get("password");
         } catch (NullPointerException e) {
@@ -104,11 +98,9 @@ public class SignInServlet extends HttpServlet {
             } else {
                 UserProfile profile = accountService.getUser(login);
 
-                //noinspection ConstantConditions
                 if (profile != null && profile.getPassword().equals(password)) {
                     HttpSession currentSession = request.getSession(true);
 
-                    assert currentSession != null;
                     currentSession.setAttribute("login", profile.getLogin());
                     accountService.addSessions(currentSession.getId(), profile);
                 } else {
@@ -120,7 +112,6 @@ public class SignInServlet extends HttpServlet {
         }
 
         response.setStatus(HttpServletResponse.SC_OK);
-        //noinspection ConstantConditions
         response.getWriter().println(gson.toJson(PageGenerator.setResponseDataUser(status, login, password)));
     }
 }

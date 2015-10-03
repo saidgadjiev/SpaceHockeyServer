@@ -10,7 +10,6 @@ import org.eclipse.jetty.server.handler.HandlerList;
 import org.eclipse.jetty.server.handler.ResourceHandler;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
-import org.jetbrains.annotations.NotNull;
 
 import javax.servlet.Servlet;
 
@@ -21,15 +20,13 @@ public class Main {
     public static final int DEFAULT_PORT = 8000;
 
     @SuppressWarnings("OverlyBroadThrowsClause")
-    public static void main(@NotNull String[] args) throws Exception {
+    public static void main(String[] args) throws Exception {
         int port = DEFAULT_PORT;
         if (args.length == 1) {
             String portString = args[0];
-            //noinspection ConstantConditions
             port = Integer.valueOf(portString);
         }
 
-        //noinspection ConstantConditions
         System.out.append("Starting at port: ").append(String.valueOf(port)).append('\n');
 
         AccountService accountService = new AccountService();
