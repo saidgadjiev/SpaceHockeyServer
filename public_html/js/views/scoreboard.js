@@ -1,29 +1,32 @@
 define([
     'backbone',
-    'tmpl/scoreboard'
-], function(
+    'tmpl/scoreboard',
+	'collections/scores'
+], function(	
     Backbone,
-    tmpl
+    tmpl,
+	playerCollection
 ){
 
-    var View = Backbone.View.extend({
+    var ScoreBoardView = Backbone.View.extend({				
         el: $("#page"),
         template: tmpl,
-        initialize: function () {
-            // TODO
-        },
-        render: function () {	
-            $(this.el).html(this.template());
-            return this;
+
+        render: function () {
+            this.$el.html(this.template);
+			var self = this;             
+
+			playerCollection.forEach(function(num){
+				self.$el.find('.score-list').append('<tr class= "score-list__item"><th>'+num.get('name')+'</th><th>'+num.get('score')+'<th><tr>');
+			});
         },
         show: function () {
-            // TODO
+            this.$el.render();
         },
         hide: function () {
-            // TODO
+            this.$el.empty();
         }
-
     });
 
-    return new View();
+    return  new ScoreBoardView();
 });

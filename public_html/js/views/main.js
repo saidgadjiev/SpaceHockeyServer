@@ -9,20 +9,15 @@ define([
     var Main = Backbone.View.extend({
         el: $("#page"),
         template: tmpl,
-        initialize: function () {
-            // this.listenTo(this.collection, "change", this.render);
-        },
-        render: function () {
-            $(this.el).html(this.template());
-						
-
+     		render: function () {
+            this.$el.html(this.template);
             return this;
         },
         show: function () {
-
+            this.$el.render();
         },
         hide: function () {
-        
+            this.$el.empty();
         }
 
     });

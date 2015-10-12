@@ -26,7 +26,6 @@ define([
             main.render();
         },
         scoreboardAction: function () {
-            //scoreboard.initialize();
             scoreboard.render();
         },
         gameAction: function () {

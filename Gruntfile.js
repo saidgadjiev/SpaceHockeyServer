@@ -1,58 +1,76 @@
-module.exports = function (grunt) {
+module.exports = function(grunt){
+  /* Функция обертка, все внутри нее */
 
-    grunt.initConfig({
-        watch: {
-            fest: {
-                files: ['templates/*.xml'],
-                tasks: ['fest'],
-                options: {
-                    atBegin: true
+	grunt.initConfig({
+
+		watch: {
+	        fest: {
+   		        files: ['templates/*.xml'],
+       			tasks: ['fest'],
+           		options: {
+                   	interrupt: true,
+                   	atBegin: true
                 }
             },
-            server: {
+			server: {
                 files: [
-                    'public_html/js/**/*.js',
+                    'public_html/js/**/*.js', /* следим за статикой*/
                     'public_html/css/**/*.css'
                 ],
                 options: {
                     interrupt: true,
-                    livereload: true
+                    livereload: true /* перезагрузить страницу */
                 }
             }
         },
-        connect: {
-            server: {
-                options: {
-                    livereload: true,
-                    port: 8000,
-                    base: 'public_html'
-                }
-            }
-        },
-        fest: {
-            templates: {
-                files: [{
-                    expand: true,
-                    cwd: 'templates',
-                    src: '*.xml',
-                    dest: 'public_html/js/tmpl'
-                }],
-                options: {
-                    template: function (data) {
-                        return grunt.template.process(
-                            'var <%= name %>Tmpl = <%= contents %> ;',
-                            {data: data}
-                        );
-                    }
-                }
+
+        shell: {				
+
+			server: { /* Подзадача */
+				command: 'java -cp Server.jar main.Main 8080'
+						/* запуск сервера */
+			}
+
+		}, /* grunt-shell */
+		fest: {
+			
+			templates: { /* Цель */
+				files: [{
+					expand: true,
+					cwd: 'templates', /* исходная директория */
+					src: '*.xml', /* имена шаблонов */
+					dest: 'public_html/js/tmpl' /* результирующая директория */
+				}],
+				options: { 							
+					template: function (data) {
+							return grunt.template.process(
+									// 'var <%= name %>Tmpl = <%= contents %> ;',
+									'define(function () { return <%= contents %> ; });',
+									{data: data}
+							);
+					}
+ 				}
+			} /* grunt-fest-templates */
+
+		},
+
+		concurrent: {
+
+            target: ['watch', 'shell'],
+            options: {
+                logConcurrentOutput: true /* Вывод логов */
             }
         }
+	/* grunt-fest */
+
     });
 
-    grunt.loadNpmTasks('grunt-contrib-watch');
-    grunt.loadNpmTasks('grunt-contrib-connect');
-    grunt.loadNpmTasks('grunt-fest');
+	grunt.loadNpmTasks('grunt-contrib-watch');
+	grunt.loadNpmTasks('grunt-concurrent');
+	grunt.loadNpmTasks('grunt-shell');
+	grunt.loadNpmTasks('grunt-fest');
 
-    grunt.registerTask('default', ['connect', 'watch']);
+	grunt.registerTask('default', ['concurrent']); /* задача по умолчанию */
 
-};
+}
+

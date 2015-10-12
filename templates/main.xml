@@ -1,5 +1,5 @@
 <fest:template xmlns:fest="http://fest.mail.ru" context_name="json">
-		<div class = "header"> Space Hockey</div>
+		<fest:include src="./header.xml" context="json"/>
     <div class = "container">
         <h1>Main Menu</h1>
 					
