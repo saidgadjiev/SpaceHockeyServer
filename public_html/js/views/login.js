@@ -29,8 +29,8 @@ define([
 				}
 
 				$.ajax({
-					type: "POST",
 					url: "/auth/signin",
+					type: "POST",
 					data: dataAjax,
 												 
 					success: function(data){

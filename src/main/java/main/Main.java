@@ -4,6 +4,7 @@ import admin.AdminPageServlet;
 import frontend.SignInServlet;
 import frontend.SignOutServlet;
 import frontend.SignUpServlet;
+import main.accountService.AccountServiceImpl;
 import org.eclipse.jetty.server.Handler;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.handler.HandlerList;
@@ -29,7 +30,7 @@ public class Main {
 
         System.out.append("Starting at port: ").append(String.valueOf(port)).append('\n');
 
-        AccountService accountService = new AccountService();
+        AccountServiceImpl accountService = new AccountServiceImpl();
 
         Servlet signin = new SignInServlet(accountService);
         Servlet signUp = new SignUpServlet(accountService);
@@ -43,7 +44,6 @@ public class Main {
         context.addServlet(new ServletHolder(admin), "/admin");
 
         ResourceHandler resource_handler = new ResourceHandler();
-        resource_handler.setDirectoriesListed(true);
         resource_handler.setResourceBase("public_html");
 
         HandlerList handlers = new HandlerList();

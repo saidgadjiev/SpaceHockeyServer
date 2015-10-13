@@ -1,6 +1,6 @@
 package admin;
 
-import main.AccountService;
+import main.accountService.AccountServiceImpl;
 import main.TimeHelper;
 import templater.PageGenerator;
 
@@ -14,9 +14,9 @@ import java.io.IOException;
  * Created by said on 23.09.15.
  */
 public class AdminPageServlet extends HttpServlet {
-    private AccountService accountService;
+    private AccountServiceImpl accountService;
 
-    public AdminPageServlet(AccountService accountService) {
+    public AdminPageServlet(AccountServiceImpl accountService) {
         this.accountService = accountService;
     }
 

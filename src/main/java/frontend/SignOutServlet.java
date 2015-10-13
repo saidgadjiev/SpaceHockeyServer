@@ -1,7 +1,7 @@
 package frontend;
 
 import com.google.gson.Gson;
-import main.AccountService;
+import main.accountService.AccountServiceImpl;
 import templater.PageGenerator;
 
 import javax.servlet.ServletException;
@@ -14,9 +14,9 @@ import java.io.IOException;
  * Created by said on 21.09.15.
  */
 public class SignOutServlet extends HttpServlet {
-    private AccountService accountService;
+    private AccountServiceImpl accountService;
 
-    public SignOutServlet(AccountService accountService) {
+    public SignOutServlet(AccountServiceImpl accountService) {
         this.accountService = accountService;
     }
 

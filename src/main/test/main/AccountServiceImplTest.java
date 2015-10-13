@@ -1,5 +1,6 @@
 package main;
 
+import main.accountService.AccountServiceImpl;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
@@ -8,8 +9,8 @@ import static org.junit.Assert.assertNotNull;
 /**
  * Created by said on 09.10.15.
  */
-public class AccountServiceTest {
-    private final AccountService accountService = new AccountService();
+public class AccountServiceImplTest {
+    private final AccountServiceImpl accountService = new AccountServiceImpl();
     private final UserProfile testUser = new UserProfile("testLogin", "testPassword", "said@mail.ru");
 
     @Test
