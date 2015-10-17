@@ -1,6 +1,7 @@
 package main;
 
 import main.accountService.AccountServiceImpl;
+import main.user.UserProfile;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
