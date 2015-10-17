@@ -1,0 +1,4 @@
+<fest:template xmlns:fest="http://fest.mail.ru">
+	<h1>Let's go!</h1>
+	<fest:include src="./backbutton.xml" context="json"/>
+</fest:template>
