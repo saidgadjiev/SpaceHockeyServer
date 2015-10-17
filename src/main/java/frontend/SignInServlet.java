@@ -1,9 +1,7 @@
 package frontend;
 
-import com.google.gson.Gson;
-import main.UserProfile;
 import main.accountService.AccountServiceImpl;
-import templater.PageGenerator;
+import main.user.UserProfile;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -11,6 +9,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
+import java.util.HashMap;
+
+import static main.user.Validator.*;
+import static templater.PageGenerator.setResponseDataUser;
+import static utilities.JSONFromRequest.getJSONFromRequest;
 
 /**
  * @author v.chibrikov
@@ -25,21 +28,33 @@ public class SignInServlet extends HttpServlet {
     @Override
     public void doPost(HttpServletRequest request,
                        HttpServletResponse response) throws ServletException, IOException {
-
         int status = HttpServletResponse.SC_OK;
-        String login = request.getParameter("login");
-        String password = request.getParameter("password");
-        Gson gson = new Gson();
+        String login = "";
+        String password = "";
+        String email = "";
+        HashMap<String, String> jsonData = getJSONFromRequest(request);
 
-        if (login == null || password == null) {
+        try {
+            //noinspection ConstantConditions
+            login = jsonData.get("login");
+            password = jsonData.get("password");
+        } catch (NullPointerException e) {
             status = HttpServletResponse.SC_BAD_REQUEST;
-            login = "";
-            password = "";
         }
+
+        if (!isValidLogin(login) || !isValidPassword(password)) {
+            status = HttpServletResponse.SC_BAD_REQUEST;
+            if (!isValidLogin(login)) {
+                login = "";
+            }
+            if (!isValidPassword(password)) {
+                password = "";
+            }
+        }
+
         if (status == HttpServletResponse.SC_OK) {
             if (request.getSession().getAttribute("login") != null) {
                 login = "";
-                password = "";
                 status = HttpServletResponse.SC_FOUND;
             } else {
                 UserProfile profile = accountService.getUser(login);
@@ -49,8 +64,8 @@ public class SignInServlet extends HttpServlet {
 
                     currentSession.setAttribute("login", profile.getLogin());
                     accountService.addSessions(currentSession.getId(), profile);
+                    email = profile.getEmail();
                 } else {
-                    login = "";
                     password = "";
                     status = HttpServletResponse.SC_BAD_REQUEST;
                 }
@@ -58,6 +73,6 @@ public class SignInServlet extends HttpServlet {
         }
 
         response.setStatus(HttpServletResponse.SC_OK);
-        response.getWriter().println(gson.toJson(PageGenerator.setResponseDataUser(status, login, password)));
+        response.getWriter().write(setResponseDataUser(status, login, password, email));
     }
 }

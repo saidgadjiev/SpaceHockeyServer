@@ -1,6 +1,6 @@
 package main.accountService;
 
-import main.UserProfile;
+import main.user.UserProfile;
 
 import java.util.HashMap;
 
@@ -30,8 +30,8 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public UserProfile getUser(String userName) {
-        return users.get(userName);
+    public UserProfile getUser(String login) {
+        return users.get(login);
     }
 
     @Override

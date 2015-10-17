@@ -1,30 +1,35 @@
 package templater;
 
+import com.google.gson.Gson;
+
 import java.util.HashMap;
 
 /**
  * @author said
  */
 public class PageGenerator {
-    public static HashMap<String, String> setResponseDataUser(int status, String login, String password)
+    public static String setResponseDataUser(int status, String login, String password, String email)
     {
         HashMap<String, String> jsonData = new HashMap<>();
+        Gson gson = new Gson();
 
         jsonData.put("status", Integer.toString(status));
         jsonData.put("login", login);
         jsonData.put("password", password);
+        jsonData.put("email", email);
 
-        return jsonData;
+        return gson.toJson(jsonData);
     }
 
-    public static HashMap<String, String> setResponseDataAdmin(int status, int countUsers, int countOnlineUsers)
+    public static String setResponseDataAdmin(int status, int countUsers, int countOnlineUsers)
     {
         HashMap<String, String> jsonData = new HashMap<>();
+        Gson gson = new Gson();
 
         jsonData.put("status", Integer.toString(status));
         jsonData.put("countUsers", Integer.toString(countUsers));
         jsonData.put("countOnlineUsers", Integer.toString(countOnlineUsers));
 
-        return jsonData;
+        return gson.toJson(jsonData);
     }
 }

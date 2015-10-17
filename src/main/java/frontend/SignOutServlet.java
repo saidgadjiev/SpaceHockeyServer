@@ -1,6 +1,6 @@
 package frontend;
 
-import com.google.gson.Gson;
+import main.user.UserProfile;
 import main.accountService.AccountServiceImpl;
 import templater.PageGenerator;
 
@@ -24,8 +24,16 @@ public class SignOutServlet extends HttpServlet {
     public void doGet(HttpServletRequest request,
                       HttpServletResponse response) throws ServletException, IOException {
         int status = HttpServletResponse.SC_OK;
+        String login = "";
+        String password = "";
+        String email = "";
 
         if (request.getSession().getAttribute("login") != null) {
+            UserProfile profile = accountService.getSessions(request.getSession().getId());
+
+            login = profile.getLogin();
+            password = profile.getPassword();
+            email = profile.getEmail();
             accountService.deleteSession(request.getSession().getId());
             request.getSession().invalidate();
         } else {
@@ -33,6 +41,6 @@ public class SignOutServlet extends HttpServlet {
         }
 
         response.setStatus(HttpServletResponse.SC_OK);
-        response.getWriter().println(new Gson().toJson(PageGenerator.setResponseDataUser(status, "", "")));
+        response.getWriter().write(PageGenerator.setResponseDataUser(status, login, password, email));
     }
 }

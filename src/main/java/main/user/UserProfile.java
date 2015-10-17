@@ -1,4 +1,4 @@
-package main;
+package main.user;
 
 /**
  * Created by said on 13.09.2014.

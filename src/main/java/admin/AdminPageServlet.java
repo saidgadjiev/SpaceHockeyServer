@@ -1,14 +1,15 @@
 package admin;
 
-import main.accountService.AccountServiceImpl;
 import main.TimeHelper;
-import templater.PageGenerator;
+import main.accountService.AccountServiceImpl;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+
+import static templater.PageGenerator.setResponseDataAdmin;
 
 /**
  * Created by said on 23.09.15.
@@ -32,13 +33,13 @@ public class AdminPageServlet extends HttpServlet {
             System.out.print("Server will be down after: "+ timeMS + " ms");
             TimeHelper.sleep(timeMS);
             System.out.print("\nShutdown");
-            System.exit(0);
+            //System.exit(0);
         } else {
             status = HttpServletResponse.SC_BAD_REQUEST;
         }
 
         response.setStatus(HttpServletResponse.SC_OK);
-        response.getWriter().println(PageGenerator.setResponseDataAdmin(status,
-                    accountService.getCountUsers(), accountService.getCountOnlineUsers()));
+        response.getWriter().write(setResponseDataAdmin(status,
+                accountService.getCountUsers(), accountService.getCountOnlineUsers()));
     }
 }

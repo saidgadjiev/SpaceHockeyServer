@@ -1,6 +1,6 @@
 package main.accountService;
 
-import main.UserProfile;
+import main.user.UserProfile;
 
 /**
  * Created by said on 13.10.15.
