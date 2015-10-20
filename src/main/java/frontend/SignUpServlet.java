@@ -61,7 +61,6 @@ public class SignUpServlet extends HttpServlet {
             }
         }
 
-        response.setContentType("application/json");
         response.setStatus(HttpServletResponse.SC_OK);
         response.getWriter().write(setResponseDataUser(status, login, password, email));
     }

@@ -1,4 +1,40 @@
-<fest:template xmlns:fest="http://fest.mail.ru">
+<fest:template xmlns:fest="http://fest.mail.ru" context_name="json">
+<fest:doctype>html</fest:doctype>
 	<h1>Let's go!</h1>
+	<h2>Hello, <fest:value>json.login</fest:value>!</h2>
+	<fest:script>
+		var score = 0;
+	</fest:script>
+	<div>
+		<p>
+			Your score: <span><fest:value>score</fest:value></span>
+		</p>
+	</div>
+	<form action="">
+        <input type="button" name="submit" value="Press to win!" id="test"/>
+    </form>
+    <div id="target">
+    	Connect!
+    </div>
+	<script type="text/javascript">
+		var ws = new WebSocket("ws://127.0.0.1:8080/gameplay");
+
+		ws.onopen = function() {
+		    alert("Opened!");
+		    ws.send("Hello Server");
+		};
+
+		ws.onmessage = function (evt) {
+		    alert("Message: " + evt.data);
+		};
+
+		ws.onclose = function() {
+		    alert("Closed!");
+		};
+
+		ws.onerror = function(err) {
+		    alert("Error: " + err);
+		};
+	</script>
 	<fest:include src="./backbutton.xml" context="json"/>
 </fest:template>

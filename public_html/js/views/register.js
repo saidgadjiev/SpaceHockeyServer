@@ -34,7 +34,13 @@ define([
 					data: JSON.stringify(dataAjax),
 													
 					success: function(data){
-						alert(data);				 }
+						data = JSON.parse(data);
+                        if (parseInt(data["status"], 10) === 200) {
+                        	Backbone.history.navigate('login', {trigger:true})
+                        } else {
+                        	alert(parseInt(data["status"], 10));
+                        }
+						}
 					 });
 				}
 																

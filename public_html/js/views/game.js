@@ -7,11 +7,11 @@ define([
 ){
 
     var View = Backbone.View.extend({
-			  el: $("#page"),
+		el: $("#page"),
         template: tmpl,
      
         render: function () {
-            this.$el.html(this.template);
+            this.$el.html(this.template(JSON.parse(window.localStorage['object'])));
             return this;
         },
         show: function () {

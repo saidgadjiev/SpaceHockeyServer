@@ -32,9 +32,15 @@ define([
 					url: "/auth/signin",
 					type: "POST",
 					data: JSON.stringify(dataAjax),
-												 
 					success: function(data){
-						 alert(data);
+						data = JSON.parse(data);
+						if (parseInt(data["status"], 10) === 200) {
+							window.localStorage.clear();
+							window.localStorage.setItem('object', JSON.stringify(dataAjax));
+							Backbone.history.navigate('game', {trigger:true})
+						} else {
+							alert(parseInt(data["status"], 10));
+						}
 					}
 				});
 			}
