@@ -1,7 +1,7 @@
 package admin;
 
 import main.TimeHelper;
-import main.accountService.AccountServiceImpl;
+import main.accountService.AccountService;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -15,9 +15,9 @@ import static templater.PageGenerator.setResponseDataAdmin;
  * Created by said on 23.09.15.
  */
 public class AdminPageServlet extends HttpServlet {
-    private AccountServiceImpl accountService;
+    private AccountService accountService;
 
-    public AdminPageServlet(AccountServiceImpl accountService) {
+    public AdminPageServlet(AccountService accountService) {
         this.accountService = accountService;
     }
 
