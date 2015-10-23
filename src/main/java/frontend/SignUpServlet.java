@@ -1,6 +1,6 @@
 package frontend;
 
-import main.accountService.AccountServiceImpl;
+import main.accountService.AccountService;
 import main.user.UserProfile;
 
 import javax.servlet.ServletException;
@@ -18,9 +18,9 @@ import static utilities.JSONFromRequest.getJSONFromRequest;
  * Created by g.said on 13.09.2014.
  */
 public class SignUpServlet extends HttpServlet {
-    private AccountServiceImpl accountService;
+    private AccountService accountService;
 
-    public SignUpServlet(AccountServiceImpl accountService) {
+    public SignUpServlet(AccountService accountService) {
         this.accountService = accountService;
     }
 

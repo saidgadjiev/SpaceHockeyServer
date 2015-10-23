@@ -14,11 +14,7 @@
             ws = new WebSocket("ws://localhost:8080/gameplay");
 
             ws.onopen = function (event) {
-                alert("Connect");
             }
-            ws.onerror = function(error) {
-                alert(error.message);
-            };
 
             ws.onmessage = function (event) {
                 var data = JSON.parse(event.data);
@@ -45,15 +41,6 @@
                 if(data.status == "increment" && data.name == document.getElementById("enemyName").innerHTML){
                     document.getElementById("enemyScore").innerHTML = data.score;
                 }
-            }
-
-            ws.onclose = function (event) {
-                if (event.wasClean) {
-                    alert('Clean close');
-                  } else {
-                    alert('halt close'); // например, "убит" процесс сервера
-                  }
-                  alert('Code: ' + event.code + ' reason: ' + event.reason);
             }
 
         };

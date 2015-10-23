@@ -1,6 +1,6 @@
 package frontend;
 
-import main.accountService.AccountServiceImpl;
+import main.accountService.AccountService;
 import main.user.UserProfile;
 
 import javax.servlet.ServletException;
@@ -11,7 +11,8 @@ import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.HashMap;
 
-import static main.user.Validator.*;
+import static main.user.Validator.isValidLogin;
+import static main.user.Validator.isValidPassword;
 import static templater.PageGenerator.setResponseDataUser;
 import static utilities.JSONFromRequest.getJSONFromRequest;
 
@@ -19,9 +20,9 @@ import static utilities.JSONFromRequest.getJSONFromRequest;
  * @author v.chibrikov
  */
 public class SignInServlet extends HttpServlet {
-    private AccountServiceImpl accountService;
+    private AccountService accountService;
 
-    public SignInServlet(AccountServiceImpl accountService) {
+    public SignInServlet(AccountService accountService) {
         this.accountService = accountService;
     }
 

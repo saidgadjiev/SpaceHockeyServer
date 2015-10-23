@@ -1,9 +1,30 @@
 package main;
 
+import admin.AdminPageServlet;
+import frontend.SignInServlet;
+import frontend.SignOutServlet;
+import frontend.SignUpServlet;
+import frontend.game.GameServlet;
+import frontend.game.WebSocketGameServlet;
+import frontend.game.WebSocketServiceImpl;
+import gameMechanics.GameMechanicsImpl;
+import main.accountService.AccountService;
+import main.accountService.AccountServiceImpl;
+import main.gameService.GameMechanics;
+import main.gameService.WebSocketService;
+import org.eclipse.jetty.server.Handler;
+import org.eclipse.jetty.server.Server;
+import org.eclipse.jetty.server.handler.HandlerList;
+import org.eclipse.jetty.server.handler.ResourceHandler;
+import org.eclipse.jetty.servlet.ServletContextHandler;
+import org.eclipse.jetty.servlet.ServletHolder;
+
+import javax.servlet.Servlet;
+
 /**
  * @author S. Gadjiev
  */
-/*public class Main {
+public class Main {
     public static final int DEFAULT_PORT = 8080;
 
     @SuppressWarnings("OverlyBroadThrowsClause")
@@ -16,7 +37,7 @@ package main;
 
         System.out.append("Starting at port: ").append(String.valueOf(port)).append('\n');
 
-        AccountServiceImpl accountService = new AccountServiceImpl();
+        AccountService accountService = new AccountServiceImpl();
 
         WebSocketService webSocketService = new WebSocketServiceImpl();
         GameMechanics gameMechanics = new GameMechanicsImpl(webSocketService);
@@ -44,53 +65,8 @@ package main;
         server.setHandler(handlers);
 
         server.start();
-        server.join();
 
         gameMechanics.run();
 
-    }
-}*/
-
-import frontend.game.AuthServiceImpl;
-import frontend.game.GameServlet;
-import frontend.game.WebSocketGameServlet;
-import frontend.game.WebSocketServiceImpl;
-import gameMechanics.GameMechanicsImpl;
-import main.gameService.AuthService;
-import main.gameService.GameMechanics;
-import main.gameService.WebSocketService;
-import org.eclipse.jetty.server.Handler;
-import org.eclipse.jetty.server.Server;
-import org.eclipse.jetty.server.handler.HandlerList;
-import org.eclipse.jetty.server.handler.ResourceHandler;
-import org.eclipse.jetty.servlet.ServletContextHandler;
-import org.eclipse.jetty.servlet.ServletHolder;
-
-public class Main {
-    public static void main(String[] args) throws Exception {
-        Server server = new Server(8080);
-        ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);
-
-        WebSocketService webSocketService = new WebSocketServiceImpl();
-        GameMechanics gameMechanics = new GameMechanicsImpl(webSocketService);
-        AuthService authService = new AuthServiceImpl();
-
-        context.addServlet(new ServletHolder(new WebSocketGameServlet(authService, gameMechanics, webSocketService)), "/gameplay");
-        context.addServlet(new ServletHolder(new GameServlet(gameMechanics, authService)), "/game.html");
-
-        ResourceHandler resource_handler = new ResourceHandler();
-        resource_handler.setDirectoriesListed(true);
-        resource_handler.setResourceBase("public_html");
-
-        HandlerList handlers = new HandlerList();
-        handlers.setHandlers(new Handler[]{resource_handler, context});
-        server.setHandler(handlers);
-
-        server.setHandler(handlers);
-
-        server.start();
-
-        //run GM in main thread
-        gameMechanics.run();
     }
 }

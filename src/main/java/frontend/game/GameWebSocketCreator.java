@@ -1,6 +1,6 @@
 package frontend.game;
 
-import main.gameService.AuthService;
+import main.accountService.AccountService;
 import main.gameService.GameMechanics;
 import main.gameService.WebSocketService;
 import org.eclipse.jetty.websocket.servlet.ServletUpgradeRequest;
@@ -11,14 +11,14 @@ import org.eclipse.jetty.websocket.servlet.WebSocketCreator;
  * @author v.chibrikov
  */
 public class GameWebSocketCreator implements WebSocketCreator {
-    private AuthService authService;
+    private AccountService accountService;
     private GameMechanics gameMechanics;
     private WebSocketService webSocketService;
 
-    public GameWebSocketCreator(AuthService authService,
+    public GameWebSocketCreator(AccountService accountService,
                                 GameMechanics gameMechanics,
                                 WebSocketService webSocketService) {
-        this.authService = authService;
+        this.accountService = accountService;
         this.gameMechanics = gameMechanics;
         this.webSocketService = webSocketService;
     }
@@ -27,7 +27,7 @@ public class GameWebSocketCreator implements WebSocketCreator {
     public Object createWebSocket(ServletUpgradeRequest req, ServletUpgradeResponse resp) {
         System.out.print("Request");
         String sessionId = req.getHttpServletRequest().getSession().getId();
-        String name = authService.getUserName(sessionId);
+        String name = accountService.getSessions(sessionId).getLogin();
         return new GameWebSocket(name, gameMechanics, webSocketService);
     }
 }

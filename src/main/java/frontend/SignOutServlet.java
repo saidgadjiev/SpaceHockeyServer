@@ -1,7 +1,7 @@
 package frontend;
 
+import main.accountService.AccountService;
 import main.user.UserProfile;
-import main.accountService.AccountServiceImpl;
 import templater.PageGenerator;
 
 import javax.servlet.ServletException;
@@ -14,9 +14,9 @@ import java.io.IOException;
  * Created by said on 21.09.15.
  */
 public class SignOutServlet extends HttpServlet {
-    private AccountServiceImpl accountService;
+    private AccountService accountService;
 
-    public SignOutServlet(AccountServiceImpl accountService) {
+    public SignOutServlet(AccountService accountService) {
         this.accountService = accountService;
     }
 

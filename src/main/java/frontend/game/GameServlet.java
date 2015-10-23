@@ -1,7 +1,8 @@
 package frontend.game;
 
-import main.gameService.AuthService;
+import main.accountService.AccountService;
 import main.gameService.GameMechanics;
+import main.user.UserProfile;
 import templater.PageGenerator;
 
 import javax.servlet.ServletException;
@@ -18,11 +19,11 @@ import java.util.Map;
 public class GameServlet extends HttpServlet {
 
     private GameMechanics gameMechanics;
-    private AuthService authService;
+    private AccountService accountService;
 
-    public GameServlet(GameMechanics gameMechanics, AuthService authService) {
+    public GameServlet(GameMechanics gameMechanics, AccountService accountService) {
         this.gameMechanics = gameMechanics;
-        this.authService = authService;
+        this.accountService = accountService;
     }
 
     public void doGet(HttpServletRequest request,
@@ -35,7 +36,9 @@ public class GameServlet extends HttpServlet {
         Map<String, Object> pageVariables = new HashMap<>();
         String name = request.getParameter("name");
         String safeName = name == null ? "NoName" : name;
-        authService.saveUserName(request.getSession().getId(), name);
+        UserProfile profile = new UserProfile(name, "", "");
+        accountService.addUser(name, profile);
+        accountService.addSessions(request.getSession().getId(), profile);
         pageVariables.put("myName", safeName);
 
         response.getWriter().println(PageGenerator.getPage("game.html", pageVariables));
