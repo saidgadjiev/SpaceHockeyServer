@@ -1,9 +1,12 @@
-package utilities;
+package utils;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
 import org.jetbrains.annotations.Nullable;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.BufferedReader;
@@ -39,5 +42,16 @@ public class JSONFromRequest {
         }
 
         return jsonData;
+    }
+
+    static public JSONObject getJsonFromString(String request) {
+        JSONParser parser = new JSONParser();
+        Object obj = null;
+        try {
+            obj = parser.parse(request);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return (JSONObject) obj;
     }
 }
