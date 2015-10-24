@@ -29,6 +29,16 @@ public class WebSocketServiceImpl implements WebSocketService {
     }
 
     @Override
+    public void notifyNewMyPlatformPosition(GameUser user) {
+        userSockets.get(user.getMyName()).setNewMyPlatformPosition(user);
+    }
+
+    @Override
+    public void notifyNewEnemyPlatformPosition(GameUser user) {
+        userSockets.get(user.getMyName()).setNewEnemyPlatformPosition(user);
+    }
+
+    @Override
     public void notifyStartGame(GameUser user) {
         GameWebSocket gameWebSocket = userSockets.get(user.getMyName());
         gameWebSocket.startGame(user);

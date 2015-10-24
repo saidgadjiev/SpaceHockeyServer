@@ -38,9 +38,11 @@ public class GameWebSocket {
             JSONObject jsonStart = new JSONObject();
             jsonStart.put("status", "start");
             jsonStart.put("enemyName", user.getEnemyName());
+            jsonStart.put("x", user.getEnemyPlatformPosition().getX());
+            jsonStart.put("y", user.getEnemyPlatformPosition().getY());
             session.getRemote().sendString(jsonStart.toJSONString());
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (Exception e) {
+            System.out.print(e.toString());
         }
     }
 
@@ -57,7 +59,10 @@ public class GameWebSocket {
 
     @OnWebSocketMessage
     public void onMessage(String data) {
-        gameMechanics.incrementScore(myName);
+        System.out.print(data + "\n");
+        gameMechanics.test(myName);
+        //JSONObject message = getJsonFromString(data);
+        //gameMechanics.setNewPlatformPosition(myName, new Position(Integer.valueOf(message.get("x").toString()), Integer.valueOf(message.get("y").toString())));
     }
 
     @OnWebSocketConnect
@@ -78,7 +83,7 @@ public class GameWebSocket {
         JSONObject jsonStart = new JSONObject();
         jsonStart.put("status", "increment");
         jsonStart.put("name", myName);
-        jsonStart.put("score", user.getMyScore());
+        //jsonStart.put("score", user.getMyScore());
         try {
             session.getRemote().sendString(jsonStart.toJSONString());
         } catch (IOException e) {
@@ -90,10 +95,40 @@ public class GameWebSocket {
         System.out.print("SetEnemyScore\n");
         JSONObject jsonStart = new JSONObject();
         jsonStart.put("status", "increment");
-        jsonStart.put("name", user.getEnemyName());
-        jsonStart.put("score", user.getEnemyScore());
+        //jsonStart.put("name", user.getEnemyName());
+        //jsonStart.put("score", user.getEnemyScore());
         try {
             session.getRemote().sendString(jsonStart.toJSONString());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void setNewMyPlatformPosition(GameUser user) {
+        System.out.print("New my platform position");
+        JSONObject jsonPosition = new JSONObject();
+        jsonPosition.put("status", "Move");
+        //jsonPosition.put("status", "UpdatePosition");
+        //jsonPosition.put("name", myName);
+        //jsonPosition.put("x", user.getMyPlatformPosition().getX());
+        //jsonPosition.put("y", user.getMyPlatformPosition().getY());
+        try {
+            session.getRemote().sendString(jsonPosition.toJSONString());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void setNewEnemyPlatformPosition(GameUser user) {
+        System.out.print("New enemy platform position");
+        JSONObject jsonPosition = new JSONObject();
+        jsonPosition.put("status", "Move");
+        //jsonPosition.put("status", "UpdatePosition");
+        //jsonPosition.put("name", user.getEnemyName());
+        //jsonPosition.put("x", user.getEnemyPlatformPosition().getX());
+        //jsonPosition.put("y", user.getEnemyPlatformPosition().getY());
+        try {
+            session.getRemote().sendString(jsonPosition.toJSONString());
         } catch (IOException e) {
             e.printStackTrace();
         }

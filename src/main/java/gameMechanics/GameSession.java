@@ -54,6 +54,6 @@ public class GameSession {
     }
 
     public  boolean isFirstWin(){
-        return first.getMyScore() > second.getMyScore();
+        return true;//first.getMyScore() > second.getMyScore();
     }
 }
