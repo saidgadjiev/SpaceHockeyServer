@@ -57,6 +57,7 @@ public class GameWebSocket {
 
     @OnWebSocketMessage
     public void onMessage(String data) {
+        System.out.print("Message");
         gameMechanics.incrementScore(myName);
     }
 
