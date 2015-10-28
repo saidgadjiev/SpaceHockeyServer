@@ -14,7 +14,7 @@ import java.util.HashMap;
 import static main.user.Validator.isValidLogin;
 import static main.user.Validator.isValidPassword;
 import static templater.PageGenerator.setResponseDataUser;
-import static utilities.JSONFromRequest.getJSONFromRequest;
+import static utils.JSONFromRequest.getJSONFromRequest;
 
 /**
  * @author v.chibrikov
