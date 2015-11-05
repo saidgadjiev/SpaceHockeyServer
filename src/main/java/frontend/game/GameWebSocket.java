@@ -35,9 +35,20 @@ public class GameWebSocket {
 
     public void sendJSON(JsonObject jsonData) {
         try {
+<<<<<<< HEAD
             session.getRemote().sendString(jsonData.toString());
         } catch (IOException e) {
             e.printStackTrace();
+=======
+            JSONObject jsonStart = new JSONObject();
+            jsonStart.put("status", "start");
+            jsonStart.put("enemyName", user.getEnemyName());
+            jsonStart.put("x", user.getEnemyPlatformPosition().getX());
+            jsonStart.put("y", user.getEnemyPlatformPosition().getY());
+            session.getRemote().sendString(jsonStart.toJSONString());
+        } catch (Exception e) {
+            System.out.print(e.toString());
+>>>>>>> 08d6801e480158450253391968b78243d28d706c
         }
     }
 
@@ -59,8 +70,15 @@ public class GameWebSocket {
 
     @OnWebSocketMessage
     public void onMessage(String data) {
+<<<<<<< HEAD
         System.out.print("Message");
         gameMechanics.incrementScore(myName);
+=======
+        System.out.print(data + "\n");
+        gameMechanics.test(myName);
+        //JSONObject message = getJsonFromString(data);
+        //gameMechanics.setNewPlatformPosition(myName, new Position(Integer.valueOf(message.get("x").toString()), Integer.valueOf(message.get("y").toString())));
+>>>>>>> 5c78e961d052a5a626cb9b5607853af8a77ecb03
     }
 
     @OnWebSocketConnect
@@ -77,6 +95,7 @@ public class GameWebSocket {
     }
 
     public void setMyScore(GameUser user) {
+<<<<<<< HEAD
         JsonObject jsonStart = new JsonObject();
 
         jsonStart.addProperty("status", "increment");
@@ -92,6 +111,61 @@ public class GameWebSocket {
         jsonStart.addProperty("name", user.getEnemyName());
         jsonStart.addProperty("score", user.getEnemyScore());
         sendJSON(jsonStart);
+=======
+        System.out.print("SetMyCsore\n");
+        JSONObject jsonStart = new JSONObject();
+        jsonStart.put("status", "increment");
+        jsonStart.put("name", myName);
+        //jsonStart.put("score", user.getMyScore());
+        try {
+            session.getRemote().sendString(jsonStart.toJSONString());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void setEnemyScore(GameUser user) {
+        System.out.print("SetEnemyScore\n");
+        JSONObject jsonStart = new JSONObject();
+        jsonStart.put("status", "increment");
+        //jsonStart.put("name", user.getEnemyName());
+        //jsonStart.put("score", user.getEnemyScore());
+        try {
+            session.getRemote().sendString(jsonStart.toJSONString());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+>>>>>>> 08d6801e480158450253391968b78243d28d706c
+    }
+
+    public void setNewMyPlatformPosition(GameUser user) {
+        System.out.print("New my platform position");
+        JSONObject jsonPosition = new JSONObject();
+        jsonPosition.put("status", "Move");
+        //jsonPosition.put("status", "UpdatePosition");
+        //jsonPosition.put("name", myName);
+        //jsonPosition.put("x", user.getMyPlatformPosition().getX());
+        //jsonPosition.put("y", user.getMyPlatformPosition().getY());
+        try {
+            session.getRemote().sendString(jsonPosition.toJSONString());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void setNewEnemyPlatformPosition(GameUser user) {
+        System.out.print("New enemy platform position");
+        JSONObject jsonPosition = new JSONObject();
+        jsonPosition.put("status", "Move");
+        //jsonPosition.put("status", "UpdatePosition");
+        //jsonPosition.put("name", user.getEnemyName());
+        //jsonPosition.put("x", user.getEnemyPlatformPosition().getX());
+        //jsonPosition.put("y", user.getEnemyPlatformPosition().getY());
+        try {
+            session.getRemote().sendString(jsonPosition.toJSONString());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public Session getSession() {
