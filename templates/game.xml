@@ -1,0 +1,83 @@
+<fest:template xmlns:fest="http://fest.mail.ru" context_name="json">
+<fest:doctype>html</fest:doctype>
+	<h1>Let's go!</h1>
+	<body onload="init();">
+		<div id="body">
+			<div id="hello">
+				<p>Hello, <fest:value>json.login</fest:value></p>
+			</div>
+
+			<div id="wait">
+				<p>Prepare yourself. Wait for enemy!</p>
+			</div>
+
+			<div id="gameplay" style="display: none">
+				<div id="score">
+					<p><fest:value>json.login</fest:value>: <span id="myScore">0</span></p>
+
+					<p><span id="enemyName"></span>: <span id="enemyScore">0</span></p>
+				</div>
+
+				<form name="gamePlay" action="">
+					<input type="button" name="submit" value="Press to win!" onclick="sendMessage();"/>
+				</form>
+			</div>
+
+			<div id="gameOver" style="display: none">
+				<p>Game over! You are <span id="win"></span></p>
+			</div>
+
+		</div>
+		<script type="text/javascript">
+			var ws;
+			var started = false;
+			var finished = false;
+
+			var myName = "${myName}";
+			var enemyName = "";
+
+			init = function () {
+			console.log('OK');
+			ws = new WebSocket("ws://localhost:8080/gameplay");
+
+			ws.onopen = function (event) {
+			}
+
+			ws.onmessage = function (event) {
+			var data = JSON.parse(event.data);
+			if(data.status == "start"){
+			document.getElementById("wait").style.display = "none";
+			document.getElementById("gameplay").style.display = "block";
+			document.getElementById("enemyName").innerHTML = data.enemyName;
+			}
+
+			if(data.status == "finish"){
+			document.getElementById("gameOver").style.display = "block";
+			document.getElementById("gameplay").style.display = "none";
+
+			if(data.win)
+			document.getElementById("win").innerHTML = "winner!";
+			else
+			document.getElementById("win").innerHTML = "loser!";
+			}
+
+			if(data.status == "increment" && data.name == "${myName}"){
+			document.getElementById("myScore").innerHTML = data.score;
+			}
+
+			if(data.status == "increment" && data.name == document.getElementById("enemyName").innerHTML){
+			document.getElementById("enemyScore").innerHTML = data.score;
+			}
+			}
+
+			};
+
+			function sendMessage() {
+			var message = "{}";
+			ws.send(message);
+			}
+
+		</script>
+	</body>
+	<fest:include src="./backbutton.xml" context="json"/>
+</fest:template>

@@ -1,0 +1,4 @@
+<fest:template xmlns:fest="http://fest.mail.ru" context_name="json">
+      <canvas id="starfield"></canvas>
+      <div class="div_space_sky" id="adsense"></div>
+</fest:template>

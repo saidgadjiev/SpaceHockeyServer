@@ -1,0 +1,5 @@
+<fest:template xmlns:fest="http://fest.mail.ru" context_name="json">
+	<form name="form_signout" class="form_signout" id="form_signout">
+		<button type="submit" class="button-signout">SignOut</button>
+	</form>
+</fest:template>

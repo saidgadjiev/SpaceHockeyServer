@@ -50,7 +50,6 @@ public class GameWebSocket {
     }
 
     public void gameOver(int gameState) {
-        System.out.print("GameOver");
         JsonObject jsonFinish = new JsonObject();
 
         jsonFinish.addProperty("status", "finish");
@@ -60,6 +59,7 @@ public class GameWebSocket {
 
     @OnWebSocketMessage
     public void onMessage(String data) {
+        System.out.print("Message");
         gameMechanics.incrementScore(myName);
     }
 

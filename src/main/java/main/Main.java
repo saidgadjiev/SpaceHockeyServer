@@ -28,7 +28,7 @@ import javax.servlet.Servlet;
  */
 public class Main {
 
-    @SuppressWarnings({"OverlyBroadThrowsClause", "SpellCheckingInspection"})
+    @SuppressWarnings("OverlyBroadThrowsClause")
     public static void main(String[] args) throws Exception {
 
         ServerSettings serverSettings = new ServerSettings();
