@@ -34,6 +34,7 @@ public class ServletTest {
         when(sessionMock.getId()).thenReturn(sessionID);
         when(requestMock.getSession(true)).thenReturn(sessionMock);
         when(requestMock.getSession()).thenReturn(sessionMock);
+        when(requestMock.getParameter("name")).thenReturn("test_login");
 
         return requestMock;
     }

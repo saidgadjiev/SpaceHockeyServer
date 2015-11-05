@@ -1,6 +1,6 @@
 package templater;
 
-import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
@@ -9,7 +9,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.io.Writer;
-import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -33,26 +32,28 @@ public class PageGenerator {
 
     public static String setResponseDataUser(int status, String login, String password, String email)
     {
-        HashMap<String, String> jsonData = new HashMap<>();
-        Gson gson = new Gson();
+        JsonObject jsonObject = new JsonObject();
+        JsonObject jsonBody = new JsonObject();
 
-        jsonData.put("status", Integer.toString(status));
-        jsonData.put("login", login);
-        jsonData.put("password", password);
-        jsonData.put("email", email);
+        jsonObject.addProperty("status", Integer.toString(status));
+        jsonBody.addProperty("login", login);
+        jsonBody.addProperty("password", password);
+        jsonBody.addProperty("email", email);
+        jsonObject.add("body", jsonBody);
 
-        return gson.toJson(jsonData);
+        return jsonObject.toString();
     }
 
     public static String setResponseDataAdmin(int status, int countUsers, int countOnlineUsers)
     {
-        HashMap<String, String> jsonData = new HashMap<>();
-        Gson gson = new Gson();
+        JsonObject jsonObject = new JsonObject();
+        JsonObject jsonBody = new JsonObject();
 
-        jsonData.put("status", Integer.toString(status));
-        jsonData.put("countUsers", Integer.toString(countUsers));
-        jsonData.put("countOnlineUsers", Integer.toString(countOnlineUsers));
+        jsonObject.addProperty("status", Integer.toString(status));
+        jsonBody.addProperty("countUsers", Integer.toString(countUsers));
+        jsonBody.addProperty("countOnlineUsers", Integer.toString(countOnlineUsers));
+        jsonObject.add("body", jsonBody);
 
-        return gson.toJson(jsonData);
+        return jsonObject.toString();
     }
 }

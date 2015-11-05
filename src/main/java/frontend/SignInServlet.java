@@ -1,5 +1,6 @@
 package frontend;
 
+import com.google.gson.JsonObject;
 import main.accountService.AccountService;
 import main.user.UserProfile;
 
@@ -9,12 +10,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
-import java.util.HashMap;
 
 import static main.user.Validator.isValidLogin;
 import static main.user.Validator.isValidPassword;
 import static templater.PageGenerator.setResponseDataUser;
-import static utilities.JSONFromRequest.getJSONFromRequest;
+import static utils.JSONFromRequest.getJSONFromRequest;
 
 /**
  * @author v.chibrikov
@@ -33,12 +33,12 @@ public class SignInServlet extends HttpServlet {
         String login = "";
         String password = "";
         String email = "";
-        HashMap<String, String> jsonData = getJSONFromRequest(request);
+        JsonObject jsonObject = getJSONFromRequest(request);
 
         try {
             //noinspection ConstantConditions
-            login = jsonData.get("login");
-            password = jsonData.get("password");
+            login = jsonObject.get("login").getAsString();
+            password = jsonObject.get("password").getAsString();
         } catch (NullPointerException e) {
             status = HttpServletResponse.SC_BAD_REQUEST;
         }

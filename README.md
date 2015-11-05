@@ -1,3 +1,0 @@
-# SpaceHockeyServer
-
-JAVA

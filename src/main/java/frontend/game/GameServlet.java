@@ -1,7 +1,6 @@
 package frontend.game;
 
 import main.accountService.AccountService;
-import main.gameService.GameMechanics;
 import main.user.UserProfile;
 import templater.PageGenerator;
 
@@ -18,18 +17,13 @@ import java.util.Map;
  */
 public class GameServlet extends HttpServlet {
 
-    private GameMechanics gameMechanics;
     private AccountService accountService;
 
-    public GameServlet(GameMechanics gameMechanics, AccountService accountService) {
-        this.gameMechanics = gameMechanics;
+    public GameServlet(AccountService accountService) {
         this.accountService = accountService;
     }
 
-    public void doGet(HttpServletRequest request,
-                      HttpServletResponse response) throws ServletException, IOException {
-    }
-
+    @Override
     public void doPost(HttpServletRequest request,
                        HttpServletResponse response) throws ServletException, IOException {
 
@@ -41,7 +35,7 @@ public class GameServlet extends HttpServlet {
         accountService.addSessions(request.getSession().getId(), profile);
         pageVariables.put("myName", safeName);
 
-        response.getWriter().println(PageGenerator.getPage("game.html", pageVariables));
+        response.getWriter().print(PageGenerator.getPage("game.html", pageVariables));
 
         response.setContentType("text/html;charset=utf-8");
         response.setStatus(HttpServletResponse.SC_OK);

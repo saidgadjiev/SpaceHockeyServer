@@ -6,6 +6,7 @@ package main.gameService;
 public class GameUser {
     private final String myName;
     private String enemyName;
+    private int gameState = 0;
     private int myScore =  0;
     private int enemyScore = 0;
 
@@ -39,5 +40,13 @@ public class GameUser {
 
     public void setEnemyName(String enemyName) {
         this.enemyName = enemyName;
+    }
+
+    public int getGameState() {
+        return gameState;
+    }
+
+    public void setGameState(int gameState) {
+        this.gameState = gameState;
     }
 }

@@ -1,5 +1,6 @@
 package frontend;
 
+import com.google.gson.JsonObject;
 import main.accountService.AccountService;
 import main.user.UserProfile;
 
@@ -8,11 +9,10 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.HashMap;
 
 import static main.user.Validator.*;
 import static templater.PageGenerator.setResponseDataUser;
-import static utilities.JSONFromRequest.getJSONFromRequest;
+import static utils.JSONFromRequest.getJSONFromRequest;
 
 /**
  * Created by g.said on 13.09.2014.
@@ -28,16 +28,16 @@ public class SignUpServlet extends HttpServlet {
     public void doPost(HttpServletRequest request,
                        HttpServletResponse response) throws ServletException, IOException {
         int status = HttpServletResponse.SC_OK;
-        HashMap<String, String> jsonData = getJSONFromRequest(request);
+        JsonObject jsonObject = getJSONFromRequest(request);
         String login = "";
         String password = "";
         String email = "";
 
         try {
             //noinspection ConstantConditions
-            login = jsonData.get("login");
-            password = jsonData.get("password");
-            email = jsonData.get("email");
+            login = jsonObject.get("login").getAsString();
+            password = jsonObject.get("password").getAsString();
+            email = jsonObject.get("email").getAsString();
         } catch (NullPointerException e) {
             status = HttpServletResponse.SC_BAD_REQUEST;
         }

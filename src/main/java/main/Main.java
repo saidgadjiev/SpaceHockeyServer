@@ -18,6 +18,8 @@ import org.eclipse.jetty.server.handler.HandlerList;
 import org.eclipse.jetty.server.handler.ResourceHandler;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
+import resource.GameMechanicsSettings;
+import resource.ServerSettings;
 
 import javax.servlet.Servlet;
 
@@ -25,22 +27,20 @@ import javax.servlet.Servlet;
  * @author S. Gadjiev
  */
 public class Main {
-    public static final int DEFAULT_PORT = 8080;
 
-    @SuppressWarnings("OverlyBroadThrowsClause")
+    @SuppressWarnings({"OverlyBroadThrowsClause", "SpellCheckingInspection"})
     public static void main(String[] args) throws Exception {
-        int port = DEFAULT_PORT;
-        if (args.length == 1) {
-            String portString = args[0];
-            port = Integer.valueOf(portString);
-        }
 
-        System.out.append("Starting at port: ").append(String.valueOf(port)).append('\n');
+        ServerSettings serverSettings = new ServerSettings();
+        serverSettings.loadSettingsFromFile("cfg/server.properties");
+
+        GameMechanicsSettings gameMechanicsSettings = new GameMechanicsSettings();
+        gameMechanicsSettings.loadSettingsFromFile("data/gameMechanicsSettings.xml");
 
         AccountService accountService = new AccountServiceImpl();
 
         WebSocketService webSocketService = new WebSocketServiceImpl();
-        GameMechanics gameMechanics = new GameMechanicsImpl(webSocketService);
+        GameMechanics gameMechanics = new GameMechanicsImpl(webSocketService, gameMechanicsSettings);
 
         Servlet signin = new SignInServlet(accountService);
         Servlet signUp = new SignUpServlet(accountService);
@@ -53,7 +53,7 @@ public class Main {
         context.addServlet(new ServletHolder(signOut), "/auth/signout");
         context.addServlet(new ServletHolder(admin), "/admin");
         context.addServlet(new ServletHolder(new WebSocketGameServlet(accountService, gameMechanics, webSocketService)), "/gameplay");
-        context.addServlet(new ServletHolder(new GameServlet(gameMechanics, accountService)), "/game.html");
+        context.addServlet(new ServletHolder(new GameServlet(accountService)), "/game.html");
 
         ResourceHandler resource_handler = new ResourceHandler();
         resource_handler.setResourceBase("public_html");
@@ -61,7 +61,7 @@ public class Main {
         HandlerList handlers = new HandlerList();
         handlers.setHandlers(new Handler[]{resource_handler, context});
 
-        Server server = new Server(port);
+        Server server = new Server(serverSettings.getPort());
         server.setHandler(handlers);
 
         server.start();

@@ -14,6 +14,8 @@ public class GameSession {
     private final long startTime;
     private final GameUser first;
     private final GameUser second;
+    private State sessionState = State.PLAY;
+    private enum State { PLAY, FINISH }
 
     private Map<String, GameUser> users = new HashMap<>();
 
@@ -49,11 +51,25 @@ public class GameSession {
         return first;
     }
 
-    public GameUser getSecond() {
-        return second;
+    public void determineWinner() {
+        if (first.getMyScore() > second.getMyScore()) {
+            first.setGameState(1);
+            second.setGameState(2);
+        }  else if (first.getMyScore() < second.getMyScore()) {
+            first.setGameState(2);
+            second.setGameState(1);
+        } else {
+            first.setGameState(0);
+            second.setGameState(0);
+        }
+        sessionState = State.FINISH;
     }
 
-    public  boolean isFirstWin(){
-        return first.getMyScore() > second.getMyScore();
+    public boolean isFinished() {
+        return sessionState == State.FINISH;
+    }
+
+    public GameUser getSecond() {
+        return second;
     }
 }
