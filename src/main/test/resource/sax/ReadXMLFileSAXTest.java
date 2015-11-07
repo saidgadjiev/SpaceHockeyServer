@@ -16,7 +16,7 @@ public class ReadXMLFileSAXTest {
         GameMechanicsSettings gameMechanicsSettings = (GameMechanicsSettings) ReadXMLFileSAX.readXML("data/gameMechanicsSettings.xml");
 
         //noinspection ConstantConditions
-        assertEquals(5000, gameMechanicsSettings.getGameTime());
+        assertEquals(10000, gameMechanicsSettings.getGameTime());
     }
 
     @Test
