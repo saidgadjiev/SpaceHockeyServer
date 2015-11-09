@@ -13,6 +13,10 @@ public interface WebSocketService {
 
     void notifyEnemyNewScore(GameUser user);
 
+    void notifyMyPlatformNewPosition(GameUser user);
+
+    void notifyEnemyPlatformNewPosition(GameUser user);
+
     void notifyStartGame(GameUser user);
 
     void notifyGameOver(GameUser user);

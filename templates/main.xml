@@ -1,12 +1,30 @@
 <fest:template xmlns:fest="http://fest.mail.ru" context_name="json">
-		<fest:include src="./header.xml" context="json"/>
-    <div class = "container">
-        <h1>Main Menu</h1>
-					
-					<div class = "menu-item"><a href = "#scoreboard" class="menu-item__link btn btn-primary">ScoreBoard</a></div>						
-				  <div class = "menu-item"><a href = "#game" class="menu-item__link btn btn-primary ">Start Game</a></div>
-					<div class = "menu-item"><a href = "#login" class="menu-item__link btn btn-primary" id ="logBtn">Login</a></div>
-					<div class = "menu-item"><a href = "#register" class="menu-item__link btn btn-primary" id ="regBtn">Registration</a></div>
-    </div>
-
+	<fest:include src="./space_sky.xml" context="json"/>
+	<fest:include src="./logoutButton.xml" context="json"/>
+	<script type="text/javascript">
+      Cufon.replace("h1", {fontFamily: 'CalgaryShadow-Heavy'});
+    </script>
+	<div class = "container">
+		<h1 class="menu-header">Main Menu</h1>
+		<div class = "menu-item">
+			<a href = "#scoreboard">
+				<h1 class="menu__item1">ScoreBoard</h1>
+			</a>
+		</div>  
+		<div class = "menu-item">
+			<a href = "#game">
+				<h1 class="menu__item2">Start Game</h1>
+			</a>
+		</div>
+		<div class = "menu-item">
+			<a href = "#login">
+				<h1 class="menu__item3">Login</h1>
+			</a>
+		</div>
+		<div class = "menu-item">
+			<a href = "#register">
+				<h1 class="menu__item4">Registration</h1>
+			</a>
+		</div>
+	</div>
 </fest:template>

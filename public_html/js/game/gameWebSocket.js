@@ -6,14 +6,13 @@ define([
 	function initConnect() {
 	    var ws = new WebSocket("ws://localhost:8080/gameplay");
         ws.onopen = function (event) {
-            console.log("Open");
+           console.log("Open");
         }
 		
         return ws;
 	}
 
-	function sendMessage(ws) {
-		var message = "{}";
+	function sendMessage(ws, message) {
         ws.send(message);
         console.log("Message");
 	}

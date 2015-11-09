@@ -1,5 +1,6 @@
 package frontend.game;
 
+import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import main.gameService.GameMechanics;
 import main.gameService.GameUser;
@@ -42,6 +43,7 @@ public class GameWebSocket {
     }
 
     public void startGame(GameUser user) {
+        System.out.print("StartGame " + user.getEnemyName());
         JsonObject jsonStart = new JsonObject();
 
         jsonStart.addProperty("status", "start");
@@ -59,8 +61,8 @@ public class GameWebSocket {
 
     @OnWebSocketMessage
     public void onMessage(String data) {
-        System.out.print("Message");
-        gameMechanics.incrementScore(myName);
+        JsonObject jsonObject  = new Gson().fromJson(data, JsonObject.class);
+        gameMechanics.movePlatfom(myName, jsonObject);
     }
 
     @OnWebSocketConnect
@@ -91,6 +93,26 @@ public class GameWebSocket {
         jsonStart.addProperty("status", "increment");
         jsonStart.addProperty("name", user.getEnemyName());
         jsonStart.addProperty("score", user.getEnemyScore());
+        sendJSON(jsonStart);
+    }
+
+    public void setMyPlatformPosition(GameUser user) {
+        JsonObject jsonStart = new JsonObject();
+
+        jsonStart.addProperty("status", "move");
+        jsonStart.addProperty("name", myName);
+        jsonStart.addProperty("PlatformID", user.getMyID());
+        jsonStart.addProperty("direction", user.getMyPlatform().getDirection().toString());
+        sendJSON(jsonStart);
+    }
+
+    public void setEnemyPlatformPosition(GameUser user) {
+        JsonObject jsonStart = new JsonObject();
+
+        jsonStart.addProperty("status", "move");
+        jsonStart.addProperty("name", user.getEnemyName());
+        jsonStart.addProperty("PlatfromID", user.getEnemyID());
+        jsonStart.addProperty("direction", user.getEnemyPlatform().getDirection().toString());
         sendJSON(jsonStart);
     }
 

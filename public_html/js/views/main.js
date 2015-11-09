@@ -1,26 +1,25 @@
 define([
-    'backbone',
-    'tmpl/main'
+	'backbone',
+	'tmpl/main'
 ], function(
-    Backbone,
-    tmpl
+	Backbone,
+	tmpl
 ){
+	var View = Backbone.View.extend({
+		el: $('#page'),
+		template: tmpl,
+		render: function() {
+			this.$el.html(this.template);
+			
+			return this;
+		},
+		show: function() {
+			this.$el.render();
+		},
+		hide: function() {
+			this.$el.empty();
+		}
+	});
 
-    var Main = Backbone.View.extend({
-        el: $("#page"),
-        template: tmpl,
-     		render: function () {
-            this.$el.html(this.template);
-            return this;
-        },
-        show: function () {
-            this.$el.render();
-        },
-        hide: function () {
-            this.$el.empty();
-        }
-
-    });
-    var main = new Main($('#page'));
-    return main;
+	return new View();;
 });

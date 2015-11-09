@@ -1,100 +1,73 @@
 define([
     'backbone',
-    'tmpl/register'
+    'tmpl/register',
+    'views/ajax',
+    'views/showError',
+    'models/userProfile'
 ], function(
     Backbone,
-    tmpl
+    tmpl,
+    ajax,
+    error,
+    userModel
 ){
-
     var View = Backbone.View.extend({
 		el: $("#page"),
-        template: tmpl,
-				
+        template: tmpl,		
 		events: {
-            "submit #idFormSignup": "submitSignup",
+            "submit #form_signup": "submitSignup",
+            "submit #form_signout": "submitSignout",
             "click a": "hide"
 		},
-
         render: function () {
             $(this.el).html(this.template());
+
+            return this;
 		},
-
 		submitSignup: function(event) {
-
-			if(validateForm()){	
-				var dataAjax = {
-					'login': $("input[name = login]").val(),
-					'password': $("input[name = password]").val(),
-					'email': $("input[name = email]").val()
+			var dataAjax = {
+				'login': $("input[name = login]").val(),
+				'password': $("input[name = password]").val(),
+				'email': $("input[name = email]").val()
+			}
+			$.when(ajax.sendAjax(dataAjax, "/auth/signup", "POST")).then(
+				function (response) {
+		  			response = JSON.parse(response);
+		  			if (response.status == "200") {
+		  				Backbone.history.navigate('login', {trigger: true});
+		  			} else {
+		  				error.showRegistrationError(response);
+		  			}
+				},
+				function (error) {
+		 		 	console.log(error.statusText);
 				}
-
-				$.ajax({
-					type: "POST",
-					url: "/auth/signup",
-					data: JSON.stringify(dataAjax),
-													
-					success: function(data){
-						data = JSON.parse(data);
-                        if (parseInt(data["status"], 10) === 200) {
-                        	Backbone.history.navigate('login', {trigger:true})
-                        } else {
-                        	alert(parseInt(data["status"], 10));
-                        }
-						}
-					 });
-				}
-																
+  			);								
             return false;
         },
-
+        submitSignout: function(event) {
+            $.when(ajax.sendAjax('', "/auth/signout", "GET")).then(
+                function (response) {
+                    response = JSON.parse(response);
+                    if (response.status == "200") {
+                        userModel.clear();
+                    } else {
+                        error.showLogoutError();
+                    }
+                },
+                function (error) {
+                    console.log(error.statusText);
+                }
+            );                             
+            return false;
+        },
         show: function () {
             this.$el.render();
         },
-
         hide: function () {
             this.$el.empty();
         }
-
     });
-
-	function validateForm(){
- 		var valid = checkName() && checkPasswords() && checkEmail();
-		if(!valid)
-			$('.form-div_errors').css('display', 'block');		
-        return valid;
-    }
-		
-	function checkPasswords(){
-	    var userPassword1 = $("input[name = password]").val();
-		var userPassword2 = $("input[name = password2]").val();
-		if (userPassword1 == '' || userPassword2 == '' ) {
-            $('.form-div_errors').text("Input your password in both fields!");
-            return false;
-        }
-        if (userPassword1 != userPassword2 ) {
-            $('.form-div_errors').text("Passwords should be the same! Input again, please.");
-            return false;
-        }
-		return true;
-	}
-
-	function checkName(){
-		var userName = $("input[name = login]").val();
-        if (userName == '') {
-    		$('.form-div_errors').text("Input your login, please!");
-				return false;				
-			}		
-			return true;
-		}
-
-	function checkEmail(){
-		var userEmail = $("input[name = email]").val();
-        if (userEmail == '') {
-            $('.form-div_errors').text("Input your email, please!");
-			return false;				
-		}		
-		return true;
-	}
 
     return new View();
 });

@@ -1,25 +1,21 @@
 <fest:template xmlns:fest="http://fest.mail.ru" context_name="json">
-	<fest:include src="./header.xml" context="json"/>
-	<div class = "container">
-		<h1>Login</h1>
-
-		<form  id = "idFormSignin" >
-			<div class = "form-div form-div_errors alert alert-danger"></div>
-			<div class = "form-div">
-				<label for="login">Login:<br/>
-				<input type="text" class = "form-div__input" name="login" id = "login" /></label>
-			</div>
-							
-			<div class = "form-div">
-				<label for="password">Password:<br/>
-				<input type="password" class = "form-div__input" name="password" id = "password" /></label>
-			</div>
-				
-			<div class = "form-div"><button type="submit"   class = "submit-btn btn btn-success" >GO!</button></div>
-			<a class="submit-btn btn btn-primary" href="#register">Register</a>
-        </form>
-   
-	</div>
-	<fest:include src="./backbutton.xml" context="json"/>
+<fest:include src="./menuButton.xml" context="json"/>
+<fest:include src="./logoutButton.xml" context="json"/>
+  <script type="text/javascript">
+      Cufon.replace("h1", {fontFamily: 'Canossa-Ultra'});
+  </script>
+  <div class="form-signup-signin">
+      <h1 class="form-signup-signin__header">Login</h1>
+    <form name="form_signin" class="form_signin" id="form_signin">
+        <div class="form__input-item">
+          <h1>Login</h1>
+          <input type="text" required="required" name="login"/>
+        </div>
+        <div class="form__input-item">
+          <h1>Password</h1>
+          <input type="password" required="required" name="password"/>
+        </div>
+        <button type="submit" class="button-submit">SignIn</button>
+      </form>
+    </div>
 </fest:template>
-

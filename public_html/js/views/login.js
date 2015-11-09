@@ -1,84 +1,60 @@
 define([
-    'backbone',
-    'tmpl/login'
+	'backbone',
+	'tmpl/login',
+	'views/ajax',
+    'views/showError',
+    'models/userProfile'
 ], function(
-    Backbone,
-    tmpl
+	Backbone,
+	tmpl,
+	ajax,
+    error,
+    userModel
 ){
-
-    var View = Backbone.View.extend({
+	var View =  Backbone.View.extend({
 		el: $("#page"),
-    	template: tmpl,
-	
+		template: tmpl,
+		model: userModel,
 		events: {
-            "submit #idFormSignin": "submitSignin",
-            "click a": "hide"
+			"submit .form_signin": "submitSignin",
+			"click a": "hide"
 		},
+		render: function(){
+			$(this.el).html(this.template());
 
-        render: function () {						
-            $(this.el).html(this.template());																								 
-            return this;
-        },
-
-		submitSignin: function(event) {
-				
-			if(validateForm()){
-				var dataAjax = {
-					'login': $("input[name = login]").val(),
-					'password': $("input[name = password]").val()
+			return this;
+		},
+		submitSignin: function(event){
+			var dataAjax = {
+				'login': $("input[name = login]").val(),
+				'password': $("input[name = password]").val()
+			};
+			$.when(ajax.sendAjax(dataAjax, "/auth/signin", "POST")).then(
+				function (response) {
+		  			response = JSON.parse(response);
+		  			if (response.status == "200") {
+		  				userModel.set({
+		  					"login": response.body.login
+		  				});
+		  				Backbone.history.navigate('game', {trigger: true});
+		  			} else {
+		  				error.showLoginError(response);
+		  			}
+				},
+				function (error) {
+		 		 	console.log(error.statusText);
 				}
+  			);			
 
-				$.ajax({
-					url: "/auth/signin",
-					type: "POST",
-					data: JSON.stringify(dataAjax),
-					success: function(data){
-						data = JSON.parse(data);
-						if (parseInt(data["status"], 10) === 200) {
-							window.localStorage.clear();
-							window.localStorage.setItem('object', JSON.stringify(dataAjax));
-							Backbone.history.navigate('game', {trigger:true})
-						} else {
-							alert(parseInt(data["status"], 10));
-						}
-					}
-				});
-			}
-			return false;
+            return false;
 		},
+		show: function(){
+			this.$el.render();
+		},
+		hide: function(){
+			this.$el.empty();
+		}
+	});
 
-        show: function () {
-          	this.$el.render();
-        },
-        hide: function () {
-             this.$el.empty();
-        }
-
-    });
-
-	function validateForm(){
- 		var valid = checkName() && checkPassword();
-		if(!valid)
-			$('.form-div_errors').css('display', 'block');		
-        return valid;
-    }
-
-	function checkName(){
- 		var userName = $("input[name = login]").val();
-        if (userName == '') {
-            $('.form-div_errors').text("Input your login, please!");
-			return false;				
-		}		
-		return true;
-	}
-		
-	function checkPassword(){
- 		var userPassword = $("input[name = password]").val();
-        if (userPassword == '') {
-            $('.form-div_errors').text("Input your password, please!");
-			return false;				
-		}		
-		return true;
-	}
-    return new View();
+	return new View();
 });

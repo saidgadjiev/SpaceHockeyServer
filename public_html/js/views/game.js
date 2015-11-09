@@ -1,26 +1,44 @@
 define([
     'backbone',
-    'tmpl/game'
+    'tmpl/game',
+    'views/showError',
+    'models/userProfile',
+    'game/gamePlay'
 ], function(
     Backbone,
-    tmpl
+    tmpl,
+    error,
+    userModel,
+    gamePlay
 ){
-
     var View = Backbone.View.extend({
-		el: $("#page"),
+	    el: $("#page"),
         template: tmpl,
-     
-        render: function () {
-            this.$el.html(this.template(JSON.parse(window.localStorage['object'])));
+        model: userModel,
+        render: function() {
+            if (userModel.get("login")) {
+                var userData = {
+                    "login": userModel.get("login")
+                }
+                var userData = {
+                     "login": userModel.get("login")
+                }
+                this.$el.html(this.template(userData));
+                var canvas = document.getElementById('gamefield');
+                gamePlay.start(canvas);
+            } else {
+                Backbone.history.navigate('login', {trigger: true});
+                error.showLogoutError();
+            }
+
             return this;
         },
-        show: function () {
+        show: function() {
             this.$el.render();
         },
-        hide: function () {
+        hide: function() {
             this.$el.empty();
         }
-
     });
 
     return new View();

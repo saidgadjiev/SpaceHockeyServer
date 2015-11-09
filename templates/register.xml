@@ -1,32 +1,25 @@
 <fest:template xmlns:fest="http://fest.mail.ru" context_name="json">
-	<fest:include src="./header.xml" context="json"/>
-	<div class = "container">
-		<h1>Registration</h1>
-					
-		<form id = "idFormSignup" >
-			<div class = "form-div form-div_errors alert alert-danger"></div>
-			<div class = "form-div">
-				<label for="login">Login*:<br/>
-				<input type="text" class = "form-div__input" name="login" id = "login"/></label>
-			</div>
-							
-			<div class = "form-div">
-				<label for="email">Email*:<br/>
-				<input type="email" class = "form-div__input" name="email" id = "email" /></label>
-			</div>
-
-			<div class = "form-div">
-				<label for="password">Password*:<br/>
-				<input type="password" class = "form-div__input" name="password" id = "password" /></label>
-			</div>
-							
-			<div class = "form-div">
-				<label for="password2">Input your password again*:<br/>
-				<input type="password" class = "form-div__input" name="password2" id = "password2" /></label>
-			</div>
-										
-			<div class = "form-div"><button type="submit"   class = "submit-btn btn btn-success" >GO!</button></div>
-		</form>
-	</div>
-	<fest:include src="./backbutton.xml" context="json"/>
+	<fest:include src="./menuButton.xml" context="json"/>
+	<fest:include src="./logoutButton.xml" context="json"/>
+ 	<script type="text/javascript">
+      Cufon.replace("h1", {fontFamily: 'Canossa-Ultra'});
+    </script>
+    <div class="form-signup-signin">
+	    <h1 class="form-signup-signin__header">Registration</h1>
+		<form name="form_signup" class="form_signup" id="form_signup">
+	    	<div class="form__input-item">
+	    		<h1>Login</h1>
+	    		<input type="text" required="required" name="login"/>
+	    	</div>
+	    	<div class="form__input-item">
+	    		<h1>Password</h1>
+	    		<input type="password" required="required" name="password"/>
+	    	</div>
+	    	<div class="form__input-item">
+	    		<h1>Email</h1>
+	    		<input type="email" required="required" name="email"/>
+	    	</div>
+	    	<button type="submit" class="button-submit">SignUp</button>
+	    </form>
+    </div>
 </fest:template>

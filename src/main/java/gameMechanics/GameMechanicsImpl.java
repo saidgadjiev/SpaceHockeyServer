@@ -1,6 +1,7 @@
 package gameMechanics;
 
-import main.TimeHelper;
+import com.google.gson.JsonObject;
+import gameMechanics.game.Direction;
 import main.gameService.GameMechanics;
 import main.gameService.GameUser;
 import main.gameService.WebSocketService;
@@ -62,11 +63,35 @@ public class GameMechanicsImpl implements GameMechanics {
     }
 
     @Override
+    public void movePlatfom(String userName, JsonObject message) {
+        GameSession myGameSession = nameToGame.get(userName);
+        GameUser myUser = myGameSession.getSelf(userName);
+        myUser.getMyPlatform().setDirection(analizeMessage(message));
+        myUser.moveMyPlatform();
+        GameUser enemyUser = myGameSession.getEnemy(userName);
+        enemyUser.getEnemyPlatform().setDirection(analizeMessage(message));
+        enemyUser.moveEnemyPlatform();
+        webSocketService.notifyMyPlatformNewPosition(myUser);
+        webSocketService.notifyEnemyPlatformNewPosition(enemyUser);
+    }
+
+    public Direction analizeMessage(JsonObject message) {
+        switch (message.get("direction").getAsString()) {
+            case "LEFT":
+                return Direction.LEFT;
+            case "RIGHT":
+                return Direction.RIGHT;
+            default:
+                return Direction.STOP;
+        }
+    }
+
+    @Override
     public void run() {
         //noinspection InfiniteLoopStatement
         while (true) {
-            gmStep();
-            TimeHelper.sleep(stepTime);
+          //  gmStep();
+           // TimeHelper.sleep(stepTime);
         }
     }
 

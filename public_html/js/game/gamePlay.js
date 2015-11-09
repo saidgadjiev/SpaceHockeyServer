@@ -1,11 +1,13 @@
 define([
 	'backbone',
 	'lib/input',
-	'game/gameWebSocket'
+	'game/gameWebSocket',
+	'models/userProfile'
 ], function(
 	Backbone,
 	input,
-	gameWebSocket
+	gameWebSocket,
+	userModel
 ) {
 	var Direction = {
 		LEFT: 0,
@@ -17,7 +19,7 @@ define([
 	var context;
 	var CANVAS_WIDTH;
 	var CANVAS_HEIGHT;
-	var ws = gameWebSocket.initConnect();
+	var ws = undefined;
 	function GameField(x, y, height, width, angleRadius, color) {
 		this.x = x;
 		this.y = y;
@@ -81,9 +83,11 @@ define([
 	}
 	var field = new GameField(40, 40, 630, 500, 50, "blue");
 	var myPlatform = new Platform(235, 80, 100, 20, 4, Direction.STOP, "red");
-	var enemyPlatform = new Platform(235, 610, 100, 20, 2, Direction.STOP, "red");
+	var enemyPlatform = new Platform(235, 610, 100, 20, 4, Direction.STOP, "red");
 	function start(canvas) {
-		var FPS = 30;
+		ws = gameWebSocket.initConnect();
+  		analizeMessage();
+		var FPS = 60;
 		CANVAS_WIDTH = canvas.width;
 		CANVAS_HEIGHT = canvas.height;
 		context = canvas.getContext('2d');
@@ -100,25 +104,79 @@ define([
 		enemyPlatform.draw();
 	}
 	function update() {
+		myPlatform.move();
+		enemyPlatform.move();
 		if (input.isDown('LEFT')) {
-			myPlatform.direction = Direction.LEFT;
-        	myPlatform.move();
+			//myPlatform.direction = Direction.LEFT;
+        	//myPlatform.move();
+        	var message = {
+        		"direction": "LEFT"
+        	}
+        	gameWebSocket.sendMessage(ws, JSON.stringify(message));
     	} 
     	if (input.isDown('RIGHT')) {
-    		myPlatform.direction = Direction.RIGHT;
-    		myPlatform.move();
+    		//myPlatform.direction = Direction.RIGHT;
+    		//myPlatform.move();
+    		var message = {
+                "direction": "RIGHT"
+           	}
+            gameWebSocket.sendMessage(ws, JSON.stringify(message));
     	}
     	myPlatform.clamp(field.x + 40, field.width - myPlatform.width);
+    	enemyPlatform.clamp(field.x + 40, field.width - myPlatform.width);
 	}
 	function analizeMessage() {
-		/*ws.onmessage = function (event) {
+		ws.onmessage = function (event) {
             var data = JSON.parse(event.data);
             console.log(data);
+            /*if(data.status == "move"){
+                switch (data.direction) {
+                	case "LEFT":
+                		if (data.PlatformID == "1") {
+                			myPlatform.direction = Direction.LEFT;
+                		} else {
+                			enemyPlatform.direction = Direction.LEFT;
+                		}
+                		break;
+                	case "RIGHT":
+                		if (data.PlatformID == "2") {
+                			myPlatform.direction = Direction.RIGHT;
+                		} else {
+                			enemyPlatform.direction = Direction.RIGHT;
+                		}
+                		break;
+                }
+            }*/
+            if(data.status == "move" && data.name == userModel.get("login")){
+                 switch (data.direction) {
+                        case "LEFT":
+                                 			myPlatform.direction = Direction.LEFT;
+
+                                 		break;
+                                 	case "RIGHT":
+                                 			myPlatform.direction = Direction.RIGHT;
+
+                                 		break;
+                                 }
+            }
+            if(data.status == "move" && data.name == document.getElementById("enemyName").innerHTML){
+               switch (data.direction) {
+                                       case "LEFT":
+                                                			enemyPlatform.direction = Direction.LEFT;
+
+                                                		break;
+                                                	case "RIGHT":
+                                                			enemyPlatform.direction = Direction.RIGHT;
+
+                                                		break;
+                                                }
+                           }
             if(data.status == "start"){
-                document.getElementById("wait").style.display = "none";
+            	document.getElementById("wait").style.display = "none";
                 document.getElementById("gameplay").style.display = "block";
                 document.getElementById("enemyName").innerHTML = data.enemyName;
             }
+            /*
             if(data.status == "finish"){
                document.getElementById("gameOver").style.display = "block";
                document.getElementById("gameplay").style.display = "none";
@@ -129,13 +187,8 @@ define([
                else if (data.gameState == 2)
                     document.getElementById("win").innerHTML = "loser!";
             }
-            if(data.status == "increment" && data.name == userModel.get("login")){
-                document.getElementById("myScore").innerHTML = data.score;
-            }
-            if(data.status == "increment" && data.name == document.getElementById("enemyName").innerHTML){
-                document.getElementById("enemyScore").innerHTML = data.score;
-            }
-        }*/
+            */
+        }
 	}
 
 	return {
