@@ -81,6 +81,7 @@ public class GameWebSocket {
 
         jsonStart.addProperty("status", "increment");
         jsonStart.addProperty("name", myName);
+        jsonStart.addProperty("gameState", user.getGameState());
         jsonStart.addProperty("score", user.getMyScore());
         sendJSON(jsonStart);
     }
@@ -90,6 +91,7 @@ public class GameWebSocket {
 
         jsonStart.addProperty("status", "increment");
         jsonStart.addProperty("name", user.getEnemyName());
+        jsonStart.addProperty("gameState", user.getGameState());
         jsonStart.addProperty("score", user.getEnemyScore());
         sendJSON(jsonStart);
     }
