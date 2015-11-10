@@ -8,7 +8,7 @@ import java.io.Serializable;
 /**
  * Created by said on 30.10.15.
  */
-public class GameMechanicsSettings implements Serializable {
+public class GameMechanicsSettings implements Serializable, Resource {
     private int gameTime;
     private int stepTime;
 
@@ -31,5 +31,10 @@ public class GameMechanicsSettings implements Serializable {
             this.gameTime = 1000;
             throw e;
         }
+    }
+
+    @Override
+    public void setCorrectState() {
+
     }
 }

@@ -4,12 +4,13 @@ import resource.sax.SettingsFileNotFoundException;
 
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.Properties;
 
 /**
  * Created by said on 30.10.15.
  */
-public class ServerSettings {
+public class ServerSettings implements Serializable, Resource {
     private int port;
     private String host;
 
@@ -31,5 +32,10 @@ public class ServerSettings {
         } catch (IOException e) {
             throw new SettingsFileNotFoundException(e);
         }
+    }
+
+    @Override
+    public void setCorrectState() {
+
     }
 }
