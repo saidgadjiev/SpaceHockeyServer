@@ -1,6 +1,10 @@
 package gameMechanics;
 
-import main.gameService.GameUser;
+import gameMechanics.game.Direction;
+import gameMechanics.game.Platform;
+import gameMechanics.game.Position;
+import main.gameService.Game;
+import main.gameService.Player;
 
 import java.util.Date;
 import java.util.HashMap;
@@ -12,42 +16,44 @@ import java.util.Map;
 
 public class GameSession {
     private final long startTime;
-    private final GameUser first;
-    private final GameUser second;
+    private final Game first;
+    private final Game second;
     private State sessionState = State.PLAY;
     private enum State { PLAY, FINISH }
 
-    private Map<String, GameUser> users = new HashMap<>();
+    private Map<Player, Game> players = new HashMap<>();
 
-    public GameSession(String user1, String user2) {
+    public GameSession(Player player1, Player player2) {
         startTime = new Date().getTime();
-        GameUser gameUser1 = new GameUser(user1);
-        gameUser1.setEnemyName(user2);
+        player1.setPlatform(new Platform(new Position(235, 80), Direction.STOP, 4));
+        player2.setPlatform(new Platform(new Position(235, 610), Direction.STOP, 4));
+        Game game1 = new Game(player1);
+        game1.setEnemyPlayer(player2);
 
-        GameUser gameUser2 = new GameUser(user2);
-        gameUser2.setEnemyName(user1);
+        Game game2 = new Game(player2);
+        game2.setEnemyPlayer(player1);
 
-        users.put(user1, gameUser1);
-        users.put(user2, gameUser2);
+        players.put(player1, game1);
+        players.put(player2, game2);
 
-        this.first = gameUser1;
-        this.second = gameUser2;
+        this.first = game1;
+        this.second = game2;
     }
 
-    public GameUser getEnemy(String user) {
-        String enemyName = users.get(user).getEnemyName();
-        return users.get(enemyName);
+    public Game getEnemyPlayer(Player player) {
+        Player enemyPlayer = players.get(player).getEnemyPlayer();
+        return players.get(enemyPlayer);
     }
 
-    public GameUser getSelf(String user) {
-        return users.get(user);
+    public Game getSelfPlayer(Player player) {
+        return players.get(player);
     }
 
     public long getSessionTime(){
         return new Date().getTime() - startTime;
     }
 
-    public GameUser getFirst() {
+    public Game getFirstPlayer() {
         return first;
     }
 
@@ -69,7 +75,7 @@ public class GameSession {
         return sessionState == State.FINISH;
     }
 
-    public GameUser getSecond() {
+    public Game getSecond() {
         return second;
     }
 }

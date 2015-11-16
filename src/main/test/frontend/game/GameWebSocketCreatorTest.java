@@ -53,7 +53,7 @@ public class GameWebSocketCreatorTest {
 
         assertEquals(true, object instanceof GameWebSocket);
         //noinspection ConstantConditions
-        assertEquals(new GameWebSocket(testProfile.getLogin(), gameMechanics, webSocketService).getMyName(),
-                ((GameWebSocket) object).getMyName());
+        assertEquals(new GameWebSocket(testProfile.getLogin(), gameMechanics, webSocketService).getMyPlayer().getName(),
+                ((GameWebSocket) object).getMyPlayer().getName());
     }
 }

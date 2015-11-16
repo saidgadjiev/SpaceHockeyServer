@@ -3,7 +3,8 @@ package gameMechanics;
 import frontend.game.GameWebSocket;
 import frontend.game.WebSocketServiceImpl;
 import main.gameService.GameMechanics;
-import main.gameService.GameUser;
+import main.gameService.Game;
+import main.gameService.Player;
 import main.gameService.WebSocketService;
 import org.eclipse.jetty.websocket.api.Session;
 import org.junit.Before;
@@ -54,12 +55,12 @@ public class GameMechanicsImplTest {
 
     @Test
     public void testGameOver() {
-        GameUser testUser1 = new GameUser("myName");
-        GameUser testUser2 = new GameUser("enemyName");
+        Game testGame1 = new Game(new Player("myName"));
+        Game testGame2 = new Game(new Player("enemyName"));
         String testJson = "{\"status\":\"finish\",\"gameState\":0}";
 
-        webSocketService.notifyGameOver(testUser1);
-        webSocketService.notifyGameOver(testUser2);
+        webSocketService.notifyGameOver(testGame1);
+        webSocketService.notifyGameOver(testGame2);
 
         assertEquals(testJson, fakeRemoteEndPoint1.getData());
         assertEquals(testJson, fakeRemoteEndPoint2.getData());

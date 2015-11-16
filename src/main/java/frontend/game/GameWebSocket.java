@@ -3,7 +3,8 @@ package frontend.game;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import main.gameService.GameMechanics;
-import main.gameService.GameUser;
+import main.gameService.Game;
+import main.gameService.Player;
 import main.gameService.WebSocketService;
 import org.eclipse.jetty.websocket.api.Session;
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketClose;
@@ -19,19 +20,19 @@ import java.io.IOException;
 
 @WebSocket
 public class GameWebSocket {
-    private String myName;
+    private Player myPlayer;
     private Session session;
     private GameMechanics gameMechanics;
     private WebSocketService webSocketService;
 
     public GameWebSocket(String myName, GameMechanics gameMechanics, WebSocketService webSocketService) {
-        this.myName = myName;
+        this.myPlayer = new Player(myName);
         this.gameMechanics = gameMechanics;
         this.webSocketService = webSocketService;
     }
 
-    public String getMyName() {
-        return myName;
+    public Player getMyPlayer() {
+        return myPlayer;
     }
 
     public void sendJSON(JsonObject jsonData) {
@@ -42,12 +43,12 @@ public class GameWebSocket {
         }
     }
 
-    public void startGame(GameUser user) {
-        System.out.print("StartGame " + user.getEnemyName());
+    public void startGame(Game user) {
+        System.out.print("StartGame " + user.getMyPlayerName());
         JsonObject jsonStart = new JsonObject();
 
         jsonStart.addProperty("status", "start");
-        jsonStart.addProperty("enemyName", user.getEnemyName());
+        jsonStart.addProperty("enemyName", user.getEnemyPlayerName());
         sendJSON(jsonStart);
     }
 
@@ -62,15 +63,15 @@ public class GameWebSocket {
     @OnWebSocketMessage
     public void onMessage(String data) {
         JsonObject jsonObject  = new Gson().fromJson(data, JsonObject.class);
-        gameMechanics.movePlatfom(myName, jsonObject);
+        gameMechanics.analizeMessage(myPlayer, jsonObject);
     }
 
     @OnWebSocketConnect
     public void onOpen(Session userSession) {
         //noinspection CallToSimpleSetterFromWithinClass
         setSession(userSession);
-        webSocketService.addUser(this);
-        gameMechanics.addUser(myName);
+        webSocketService.addPlayer(this);
+        gameMechanics.addPlayer(myPlayer);
     }
 
     @OnWebSocketClose
@@ -78,42 +79,60 @@ public class GameWebSocket {
         System.out.print("Close\n");
     }
 
-    public void setMyScore(GameUser user) {
+    public void setMyScore(Game user) {
         JsonObject jsonStart = new JsonObject();
 
         jsonStart.addProperty("status", "increment");
-        jsonStart.addProperty("name", myName);
+        jsonStart.addProperty("name", myPlayer.getName());
         jsonStart.addProperty("score", user.getMyScore());
         sendJSON(jsonStart);
     }
 
-    public void setEnemyScore(GameUser user) {
+    public void setEnemyScore(Game user) {
         JsonObject jsonStart = new JsonObject();
 
         jsonStart.addProperty("status", "increment");
-        jsonStart.addProperty("name", user.getEnemyName());
+        jsonStart.addProperty("name", user.getEnemyPlayerName());
         jsonStart.addProperty("score", user.getEnemyScore());
         sendJSON(jsonStart);
     }
 
-    public void setMyPlatformPosition(GameUser user) {
+    public void sendMyPlatformDirection(Game user) {
         JsonObject jsonStart = new JsonObject();
 
-        jsonStart.addProperty("status", "move");
-        jsonStart.addProperty("name", myName);
-        jsonStart.addProperty("PlatformID", user.getMyID());
-        jsonStart.addProperty("direction", user.getMyPlatform().getDirection().toString());
+        jsonStart.addProperty("status", "movePlatform");
+        jsonStart.addProperty("name", myPlayer.getName());
+        jsonStart.addProperty("platformDirection", user.getMyPlatform().getDirection().toString());
         sendJSON(jsonStart);
     }
 
-    public void setEnemyPlatformPosition(GameUser user) {
+    public void sendEnemyPlatformDirection(Game user) {
         JsonObject jsonStart = new JsonObject();
 
-        jsonStart.addProperty("status", "move");
-        jsonStart.addProperty("name", user.getEnemyName());
-        jsonStart.addProperty("PlatfromID", user.getEnemyID());
-        jsonStart.addProperty("direction", user.getEnemyPlatform().getDirection().toString());
+        jsonStart.addProperty("status", "movePlatform");
+        jsonStart.addProperty("name", user.getEnemyPlayerName());
+        jsonStart.addProperty("platformDirection", user.getEnemyPlatform().getDirection().toString());
         sendJSON(jsonStart);
+    }
+
+    public void sendMyBallMotion(Game user) {
+        JsonObject jsonBallMotion = new JsonObject();
+
+        jsonBallMotion.addProperty("status", "moveBall");
+        jsonBallMotion.addProperty("name", myPlayer.getName());
+        jsonBallMotion.addProperty("velocityX", user.getBall().getVelocityX());
+        jsonBallMotion.addProperty("velocityY", user.getBall().getVelocityY());
+        sendJSON(jsonBallMotion);
+    }
+
+    public void sendEnemyBallMotion(Game user) {
+        JsonObject jsonBallMotion = new JsonObject();
+
+        jsonBallMotion.addProperty("status", "moveBall");
+        jsonBallMotion.addProperty("name", user.getEnemyPlayerName());
+        jsonBallMotion.addProperty("velocityX", user.getBall().getVelocityX());
+        jsonBallMotion.addProperty("velocityY", user.getBall().getVelocityY());
+        sendJSON(jsonBallMotion);
     }
 
     public Session getSession() {

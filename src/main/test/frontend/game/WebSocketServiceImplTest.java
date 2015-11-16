@@ -2,7 +2,6 @@ package frontend.game;
 
 import gameMechanics.GameMechanicsImpl;
 import main.gameService.GameMechanics;
-import main.gameService.GameUser;
 import main.gameService.WebSocketService;
 import org.junit.Before;
 import org.junit.Test;
@@ -22,9 +21,9 @@ public class WebSocketServiceImplTest {
         webSocketService = mock(WebSocketServiceImpl.class);
         GameMechanics gameMechanics = new GameMechanicsImpl(webSocketService);
         gameWebSocket1 = new GameWebSocket("myName", gameMechanics, webSocketService);
-        webSocketService.addUser(gameWebSocket1);
+        webSocketService.addPlayer(gameWebSocket1);
         gameWebSocket2 = new GameWebSocket("enemyName", gameMechanics, webSocketService);
-        webSocketService.addUser(gameWebSocket2);
+        webSocketService.addPlayer(gameWebSocket2);
     }
 
     @Test

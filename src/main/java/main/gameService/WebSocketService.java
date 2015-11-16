@@ -7,17 +7,21 @@ import frontend.game.GameWebSocket;
  */
 public interface WebSocketService {
 
-    void addUser(GameWebSocket user);
+    void addPlayer(GameWebSocket user);
 
-    void notifyMyNewScore(GameUser user);
+    void notifyMyNewScore(Game user);
 
-    void notifyEnemyNewScore(GameUser user);
+    void notifyEnemyNewScore(Game user);
 
-    void notifyMyPlatformNewPosition(GameUser user);
+    void notifyMyPlatformNewDirection(Game user);
 
-    void notifyEnemyPlatformNewPosition(GameUser user);
+    void notifyEnemyPlatformNewDirection(Game user);
 
-    void notifyStartGame(GameUser user);
+    void notifyMyBallNewMootion(Game user);
 
-    void notifyGameOver(GameUser user);
+    void notifyEnemyBallNewMotion(Game user);
+
+    void notifyStartGame(Game user);
+
+    void notifyGameOver(Game user);
 }

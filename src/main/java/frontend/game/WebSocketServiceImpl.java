@@ -1,6 +1,7 @@
 package frontend.game;
 
-import main.gameService.GameUser;
+import main.gameService.Game;
+import main.gameService.Player;
 import main.gameService.WebSocketService;
 
 import java.util.HashMap;
@@ -11,41 +12,50 @@ import java.util.Map;
  */
 
 public class WebSocketServiceImpl implements WebSocketService {
-    private Map<String, GameWebSocket> userSockets = new HashMap<>();
+    private Map<Player, GameWebSocket> userSockets = new HashMap<>();
 
     @Override
-    public void addUser(GameWebSocket user) {
-        userSockets.put(user.getMyName(), user);
+    public void addPlayer(GameWebSocket user) {
+        userSockets.put(user.getMyPlayer(), user);
     }
 
     @Override
-    public void notifyMyNewScore(GameUser user) {
-        userSockets.get(user.getMyName()).setMyScore(user);
+    public void notifyMyNewScore(Game user) {
+        userSockets.get(user.getMyPlayer()).setMyScore(user);
     }
 
     @Override
-    public void notifyEnemyNewScore(GameUser user) {
-        userSockets.get(user.getMyName()).setEnemyScore(user);
+    public void notifyEnemyNewScore(Game user) {
+        userSockets.get(user.getMyPlayer()).setEnemyScore(user);
     }
 
     @Override
-    public void notifyMyPlatformNewPosition(GameUser user) {
-        userSockets.get(user.getMyName()).setMyPlatformPosition(user);
+    public void notifyMyPlatformNewDirection(Game user) {
+        userSockets.get(user.getMyPlayer()).sendMyPlatformDirection(user);
     }
 
     @Override
-    public void notifyEnemyPlatformNewPosition(GameUser user) {
-        userSockets.get(user.getMyName()).setEnemyPlatformPosition(user);
+    public void notifyEnemyPlatformNewDirection(Game user) {
+        userSockets.get(user.getMyPlayer()).sendEnemyPlatformDirection(user);
     }
 
     @Override
-    public void notifyStartGame(GameUser user) {
-        GameWebSocket gameWebSocket = userSockets.get(user.getMyName());
-        gameWebSocket.startGame(user);
+    public void notifyMyBallNewMootion(Game user) {
+        userSockets.get(user.getMyPlayer()).sendMyBallMotion(user);
     }
 
     @Override
-    public void notifyGameOver(GameUser user) {
-        userSockets.get(user.getMyName()).gameOver(user.getGameState());
+    public void notifyEnemyBallNewMotion(Game user) {
+        userSockets.get(user.getEnemyPlayer()).sendEnemyBallMotion(user);
+    }
+
+    @Override
+    public void notifyStartGame(Game user) {
+        userSockets.get(user.getMyPlayer()).startGame(user);
+    }
+
+    @Override
+    public void notifyGameOver(Game user) {
+        userSockets.get(user.getMyPlayer()).gameOver(user.getGameState());
     }
 }

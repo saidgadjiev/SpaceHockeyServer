@@ -6,11 +6,11 @@ import com.google.gson.JsonObject;
  * Created by said on 20.10.15.
  */
 public interface GameMechanics {
-    public void addUser(String user);
+    void addPlayer(Player player);
 
-    public void incrementScore(String username);
+    void incrementScore(Player player);
 
-    public void movePlatfom(String username, JsonObject data);
+    void run();
 
-    public void run();
+    void analizeMessage(Player myPlayer, JsonObject message);
 }

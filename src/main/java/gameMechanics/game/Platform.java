@@ -1,6 +1,6 @@
 package gameMechanics.game;
 
-public class Platform {
+public class Platform implements Sprite {
     private Position position;
     private Direction direction;
     private int velocity;
@@ -38,10 +38,10 @@ public class Platform {
     public void move() {
         switch (direction) {
             case LEFT:
-                position.setX(position.getX() + velocity);
+                position.setX(position.getX() - velocity);
                 break;
             case RIGHT:
-                position.setX(position.getY() + velocity);
+                position.setX(position.getX() + velocity);
                 break;
             default:
                 break;

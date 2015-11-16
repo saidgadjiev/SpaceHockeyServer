@@ -81,9 +81,32 @@ define([
 			}
 		} 
 	}
+	function Ball(centerX, centerY, radius, sAngle, eAngle) {
+          this.centerX = centerX;
+          this.centerY = centerY;
+          this.radius = radius;
+          this.sAngle = sAngle;
+          this.eAngl2e = eAngle;
+          this.color = "red";
+          this.speedX = 5;
+          this.speedY = 1;
+
+          this.draw = function() {
+            context.beginPath();
+            context.arc(this.centerX, this.centerY, this.radius, this.sAngle, this.eAngle, false);
+            context.fillStyle = this.color;
+            context.fill();
+          }
+
+          this.move = function() {
+          	this.centerX += this.speedX;
+          	this.centerY += this.speedY;
+    	  }
+    }
 	var field = new GameField(40, 40, 630, 500, 50, "blue");
 	var myPlatform = new Platform(235, 80, 100, 20, 4, Direction.STOP, "red");
 	var enemyPlatform = new Platform(235, 610, 100, 20, 4, Direction.STOP, "red");
+    var ball = new Ball(100, 100, 10, 0, Math.PI*2, false);
 	function start(canvas) {
 		ws = gameWebSocket.initConnect();
   		analizeMessage();
@@ -102,10 +125,12 @@ define([
 		field.draw();
 		myPlatform.draw();
 		enemyPlatform.draw();
+		ball.draw();
 	}
 	function update() {
 		myPlatform.move();
 		enemyPlatform.move();
+		//ball.move();
 		if (input.isDown('LEFT')) {
 			//myPlatform.direction = Direction.LEFT;
         	//myPlatform.move();
