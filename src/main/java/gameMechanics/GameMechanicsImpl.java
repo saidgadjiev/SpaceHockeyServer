@@ -1,10 +1,13 @@
 package gameMechanics;
 
-import main.TimeHelper;
 import main.gameService.GameMechanics;
 import main.gameService.GameUser;
 import main.gameService.WebSocketService;
+<<<<<<< HEAD
 import resource.GameMechanicsSettings;
+=======
+import utils.Position;
+>>>>>>> 08d6801e480158450253391968b78243d28d706c
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -50,24 +53,51 @@ public class GameMechanicsImpl implements GameMechanics {
         }
     }
 
-    @Override
+    /*@Override
     public void incrementScore(String userName) {
         GameSession myGameSession = nameToGame.get(userName);
         GameUser myUser = myGameSession.getSelf(userName);
-        myUser.incrementMyScore();
+        //myUser.incrementMyScore();
         GameUser enemyUser = myGameSession.getEnemy(userName);
-        enemyUser.incrementEnemyScore();
+        //enemyUser.incrementEnemyScore();
         webSocketService.notifyMyNewScore(myUser);
         webSocketService.notifyEnemyNewScore(enemyUser);
+    }*/
+
+    @Override
+    public void setNewPlatformPosition(String username, Position position) {
+        GameSession myGameSession = nameToGame.get(username);
+        GameUser myUser = myGameSession.getSelf(username);
+        myUser.setMyPlatformPosition(position);
+        GameUser enemyUser = myGameSession.getEnemy(username);
+        enemyUser.setEnemyPlatformPosition(position);
+        webSocketService.notifyNewMyPlatformPosition(myUser);
+        webSocketService.notifyNewEnemyPlatformPosition(enemyUser);
+    }
+
+    @Override
+    public void test(String username) {
+        GameSession myGameSession = nameToGame.get(username);
+        GameUser myUser = myGameSession.getSelf(username);
+        GameUser enemyUser = myGameSession.getEnemy(username);
+        webSocketService.notifyNewMyPlatformPosition(myUser);
+        webSocketService.notifyNewEnemyPlatformPosition(enemyUser);
     }
 
     @Override
     public void run() {
+<<<<<<< HEAD
         //noinspection InfiniteLoopStatement
         while (true) {
             gmStep();
             TimeHelper.sleep(stepTime);
         }
+=======
+        //while (true) {
+        //    gmStep();
+        //    TimeHelper.sleep(STEP_TIME);
+        //}
+>>>>>>> 08d6801e480158450253391968b78243d28d706c
     }
 
     private void gmStep() {

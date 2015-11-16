@@ -69,7 +69,12 @@ public class GameSession {
         return sessionState == State.FINISH;
     }
 
+<<<<<<< HEAD
     public GameUser getSecond() {
         return second;
+=======
+    public  boolean isFirstWin(){
+        return true;//first.getMyScore() > second.getMyScore();
+>>>>>>> 08d6801e480158450253391968b78243d28d706c
     }
 }
