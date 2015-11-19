@@ -4,9 +4,13 @@ public class Platform implements Sprite {
     private Position position;
     private Direction direction;
     private int velocity;
+    private int width;
+    private int height;
 
-    public Platform(Position position, Direction direction, int velocity) {
+    public Platform(Position position, int width, int height, Direction direction, int velocity) {
         this.position = position;
+        this.width = width;
+        this.height = height;
         this.direction = direction;
         this.velocity = velocity;
     }
@@ -35,6 +39,14 @@ public class Platform implements Sprite {
         this.direction = direction;
     }
 
+    public int getWidth() {
+        return width;
+    }
+
+    public int getHeight() {
+        return height;
+    }
+
     public void move() {
         switch (direction) {
             case LEFT:
@@ -42,6 +54,8 @@ public class Platform implements Sprite {
                 break;
             case RIGHT:
                 position.setX(position.getX() + velocity);
+                break;
+            case STOP:
                 break;
             default:
                 break;

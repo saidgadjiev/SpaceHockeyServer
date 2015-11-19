@@ -14,7 +14,6 @@ define([
 
 	function sendMessage(ws, message) {
         ws.send(message);
-        console.log("Message");
 	}
 
 	return {

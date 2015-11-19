@@ -2,8 +2,8 @@ package frontend.game;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import gameMechanics.GameSession;
 import main.gameService.GameMechanics;
-import main.gameService.Game;
 import main.gameService.Player;
 import main.gameService.WebSocketService;
 import org.eclipse.jetty.websocket.api.Session;
@@ -43,12 +43,12 @@ public class GameWebSocket {
         }
     }
 
-    public void startGame(Game user) {
-        System.out.print("StartGame " + user.getMyPlayerName());
+    public void startGame(Player user) {
+        System.out.print("StartGame " + user.getMyPosition());
         JsonObject jsonStart = new JsonObject();
 
         jsonStart.addProperty("status", "start");
-        jsonStart.addProperty("enemyName", user.getEnemyPlayerName());
+        jsonStart.addProperty("enemyName", user.getMyPosition());
         sendJSON(jsonStart);
     }
 
@@ -79,7 +79,27 @@ public class GameWebSocket {
         System.out.print("Close\n");
     }
 
-    public void setMyScore(Game user) {
+    public void syncPlatformDirection(GameSession session) {
+        Player firstPlayer = session.getFirstPlayer();
+        Player secondPlayer = session.getSecondPlayer();
+
+        JsonObject jsonSync = new JsonObject();
+        jsonSync.addProperty("status", "movePlatform");
+
+        JsonObject jsonFirst = new JsonObject();
+        jsonFirst.addProperty("position", firstPlayer.getMyPosition());
+        jsonFirst.addProperty("direction", firstPlayer.getPlatform().getDirection().ordinal());
+
+        JsonObject jsonSecond = new JsonObject();
+        jsonSecond.addProperty("position", secondPlayer.getMyPosition());
+        jsonSecond.addProperty("direction", secondPlayer.getPlatform().getDirection().ordinal());
+
+        jsonSync.add("first", jsonFirst);
+        jsonSync.add("second", jsonSecond);
+        sendJSON(jsonSync);
+    }
+/*
+    public void setMyScore(Player user) {
         JsonObject jsonStart = new JsonObject();
 
         jsonStart.addProperty("status", "increment");
@@ -134,7 +154,7 @@ public class GameWebSocket {
         jsonBallMotion.addProperty("velocityY", user.getBall().getVelocityY());
         sendJSON(jsonBallMotion);
     }
-
+*/
     public Session getSession() {
         return session;
     }

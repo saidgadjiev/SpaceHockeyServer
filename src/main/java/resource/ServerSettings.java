@@ -1,15 +1,11 @@
 package resource;
 
-import resource.sax.SettingsFileNotFoundException;
-
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.util.Properties;
+import java.io.Serializable;
 
 /**
  * Created by said on 30.10.15.
  */
-public class ServerSettings {
+public class ServerSettings implements Serializable, Resource {
     private int port;
     private String host;
 
@@ -21,15 +17,8 @@ public class ServerSettings {
         return host;
     }
 
-    public void loadSettingsFromFile(String settingsFilePath) {
-        try (final FileInputStream settingsFile = new FileInputStream(settingsFilePath)) {
-            final Properties properties = new Properties();
-            properties.load(settingsFile);
+    @Override
+    public void setCorrectState() {
 
-            host = properties.getProperty("host");
-            port = Integer.valueOf(properties.getProperty("port"));
-        } catch (IOException e) {
-            throw new SettingsFileNotFoundException(e);
-        }
     }
 }

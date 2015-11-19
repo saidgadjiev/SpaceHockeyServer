@@ -9,6 +9,7 @@ public class Player {
     private String name;
     private int score = 0;
     private Platform platform;
+    private int myPosition = 0;
 
     public Player(String name, Platform platform) {
         this.name = name;
@@ -45,5 +46,13 @@ public class Player {
 
     public void movePlatform() {
         platform.move();
+    }
+
+    public void setMyPosition(int myPosition) {
+        this.myPosition = myPosition;
+    }
+
+    public int getMyPosition() {
+        return myPosition;
     }
 }

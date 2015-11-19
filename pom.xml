@@ -58,7 +58,7 @@
         <resources>
             <resource>
                 <targetPath>.</targetPath>
-                <directory>${project.basedir}/cfg</directory>
+                <directory>${project.basedir}/src/cfg</directory>
                 <includes>
                     <include>log4j2.xml</include>
                 </includes>

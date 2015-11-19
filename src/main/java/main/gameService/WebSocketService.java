@@ -1,6 +1,7 @@
 package main.gameService;
 
 import frontend.game.GameWebSocket;
+import gameMechanics.GameSession;
 
 /**
  * Created by said on 20.10.15.
@@ -9,19 +10,21 @@ public interface WebSocketService {
 
     void addPlayer(GameWebSocket user);
 
-    void notifyMyNewScore(Game user);
+    void notifyMyNewScore(Player user);
 
-    void notifyEnemyNewScore(Game user);
+    void notifyEnemyNewScore(Player user);
 
-    void notifyMyPlatformNewDirection(Game user);
+    void notifyMyPlatformNewDirection(Player user);
 
-    void notifyEnemyPlatformNewDirection(Game user);
+    void notifyEnemyPlatformNewDirection(Player user);
 
-    void notifyMyBallNewMootion(Game user);
+    void notifyMyBallNewMootion(Player user);
 
-    void notifyEnemyBallNewMotion(Game user);
+    void notifyEnemyBallNewMotion(Player user);
 
-    void notifyStartGame(Game user);
+    void notifyStartGame(Player user);
 
-    void notifyGameOver(Game user);
+    void notifyGameOver(Player user);
+
+    void notifySyncPlatformDirection(GameSession session, Player player);
 }

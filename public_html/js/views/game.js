@@ -21,16 +21,12 @@ define([
                     "login": userModel.get("login")
                 }
                 var userData = {
-                     "login": userModel.get("login")
-                }
-                this.$el.html(this.template(userData));
-                var canvas = document.getElementById('gamefield');
-                gamePlay.start(canvas);
-            } else {
-                Backbone.history.navigate('login', {trigger: true});
-                error.showLogoutError();
+                    "login": userModel.get("login")
             }
-
+            }
+            this.$el.html(this.template(userData));
+            var canvas = document.getElementById('gamefield');
+            gamePlay.start(canvas);
             return this;
         },
         show: function() {

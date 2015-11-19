@@ -19,6 +19,7 @@ import org.eclipse.jetty.server.handler.ResourceHandler;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
 import resource.GameMechanicsSettings;
+import resource.ResourceFactory;
 import resource.ServerSettings;
 
 import javax.servlet.Servlet;
@@ -31,11 +32,12 @@ public class Main {
     @SuppressWarnings("OverlyBroadThrowsClause")
     public static void main(String[] args) throws Exception {
 
-        ServerSettings serverSettings = new ServerSettings();
-        serverSettings.loadSettingsFromFile("cfg/server.properties");
+        ResourceFactory resourceFactory = ResourceFactory.getInstance();
+        resourceFactory.loadAllResources("cfg");
+        resourceFactory.loadAllResources("data");
 
-        GameMechanicsSettings gameMechanicsSettings = new GameMechanicsSettings();
-        gameMechanicsSettings.loadSettingsFromFile("data/gameMechanicsSettings.xml");
+        ServerSettings serverSettings = (ServerSettings) resourceFactory.loadResource("cfg/server.properties");
+        GameMechanicsSettings gameMechanicsSettings = (GameMechanicsSettings) resourceFactory.loadResource("data/gameMechanicsSettings.xml");
 
         AccountService accountService = new AccountServiceImpl();
 

@@ -1,6 +1,6 @@
 package frontend.game;
 
-import main.gameService.Game;
+import gameMechanics.GameSession;
 import main.gameService.Player;
 import main.gameService.WebSocketService;
 
@@ -20,42 +20,43 @@ public class WebSocketServiceImpl implements WebSocketService {
     }
 
     @Override
-    public void notifyMyNewScore(Game user) {
-        userSockets.get(user.getMyPlayer()).setMyScore(user);
+    public void notifyMyNewScore(Player user) {
     }
 
     @Override
-    public void notifyEnemyNewScore(Game user) {
-        userSockets.get(user.getMyPlayer()).setEnemyScore(user);
+    public void notifyEnemyNewScore(Player user) {
     }
 
     @Override
-    public void notifyMyPlatformNewDirection(Game user) {
-        userSockets.get(user.getMyPlayer()).sendMyPlatformDirection(user);
+    public void notifyMyPlatformNewDirection(Player user) {
     }
 
     @Override
-    public void notifyEnemyPlatformNewDirection(Game user) {
-        userSockets.get(user.getMyPlayer()).sendEnemyPlatformDirection(user);
+    public void notifyEnemyPlatformNewDirection(Player user) {
     }
 
     @Override
-    public void notifyMyBallNewMootion(Game user) {
-        userSockets.get(user.getMyPlayer()).sendMyBallMotion(user);
+    public void notifyMyBallNewMootion(Player user) {
+
     }
 
     @Override
-    public void notifyEnemyBallNewMotion(Game user) {
-        userSockets.get(user.getEnemyPlayer()).sendEnemyBallMotion(user);
+    public void notifyEnemyBallNewMotion(Player user) {
     }
 
     @Override
-    public void notifyStartGame(Game user) {
-        userSockets.get(user.getMyPlayer()).startGame(user);
+    public void notifyStartGame(Player user) {
+        userSockets.get(user).startGame(user);
     }
 
     @Override
-    public void notifyGameOver(Game user) {
-        userSockets.get(user.getMyPlayer()).gameOver(user.getGameState());
+    public void notifyGameOver(Player user) {
+        userSockets.get(user).gameOver(0);
     }
+
+    @Override
+    public void notifySyncPlatformDirection(GameSession session, Player player) {
+        userSockets.get(player).syncPlatformDirection(session);
+    }
+
 }
