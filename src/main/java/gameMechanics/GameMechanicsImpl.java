@@ -11,20 +11,16 @@ import resource.GameMechanicsSettings;
 import java.util.*;
 
 /**
- * Created by said on 20.10.15.
+  Created by said on 20.10.15.
  */
 
+@SuppressWarnings("SpellCheckingInspection")
 public class GameMechanicsImpl implements GameMechanics {
     private final int stepTime;
-
     private final int gameTime;
-
     private WebSocketService webSocketService;
-
     private Map<Player, GameSession> playerToGame = new HashMap<>();
-
     private List<GameSession> allSessions = new LinkedList<>();
-
     private Queue<Player> waiters = new LinkedList<>();
 
     public GameMechanicsImpl(WebSocketService webSocketService, GameMechanicsSettings gameMechanicsSettings) {
@@ -44,9 +40,14 @@ public class GameMechanicsImpl implements GameMechanics {
     }
 
     public void incrementScore(Player myPlayer) {
+        GameSession myGameSession = playerToGame.get(myPlayer);
+        myPlayer.incrementScore();
+        Player enemyPlayer = myGameSession.getEnemyPlayer(myPlayer.getMyPosition());
+        webSocketService.notifySyncScore(myGameSession, myPlayer);
+        webSocketService.notifySyncScore(myGameSession, enemyPlayer);
     }
 
-    public void syncPlatformDirection(GameSession session, Player myPlayer, Player enemyPlayer) {
+    private void syncPlatformDirection(GameSession session, Player myPlayer, Player enemyPlayer) {
         webSocketService.notifySyncPlatformDirection(session, myPlayer);
         webSocketService.notifySyncPlatformDirection(session, enemyPlayer);
     }
@@ -83,7 +84,7 @@ public class GameMechanicsImpl implements GameMechanics {
         }
     }
 
-    private void createGame() {
+    public void createGame() {
         while (waiters.size() > 1) {
             Player first = waiters.poll();
             Player second = waiters.poll();
@@ -99,11 +100,16 @@ public class GameMechanicsImpl implements GameMechanics {
         for (GameSession session : allSessions) {
             if (!session.isFinished()) {
                 makeStep();
+                if (session.getSessionTime() > gameTime) {
+                    session.determineWinner();
+                    webSocketService.notifyGameOver(session, session.getFirstPlayer());
+                    webSocketService.notifyGameOver(session, session.getSecondPlayer());
+                }
             }
         }
     }
 
-    public void makeStep() {
+    private void makeStep() {
         for (Player player: playerToGame.keySet()) {
             GameSession session = playerToGame.get(player);
             if (!session.isCollisionWithWall(player)) {
@@ -115,13 +121,17 @@ public class GameMechanicsImpl implements GameMechanics {
         }
     }
 
+    public List<GameSession> getAllSessions() {
+        return allSessions;
+    }
+
     private void starGame(Player firstPlayer, Player secondPlayer) {
         GameSession gameSession = new GameSession(firstPlayer, secondPlayer);
         allSessions.add(gameSession);
         playerToGame.put(firstPlayer, gameSession);
         playerToGame.put(secondPlayer, gameSession);
 
-        webSocketService.notifyStartGame(gameSession.getSelfPlayer(firstPlayer.getMyPosition()));
-        webSocketService.notifyStartGame(gameSession.getSelfPlayer(secondPlayer.getMyPosition()));
+        webSocketService.notifyStartGame(gameSession, firstPlayer);
+        webSocketService.notifyStartGame(gameSession, secondPlayer);
     }
 }

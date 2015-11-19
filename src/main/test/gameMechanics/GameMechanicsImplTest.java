@@ -1,8 +1,85 @@
 package gameMechanics;
 
-/**
- * Created by said on 30.10.15.
- */
-public class GameMechanicsImplTest {
+import frontend.game.GameWebSocket;
+import frontend.game.WebSocketServiceImpl;
+import main.gameService.GameMechanics;
+import main.gameService.Player;
+import main.gameService.WebSocketService;
+import org.eclipse.jetty.websocket.api.Session;
+import org.junit.Before;
+import org.junit.Test;
+import resource.GameMechanicsSettings;
+import resource.ResourceFactory;
 
+import java.util.List;
+
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
+/**
+  Created by said on 30.10.15.
+ */
+
+public class GameMechanicsImplTest {
+    @SuppressWarnings("FieldCanBeLocal")
+    private GameMechanics gameMechanics;
+    @SuppressWarnings("FieldCanBeLocal")
+    private WebSocketService webSocketService;
+    @SuppressWarnings("FieldCanBeLocal")
+    private GameWebSocket gameWebSocket;
+    private FakeRemoteEndPoint fakeRemoteEndPoint1 = new FakeRemoteEndPoint();
+    private FakeRemoteEndPoint fakeRemoteEndPoint2 = new FakeRemoteEndPoint();
+
+    @Before
+    public void setUp() {
+        webSocketService = new WebSocketServiceImpl();
+        GameMechanicsSettings gameMechanicsSettings = (GameMechanicsSettings) ResourceFactory.getInstance().loadResource("data/testSettings.xml");
+        gameMechanics = new GameMechanicsImpl(webSocketService, gameMechanicsSettings);
+        gameWebSocket = new GameWebSocket("myName", gameMechanics, webSocketService);
+
+        Session testSession1 = mock(Session.class);
+        Session testSession2 = mock(Session.class);
+        when(testSession1.getRemote()).thenReturn(fakeRemoteEndPoint1);
+        when(testSession2.getRemote()).thenReturn(fakeRemoteEndPoint2);
+        gameWebSocket.onOpen(testSession1);
+        gameWebSocket = new GameWebSocket("enemyName", gameMechanics, webSocketService);
+        gameWebSocket.onOpen(testSession2);
+        gameMechanics.createGame();
+    }
+
+    @Test
+    public void testAddUserAndStartGame() throws Exception {
+        String testJson1 = "{\"status\":\"start\",\"first\":{\"position\":1,\"name\":\"myName\"},\"second\":{\"position\":2,\"name\":\"enemyName\"}}";
+        String testJson2 = "{\"status\":\"start\",\"first\":{\"position\":1,\"name\":\"myName\"},\"second\":{\"position\":2,\"name\":\"enemyName\"}}";
+        assertEquals(testJson1, fakeRemoteEndPoint1.getData());
+        assertEquals(testJson2, fakeRemoteEndPoint2.getData());
+    }
+
+    @Test
+    public void testGameOver() {
+        List<GameSession> allSessions = gameMechanics.getAllSessions();
+        String testJson = "{\"status\":\"finish\",\"gameState\":0}";
+
+        for (GameSession session: allSessions) {
+            Player testPlayer1 = session.getFirstPlayer();
+            Player testPlayer2 = session.getSecondPlayer();
+
+            webSocketService.notifyGameOver(session, testPlayer1);
+            webSocketService.notifyGameOver(session, testPlayer2);
+        }
+
+        assertEquals(testJson, fakeRemoteEndPoint1.getData());
+        assertEquals(testJson, fakeRemoteEndPoint2.getData());
+    }
+
+    @Test
+    public void testIncrementScore() {
+        String message = "{\"status\":\"movePlatform\",\"direction\":\"STOP\"}";
+        String testJson = "{\"status\":\"incrementScore\",\"first\":{\"position\":1,\"score\":0},\"second\":{\"position\":2,\"score\":1}}";
+
+        gameWebSocket.onMessage(message);
+        assertEquals(testJson, fakeRemoteEndPoint1.getData());
+        assertEquals(testJson, fakeRemoteEndPoint2.getData());
+    }
 }

@@ -3,18 +3,15 @@ package main.gameService;
 import gameMechanics.game.Platform;
 
 /**
- * Created by said on 14.11.15.
+  Created by said on 14.11.15.
  */
+
 public class Player {
     private String name;
     private int score = 0;
     private Platform platform;
     private int myPosition = 0;
-
-    public Player(String name, Platform platform) {
-        this.name = name;
-        this.platform = platform;
-    }
+    private int resultStatus = 0;
 
     public Player(String name) {
         this.name = name;
@@ -22,10 +19,6 @@ public class Player {
 
     public String getName() {
         return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 
     public int getScore() {
@@ -44,8 +37,12 @@ public class Player {
         score++;
     }
 
-    public void movePlatform() {
-        platform.move();
+    public void setResultStatus(int status) {
+        resultStatus = status;
+    }
+
+    public int getResultStatus() {
+        return resultStatus;
     }
 
     public void setMyPosition(int myPosition) {

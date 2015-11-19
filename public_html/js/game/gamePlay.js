@@ -173,6 +173,26 @@ define([
             	myPlatform.direction = parseInt(data.first.direction, 10);
             	enemyPlatform.direction = parseInt(data.second.direction, 10);
             }
+            if(data.status == "start"){
+                            document.getElementById("wait").style.display = "none";
+                            document.getElementById("gameplay").style.display = "block";
+                            document.getElementById("myName").innerHTML = data.first.name;
+                            document.getElementById("enemyName").innerHTML = data.second.name;
+                        }
+                        if(data.status == "finish"){
+                           document.getElementById("gameOver").style.display = "block";
+                           document.getElementById("gameplay").style.display = "none";
+                           if(data.gameState == 0)
+                                document.getElementById("win").innerHTML = "dead heat!";
+                           else if (data.gameState == 1)
+                                document.getElementById("win").innerHTML = "first winner!";
+                           else if (data.gameState == 2)
+                                document.getElementById("win").innerHTML = "second winner!";
+                        }
+                        if(data.status == "incrementScore"){
+                            document.getElementById("myScore").innerHTML = parseInt(data.first.score, 10);
+                            document.getElementById("enemyScore").innerHTML = parseInt(data.second.score, 10);
+                        }
         }
 	}
 

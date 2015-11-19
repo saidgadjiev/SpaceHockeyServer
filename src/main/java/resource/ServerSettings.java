@@ -7,14 +7,9 @@ import java.io.Serializable;
  */
 public class ServerSettings implements Serializable, Resource {
     private int port;
-    private String host;
 
     public int getPort() {
         return port;
-    }
-
-    public String getHost() {
-        return host;
     }
 
     @Override

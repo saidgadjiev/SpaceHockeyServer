@@ -22,9 +22,11 @@ public interface WebSocketService {
 
     void notifyEnemyBallNewMotion(Player user);
 
-    void notifyStartGame(Player user);
-
-    void notifyGameOver(Player user);
+    void notifyStartGame(GameSession session, Player player);
 
     void notifySyncPlatformDirection(GameSession session, Player player);
+
+    void notifySyncScore(GameSession session, Player player);
+
+    void notifyGameOver(GameSession session, Player player);
 }

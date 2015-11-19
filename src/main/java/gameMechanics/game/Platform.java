@@ -1,5 +1,9 @@
 package gameMechanics.game;
 
+/**
+ Created by said on 18.11.15.
+ */
+
 public class Platform implements Sprite {
     private Position position;
     private Direction direction;

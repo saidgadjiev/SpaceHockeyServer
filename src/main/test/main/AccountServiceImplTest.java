@@ -8,8 +8,9 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 /**
- * Created by said on 09.10.15.
+  Created by said on 09.10.15.
  */
+
 public class AccountServiceImplTest {
     private final AccountServiceImpl accountService = new AccountServiceImpl();
     private final UserProfile testUser = new UserProfile("testLogin", "testPassword", "said@mail.ru");

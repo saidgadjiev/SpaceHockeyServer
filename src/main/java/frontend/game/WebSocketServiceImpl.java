@@ -45,18 +45,23 @@ public class WebSocketServiceImpl implements WebSocketService {
     }
 
     @Override
-    public void notifyStartGame(Player user) {
-        userSockets.get(user).startGame(user);
+    public void notifyStartGame(GameSession session, Player player) {
+        userSockets.get(player).startGame(session);
     }
 
     @Override
-    public void notifyGameOver(Player user) {
-        userSockets.get(user).gameOver(0);
+    public void notifyGameOver(GameSession session, Player player) {
+        userSockets.get(player).gameOver(session);
     }
 
     @Override
     public void notifySyncPlatformDirection(GameSession session, Player player) {
         userSockets.get(player).syncPlatformDirection(session);
+    }
+
+    @Override
+    public void notifySyncScore(GameSession session, Player player) {
+        userSockets.get(player).syncScore(session);
     }
 
 }

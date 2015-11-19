@@ -14,7 +14,7 @@ public class GameMechanicsSettingsTest {
     @Before
     public void setUp() throws Exception {
         ResourceFactory resourceFactory = ResourceFactory.getInstance();
-        testSettings = (GameMechanicsSettings) resourceFactory.loadResource("data/gameMechanicsSettings.xml");
+        testSettings = (GameMechanicsSettings) resourceFactory.loadResource("data/testSettings.xml");
     }
 
     @Test
@@ -27,7 +27,7 @@ public class GameMechanicsSettingsTest {
     public void testGetStepTime() throws Exception {
 
         //noinspection ConstantConditions
-        assertEquals(100, testSettings.getStepTime());
+        assertEquals(1000, testSettings.getStepTime());
     }
 
 }

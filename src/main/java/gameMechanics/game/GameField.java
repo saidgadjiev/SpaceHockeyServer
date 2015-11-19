@@ -1,12 +1,18 @@
 package gameMechanics.game;
 
 /**
- * Created by said on 18.11.15.
+  Created by said on 18.11.15.
  */
+
 public class GameField {
-    private int width = 500;
-    private int height = 630;
+    private int width;
+    private int height;
     private Position position = new Position(40, 40);
+
+    public GameField(int width, int height) {
+        this.width = width;
+        this.height = height;
+    }
 
     public int getWidth() {
         return width;

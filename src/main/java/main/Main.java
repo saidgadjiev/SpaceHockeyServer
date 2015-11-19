@@ -4,7 +4,6 @@ import admin.AdminPageServlet;
 import frontend.SignInServlet;
 import frontend.SignOutServlet;
 import frontend.SignUpServlet;
-import frontend.game.GameServlet;
 import frontend.game.WebSocketGameServlet;
 import frontend.game.WebSocketServiceImpl;
 import gameMechanics.GameMechanicsImpl;
@@ -27,9 +26,10 @@ import javax.servlet.Servlet;
 /**
  * @author S. Gadjiev
  */
+
 public class Main {
 
-    @SuppressWarnings("OverlyBroadThrowsClause")
+    @SuppressWarnings({"OverlyBroadThrowsClause", "SpellCheckingInspection"})
     public static void main(String[] args) throws Exception {
 
         ResourceFactory resourceFactory = ResourceFactory.getInstance();
@@ -55,7 +55,6 @@ public class Main {
         context.addServlet(new ServletHolder(signOut), "/auth/signout");
         context.addServlet(new ServletHolder(admin), "/admin");
         context.addServlet(new ServletHolder(new WebSocketGameServlet(accountService, gameMechanics, webSocketService)), "/gameplay");
-        context.addServlet(new ServletHolder(new GameServlet(accountService)), "/game.html");
 
         ResourceHandler resource_handler = new ResourceHandler();
         resource_handler.setResourceBase("public_html");

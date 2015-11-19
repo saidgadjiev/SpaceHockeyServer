@@ -7,8 +7,9 @@ import resource.sax.SettingsFileNotFoundException;
 import static junit.framework.Assert.assertEquals;
 
 /**
- * Created by said on 10.11.15.
+  Created by said on 10.11.15.
  */
+
 public class ResourceFactoryTest {
     private ResourceFactory resourceFactory;
 
@@ -25,7 +26,7 @@ public class ResourceFactoryTest {
 
         assertEquals(8080, serverSettings.getPort());
         assertEquals(10000, gameMechanicsSettings.getGameTime());
-        assertEquals(100, gameMechanicsSettings.getStepTime());
+        assertEquals(1000, gameMechanicsSettings.getStepTime());
     }
 
     @Test
@@ -51,6 +52,6 @@ public class ResourceFactoryTest {
 
         assertEquals(8080, serverSettings.getPort());
         assertEquals(10000, gameMechanicsSettings.getGameTime());
-        assertEquals(100, gameMechanicsSettings.getStepTime());
+        assertEquals(1000, gameMechanicsSettings.getStepTime());
     }
 }
