@@ -121,7 +121,6 @@ public class GameWebSocket {
         jsonSync.add("first", jsonFirst);
         jsonSync.add("second", jsonSecond);
         sendJSON(jsonSync);
-        System.out.println(jsonSync.toString());
     }
 
     public void gameOver(GameSession session) {

@@ -21,4 +21,5 @@ public class GameMechanicsSettings implements Serializable, Resource {
     public void setCorrectState() {
 
     }
+
 }

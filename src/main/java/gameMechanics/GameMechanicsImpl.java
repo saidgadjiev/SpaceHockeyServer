@@ -74,7 +74,6 @@ public class GameMechanicsImpl implements GameMechanics {
             syncPlatformDirection(myGameSession, myPlayer, enemyPlayer);
         }
     }
-
     public void run() {
         //noinspection InfiniteLoopStatement
         while (true) {

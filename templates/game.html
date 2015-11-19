@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html>
+<head>
+<<<<<<< HEAD
+    <meta charset="UTF-8"/>
+    <title>Game</title>
+    <script type="text/javascript">
+        var ws;
+        var started = false;
+        var finished = false;
+        var myName = "${myName}";
+        var enemyName = "";
+        init = function () {
+            ws = new WebSocket("ws://localhost:8080/gameplay");
+            ws.onopen = function (event) {
+            }
+            ws.onmessage = function (event) {
+                console.log("Message");
+                var data = JSON.parse(event.data);
+                if(data.status == "start"){
+                    document.getElementById("wait").style.display = "none";
+                    document.getElementById("gameplay").style.display = "block";
+                    document.getElementById("enemyName").innerHTML = data.enemyName;
+                }
+                if(data.status == "finish"){
+                   document.getElementById("gameOver").style.display = "block";
+                   document.getElementById("gameplay").style.display = "none";
+                   if(data.gameState == 0)
+                        document.getElementById("win").innerHTML = "dead heat!";
+                   else if (data.gameState == 1)
+                        document.getElementById("win").innerHTML = "winner!";
+                   else if (data.gameState == 2)
+                        document.getElementById("win").innerHTML = "loser!";
+                }
+                if(data.status == "increment" && data.name == "${myName}"){
+                    document.getElementById("myScore").innerHTML = data.score;
+                }
+                if(data.status == "increment" && data.name == document.getElementById("enemyName").innerHTML){
+                    document.getElementById("enemyScore").innerHTML = data.score;
+                }
+            }
+            ws.onclose = function (event) {
+            }
+        };
+        function sendMessage() {
+            var message = "{}";
+            ws.send(message);
+        }
+    </script>
+=======
+    <title>Test Canvas</title>
+    <meta charset='utf-8'/>
+	<script language="javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.4.4/jquery.min.js" type="text/javascript"></script>
+	<script language="javascript" src="js/utils/jquery.hotkeys.js" type="text/javascript"></script>
+	<script language="javascript" src="js/utils/key_status.js" type="text/javascript"></script>
+	<script language="javascript" src="js/utils/util.js" type="text/javascript"></script>
+	<canvas height='320' width='480' id='canvas'></canvas>
+<script type = "text/javascript">
+	var example = document.getElementById("canvas");
+
+	canvas = example.getContext('2d');
+	CANVAS_HEIGHT = example.height;
+	CANVAS_WIDTH = example.width;
+
+
+	function platform() {
+		this.color =  "#00A";
+ 		this.x = 0;
+  		this.y = 0;
+  		this.width = 32;
+  		this.height = 32;
+  		this.setPosition = function(x, y) {
+  			this.x = x;
+  			this.y = y;
+  		};
+  		this.draw = function() {
+    		canvas.fillStyle = this.color;
+    		canvas.fillRect(this.x, this.y, this.width, this.height);
+  		}
+	};
+
+	myPlatform = new platform();
+	myPlatform.setPosition(100, 100);
+
+	enemyPlatform = new platform();
+	enemyPlatform.setPosition(200, 100);
+
+	var socket;
+	var started = false;
+    var finished = false;
+	var myName = "${myName}";
+	var startMove = true;
+	var finishMove = true;
+    var enemyName = "";
+   	var start= false;
+   	var stop = false;
+
+	init = function() {
+		socket = new WebSocket("ws://localhost:8080/gameplay");
+		socket.onopen = function() {
+	  		alert("Connect");
+		};
+
+		socket.onmessage = function(event) {
+			var data = JSON.parse(event.data);
+			console.log(data);
+
+			if(data.status == "start"){
+               document.getElementById("wait").style.display = "none";
+               document.getElementById("gameplay").style.display = "block";
+               document.getElementById("enemyName").innerHTML = data.enemyName;
+            }
+			if (data.status == "Move") {
+				start = true;
+			}
+            /*
+            if(data.status == "UpdatePosition") {
+			   platform.setPosition(data.x, data.y);
+			}*/
+			/*if(data.status == "increment" && data.name == "${myName}"){
+	        	document.getElementById("myScore").innerHTML = data.score;
+	        }
+            if(data.status == "increment" && data.name == document.getElementById("enemyName").innerHTML){
+                document.getElementById("enemyScore").innerHTML = data.score;
+            }*/
+		};
+	};
+
+	var FPS = 30;
+
+	setInterval(function() {
+  		update();
+  		move();
+  		draw();
+	}, 1000/FPS);
+	function update() {
+		if (keydown.left) {
+			if (startMove) {
+				console.log("LeftDown");
+				startMove = false;
+				finishMove = true;
+
+				var message = "{}";
+				socket.send(message);
+			}
+		}
+		if (keyup.left) {
+			if (finishMove) {
+				console.log("LeftUp");
+				finishMove = false;
+				startMove = true;
+			}
+			keyup.left = false;
+		}
+		if (keydown.right) {
+			if (startMove) {
+				console.log("RightDown");
+				startMove = false;
+				finishMove = true;
+
+				var message = "{}";
+				socket.send(message);
+			}
+		}
+		if (keyup.right) {
+			if (finishMove) {
+				console.log("RightUp");
+				finishMove = false;
+				startMove = true;
+			}
+			keyup.right = false;
+		}
+
+		//platform.x = platform.x.clamp(0, CANVAS_WIDTH - platform.width);
+	};
+	function move() {
+		if (start) {
+			myPlatform.x -= 2;
+		}
+	}
+	function draw() {
+		canvas.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
+		myPlatform.draw();
+		enemyPlatform.draw();
+	};
+
+</script>
+>>>>>>> 0551b0d113e68779010a569c51dc670eb68badd5
+</head>
+<body onload="init();">
+<div id="body">
+	<div id="hello">
+		<p>Hello, ${myName}!</p>
+	</div>
+
+	<div id="wait">
+		<p>Prepare yourself. Wait for enemy!</p>
+	</div>
+
+	<div id="gameplay" style="display: none">
+		<div id="score">
+			<p>Your name: ${myName}</p>
+
+			<p>Enemy name: <span id="enemyName"></span></p>
+		</div>
+	</div>
+
+	<div id="gameOver" style="display: none">
+		<p>Game over! You are <span id="win"></span></p>
+	</div>
+
+</div>
+</body>
+</html>

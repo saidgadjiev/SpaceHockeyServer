@@ -1,8 +1,5 @@
 package resource;
 
-/**
- * Created by said on 30.10.15.
- */
 import resource.properties.ParsePropertiesFile;
 import resource.sax.ReadXMLFileSAX;
 import utils.VFS.VFS;
@@ -11,6 +8,10 @@ import utils.VFS.VFSImpl;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+
+/**
+ * Created by said on 30.10.15.
+ */
 
 /**
  * Created by said on 30.10.15.
@@ -31,7 +32,9 @@ public class ResourceFactory {
         Resource resource;
         if (!resources.containsKey(resourcePath)) {
             if (resourcePath.substring(resourcePath.lastIndexOf(".") + 1).equals("properties")) {
+
                 ParsePropertiesFile propertiesParser = new ParsePropertiesFile();
+
                 propertiesParser.parse(resourcePath);
 
                 resource = (Resource) propertiesParser.getObject();
