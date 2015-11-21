@@ -4,44 +4,19 @@ import gameMechanics.GameSession;
 import main.gameService.Player;
 import main.gameService.WebSocketService;
 
-import java.util.HashMap;
 import java.util.Map;
+import java.util.TreeMap;
 
 /**
- * Created by said on 20.10.15.
+  Created by said on 20.10.15.
  */
 
 public class WebSocketServiceImpl implements WebSocketService {
-    private Map<Player, GameWebSocket> userSockets = new HashMap<>();
+    private Map<Player, GameWebSocket> userSockets = new TreeMap<>();
 
     @Override
     public void addPlayer(GameWebSocket user) {
         userSockets.put(user.getMyPlayer(), user);
-    }
-
-    @Override
-    public void notifyMyNewScore(Player user) {
-    }
-
-    @Override
-    public void notifyEnemyNewScore(Player user) {
-    }
-
-    @Override
-    public void notifyMyPlatformNewDirection(Player user) {
-    }
-
-    @Override
-    public void notifyEnemyPlatformNewDirection(Player user) {
-    }
-
-    @Override
-    public void notifyMyBallNewMootion(Player user) {
-
-    }
-
-    @Override
-    public void notifyEnemyBallNewMotion(Player user) {
     }
 
     @Override
@@ -64,4 +39,7 @@ public class WebSocketServiceImpl implements WebSocketService {
         userSockets.get(player).syncScore(session);
     }
 
+    public void removeWebSocket(Player player) {
+        userSockets.remove(player);
+    }
 }

@@ -51,11 +51,11 @@ public class GameWebSocket {
         jsonStart.addProperty("status", "start");
 
         JsonObject jsonFirst = new JsonObject();
-        jsonFirst.addProperty("position", firstPlayer.getMyPosition());
+        jsonFirst.addProperty("position", firstPlayer.getMyPosition().ordinal());
         jsonFirst.addProperty("name", firstPlayer.getName());
 
         JsonObject jsonSecond = new JsonObject();
-        jsonSecond.addProperty("position", secondPlayer.getMyPosition());
+        jsonSecond.addProperty("position", secondPlayer.getMyPosition().ordinal());
         jsonSecond.addProperty("name", secondPlayer.getName());
 
         jsonStart.add("first", jsonFirst);
@@ -91,11 +91,11 @@ public class GameWebSocket {
         jsonSync.addProperty("status", "movePlatform");
 
         JsonObject jsonFirst = new JsonObject();
-        jsonFirst.addProperty("position", firstPlayer.getMyPosition());
+        jsonFirst.addProperty("position", firstPlayer.getMyPosition().ordinal());
         jsonFirst.addProperty("direction", firstPlayer.getPlatform().getDirection().ordinal());
 
         JsonObject jsonSecond = new JsonObject();
-        jsonSecond.addProperty("position", secondPlayer.getMyPosition());
+        jsonSecond.addProperty("position", secondPlayer.getMyPosition().ordinal());
         jsonSecond.addProperty("direction", secondPlayer.getPlatform().getDirection().ordinal());
 
         jsonSync.add("first", jsonFirst);
@@ -111,33 +111,23 @@ public class GameWebSocket {
         jsonSync.addProperty("status", "incrementScore");
 
         JsonObject jsonFirst = new JsonObject();
-        jsonFirst.addProperty("position", firstPlayer.getMyPosition());
+        jsonFirst.addProperty("position", firstPlayer.getMyPosition().ordinal());
         jsonFirst.addProperty("score", firstPlayer.getScore());
 
         JsonObject jsonSecond = new JsonObject();
-        jsonSecond.addProperty("position", secondPlayer.getMyPosition());
+        jsonSecond.addProperty("position", secondPlayer.getMyPosition().ordinal());
         jsonSecond.addProperty("score", secondPlayer.getScore());
 
         jsonSync.add("first", jsonFirst);
         jsonSync.add("second", jsonSecond);
         sendJSON(jsonSync);
-        System.out.println(jsonSync.toString());
     }
 
     public void gameOver(GameSession session) {
-        Player firstPlayer = session.getFirstPlayer();
-        int gameState = 0;
-
-        if (firstPlayer.getResultStatus() == 1) {
-            gameState = 1;
-        } else if (firstPlayer.getResultStatus() == 2) {
-            gameState = 2;
-        }
-
         JsonObject jsonFinish = new JsonObject();
 
         jsonFinish.addProperty("status", "finish");
-        jsonFinish.addProperty("gameState", gameState);
+        jsonFinish.addProperty("gameState", session.getResultState().ordinal());
         sendJSON(jsonFinish);
     }
 

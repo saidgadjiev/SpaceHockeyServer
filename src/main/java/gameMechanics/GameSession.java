@@ -1,12 +1,14 @@
 package gameMechanics;
 
 import gameMechanics.game.*;
+import main.gameService.GamePosition;
+import main.gameService.GameResultState;
 import main.gameService.Player;
 
 import java.util.Date;
 
 /**
- * Created by said on 20.10.15.
+  Created by said on 20.10.15.
  */
 
 public class GameSession {
@@ -14,9 +16,8 @@ public class GameSession {
     private final Player first;
     private final Player second;
     private State sessionState = State.PLAY;
-    private Ball ball = new Ball(new Position(100, 100), 5, 5);
+    private GameResultState resultState = GameResultState.DEAD_HEAT;
     private GameField gameField = new GameField(500, 630);
-    private int gameState = 0;
     private enum State { PLAY, FINISH }
 
     public GameSession(Player player1, Player player2) {
@@ -28,19 +29,11 @@ public class GameSession {
         this.second = player2;
     }
 
-    public Player getEnemyPlayer(int myPos) {
-        if (myPos == 1) {
+    public Player getEnemyPlayer(GamePosition myPos) {
+        if (myPos == GamePosition.UPPER) {
             return second;
         } else {
             return first;
-        }
-    }
-
-    public Player getSelfPlayer(int myPos) {
-        if (myPos == 1) {
-            return first;
-        } else {
-            return second;
         }
     }
 
@@ -54,16 +47,16 @@ public class GameSession {
 
     public void determineWinner() {
         if (first.getScore() > second.getScore()) {
-            first.setResultStatus(1);
-            second.setResultStatus(2);
+            resultState = GameResultState.FIRST_WIN;
         }  else if (first.getScore() < second.getScore()) {
-            first.setResultStatus(2);
-            second.setResultStatus(1);
-        } else {
-            first.setResultStatus(0);
-            second.setResultStatus(0);
+            resultState = GameResultState.SECOND_WIN;
         }
+
         sessionState = State.FINISH;
+    }
+
+    public GameResultState getResultState() {
+        return resultState;
     }
 
     public boolean isCollisionWithWall(Player player) {

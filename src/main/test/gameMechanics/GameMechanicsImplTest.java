@@ -5,15 +5,19 @@ import frontend.game.WebSocketServiceImpl;
 import main.gameService.GameMechanics;
 import main.gameService.Player;
 import main.gameService.WebSocketService;
+import org.eclipse.jetty.websocket.api.RemoteEndpoint;
 import org.eclipse.jetty.websocket.api.Session;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.ArgumentCaptor;
 import resource.GameMechanicsSettings;
 import resource.ResourceFactory;
 
+import java.io.IOException;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -28,11 +32,19 @@ public class GameMechanicsImplTest {
     private WebSocketService webSocketService;
     @SuppressWarnings("FieldCanBeLocal")
     private GameWebSocket gameWebSocket;
-    private FakeRemoteEndPoint fakeRemoteEndPoint1 = new FakeRemoteEndPoint();
-    private FakeRemoteEndPoint fakeRemoteEndPoint2 = new FakeRemoteEndPoint();
+    private final RemoteEndpoint remoteEndPointMock1 = mock(RemoteEndpoint.class);
+    private final RemoteEndpoint remoteEndPointMock2 = mock(RemoteEndpoint.class);
+    private final ArgumentCaptor<String> argumentCaptor1 = ArgumentCaptor.forClass(String.class);
+    private final ArgumentCaptor<String> argumentCaptor2 = ArgumentCaptor.forClass(String.class);
 
     @Before
     public void setUp() {
+        try {
+            doNothing().when(remoteEndPointMock1).sendString(argumentCaptor1.capture());
+            doNothing().when(remoteEndPointMock2).sendString(argumentCaptor2.capture());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         webSocketService = new WebSocketServiceImpl();
         GameMechanicsSettings gameMechanicsSettings = (GameMechanicsSettings) ResourceFactory.getInstance().loadResource("data/testSettings.xml");
         gameMechanics = new GameMechanicsImpl(webSocketService, gameMechanicsSettings);
@@ -40,8 +52,8 @@ public class GameMechanicsImplTest {
 
         Session testSession1 = mock(Session.class);
         Session testSession2 = mock(Session.class);
-        when(testSession1.getRemote()).thenReturn(fakeRemoteEndPoint1);
-        when(testSession2.getRemote()).thenReturn(fakeRemoteEndPoint2);
+        when(testSession1.getRemote()).thenReturn(remoteEndPointMock1);
+        when(testSession2.getRemote()).thenReturn(remoteEndPointMock2);
         gameWebSocket.onOpen(testSession1);
         gameWebSocket = new GameWebSocket("enemyName", gameMechanics, webSocketService);
         gameWebSocket.onOpen(testSession2);
@@ -52,8 +64,8 @@ public class GameMechanicsImplTest {
     public void testAddUserAndStartGame() throws Exception {
         String testJson1 = "{\"status\":\"start\",\"first\":{\"position\":1,\"name\":\"myName\"},\"second\":{\"position\":2,\"name\":\"enemyName\"}}";
         String testJson2 = "{\"status\":\"start\",\"first\":{\"position\":1,\"name\":\"myName\"},\"second\":{\"position\":2,\"name\":\"enemyName\"}}";
-        assertEquals(testJson1, fakeRemoteEndPoint1.getData());
-        assertEquals(testJson2, fakeRemoteEndPoint2.getData());
+        assertEquals(testJson1, argumentCaptor1.getValue());
+        assertEquals(testJson2, argumentCaptor1.getValue());
     }
 
     @Test
@@ -69,8 +81,8 @@ public class GameMechanicsImplTest {
             webSocketService.notifyGameOver(session, testPlayer2);
         }
 
-        assertEquals(testJson, fakeRemoteEndPoint1.getData());
-        assertEquals(testJson, fakeRemoteEndPoint2.getData());
+        assertEquals(testJson, argumentCaptor1.getValue());
+        assertEquals(testJson, argumentCaptor2.getValue());
     }
 
     @Test
@@ -79,7 +91,7 @@ public class GameMechanicsImplTest {
         String testJson = "{\"status\":\"incrementScore\",\"first\":{\"position\":1,\"score\":0},\"second\":{\"position\":2,\"score\":1}}";
 
         gameWebSocket.onMessage(message);
-        assertEquals(testJson, fakeRemoteEndPoint1.getData());
-        assertEquals(testJson, fakeRemoteEndPoint2.getData());
+        assertEquals(testJson, argumentCaptor1.getValue());
+        assertEquals(testJson, argumentCaptor2.getValue());
     }
 }

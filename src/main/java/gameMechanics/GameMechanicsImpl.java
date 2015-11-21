@@ -4,11 +4,16 @@ import com.google.gson.JsonObject;
 import gameMechanics.game.Direction;
 import main.TimeHelper;
 import main.gameService.GameMechanics;
+import main.gameService.GamePosition;
 import main.gameService.Player;
 import main.gameService.WebSocketService;
 import resource.GameMechanicsSettings;
 
-import java.util.*;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 /**
   Created by said on 20.10.15.
@@ -19,9 +24,9 @@ public class GameMechanicsImpl implements GameMechanics {
     private final int stepTime;
     private final int gameTime;
     private WebSocketService webSocketService;
-    private Map<Player, GameSession> playerToGame = new HashMap<>();
+    private Map<Player, GameSession> playerToGame = new TreeMap<>();
     private List<GameSession> allSessions = new LinkedList<>();
-    private Queue<Player> waiters = new LinkedList<>();
+    private ConcurrentLinkedQueue<Player> waiters = new ConcurrentLinkedQueue<>();
 
     public GameMechanicsImpl(WebSocketService webSocketService, GameMechanicsSettings gameMechanicsSettings) {
         this.webSocketService = webSocketService;
@@ -80,6 +85,7 @@ public class GameMechanicsImpl implements GameMechanics {
         while (true) {
             createGame();
             gmStep();
+            makeStep();
             TimeHelper.sleep(stepTime);
         }
     }
@@ -89,8 +95,10 @@ public class GameMechanicsImpl implements GameMechanics {
             Player first = waiters.poll();
             Player second = waiters.poll();
 
-            first.setMyPosition(1);
-            second.setMyPosition(2);
+            final GamePosition myPosition = GamePosition.UPPER;
+            final GamePosition enemyPosition = myPosition.getOposite();
+            first.setMyPosition(myPosition);
+            second.setMyPosition(enemyPosition);
 
             starGame(first, second);
         }
@@ -99,11 +107,8 @@ public class GameMechanicsImpl implements GameMechanics {
     private void gmStep() {
         for (GameSession session : allSessions) {
             if (!session.isFinished()) {
-                makeStep();
                 if (session.getSessionTime() > gameTime) {
-                    session.determineWinner();
-                    webSocketService.notifyGameOver(session, session.getFirstPlayer());
-                    webSocketService.notifyGameOver(session, session.getSecondPlayer());
+                    finishGame(session);
                 }
             }
         }
@@ -112,15 +117,31 @@ public class GameMechanicsImpl implements GameMechanics {
     private void makeStep() {
         for (Player player: playerToGame.keySet()) {
             GameSession session = playerToGame.get(player);
-            if (!session.isCollisionWithWall(player)) {
-                player.getPlatform().move();
-            } else {
-                player.getPlatform().setDirection(Direction.STOP);
-                syncPlatformDirection(session, player, session.getEnemyPlayer(player.getMyPosition()));
+            if (!session.isFinished()) {
+                if (!session.isCollisionWithWall(player)) {
+                    player.getPlatform().move();
+                } else {
+                    player.getPlatform().setDirection(Direction.STOP);
+                    syncPlatformDirection(session, player, session.getEnemyPlayer(player.getMyPosition()));
+                }
             }
         }
     }
 
+    private void finishGame(GameSession session) {
+        Player firstPlayer = session.getFirstPlayer();
+        Player secondPlayer = session.getSecondPlayer();
+
+        session.determineWinner();
+        webSocketService.notifyGameOver(session, firstPlayer);
+        webSocketService.notifyGameOver(session, secondPlayer);
+
+        playerToGame.remove(firstPlayer);
+        playerToGame.remove(secondPlayer);
+        allSessions.remove(session);
+        webSocketService.removeWebSocket(firstPlayer);
+        webSocketService.removeWebSocket(secondPlayer);
+    }
     public List<GameSession> getAllSessions() {
         return allSessions;
     }
