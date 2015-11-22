@@ -4,15 +4,15 @@ import gameMechanics.GameSession;
 import main.gameService.Player;
 import main.gameService.WebSocketService;
 
+import java.util.HashMap;
 import java.util.Map;
-import java.util.TreeMap;
 
 /**
   Created by said on 20.10.15.
  */
 
 public class WebSocketServiceImpl implements WebSocketService {
-    private Map<Player, GameWebSocket> userSockets = new TreeMap<>();
+    private Map<Player, GameWebSocket> userSockets = new HashMap<>();
 
     @Override
     public void addPlayer(GameWebSocket user) {

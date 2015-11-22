@@ -9,10 +9,7 @@ import main.gameService.Player;
 import main.gameService.WebSocketService;
 import resource.GameMechanicsSettings;
 
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.*;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 /**
@@ -24,7 +21,7 @@ public class GameMechanicsImpl implements GameMechanics {
     private final int stepTime;
     private final int gameTime;
     private WebSocketService webSocketService;
-    private Map<Player, GameSession> playerToGame = new TreeMap<>();
+    private Map<Player, GameSession> playerToGame = new HashMap<>();
     private List<GameSession> allSessions = new LinkedList<>();
     private ConcurrentLinkedQueue<Player> waiters = new ConcurrentLinkedQueue<>();
 

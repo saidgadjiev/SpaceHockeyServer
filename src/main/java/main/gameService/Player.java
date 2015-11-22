@@ -1,13 +1,12 @@
 package main.gameService;
 
 import gameMechanics.game.Platform;
-import org.jetbrains.annotations.NotNull;
 
 /**
   Created by said on 14.11.15.
  */
 
-public class Player implements Comparable {
+public class Player {
     private String name;
     private int score = 0;
     private Platform platform;
@@ -43,12 +42,5 @@ public class Player implements Comparable {
 
     public GamePosition getMyPosition() {
         return myPosition;
-    }
-
-    @Override
-    public int compareTo(@NotNull Object o) {
-        Player obj = (Player) o;
-
-        return name.compareTo(obj.getName());
     }
 }
