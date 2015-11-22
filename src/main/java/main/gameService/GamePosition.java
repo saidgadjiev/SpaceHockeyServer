@@ -6,12 +6,5 @@ package main.gameService;
 public enum GamePosition {
     NONE,
     UPPER,
-    LOWER;
-
-    public GamePosition getOposite() {
-        if (this == UPPER) {
-            return LOWER;
-        }
-        return UPPER;
-    }
+    LOWER
 }

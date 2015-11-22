@@ -21,7 +21,8 @@ public class GameMechanicsImpl implements GameMechanics {
     private final int stepTime;
     private final int gameTime;
     private WebSocketService webSocketService;
-    private Map<Player, GameSession> playerToGame = new HashMap<>();
+    private Map<String, GameSession> playerToGame = new HashMap<>();
+    private List<Player> allPlayers = new LinkedList<>();
     private List<GameSession> allSessions = new LinkedList<>();
     private ConcurrentLinkedQueue<Player> waiters = new ConcurrentLinkedQueue<>();
 
@@ -42,7 +43,7 @@ public class GameMechanicsImpl implements GameMechanics {
     }
 
     public void incrementScore(Player myPlayer) {
-        GameSession myGameSession = playerToGame.get(myPlayer);
+        GameSession myGameSession = playerToGame.get(myPlayer.getName());
         myPlayer.incrementScore();
         Player enemyPlayer = myGameSession.getEnemyPlayer(myPlayer.getMyPosition());
         webSocketService.notifySyncScore(myGameSession, myPlayer);
@@ -66,7 +67,7 @@ public class GameMechanicsImpl implements GameMechanics {
     }
 
     public void analizeMessage(Player myPlayer, JsonObject message) {
-        GameSession myGameSession = playerToGame.get(myPlayer);
+        GameSession myGameSession = playerToGame.get(myPlayer.getName());
         Player enemyPlayer = myGameSession.getEnemyPlayer(myPlayer.getMyPosition());
         if (message.get("status").getAsString().equals("movePlatform")) {
             myPlayer.getPlatform().setDirection(getDirectionFromMessage(message));
@@ -93,7 +94,7 @@ public class GameMechanicsImpl implements GameMechanics {
             Player second = waiters.poll();
 
             final GamePosition myPosition = GamePosition.UPPER;
-            final GamePosition enemyPosition = myPosition.getOposite();
+            final GamePosition enemyPosition = GamePosition.LOWER;
             first.setMyPosition(myPosition);
             second.setMyPosition(enemyPosition);
 
@@ -112,8 +113,8 @@ public class GameMechanicsImpl implements GameMechanics {
     }
 
     private void makeStep() {
-        for (Player player: playerToGame.keySet()) {
-            GameSession session = playerToGame.get(player);
+        for (Player player: allPlayers) {
+            GameSession session = playerToGame.get(player.getName());
             if (!session.isFinished()) {
                 if (!session.isCollisionWithWall(player)) {
                     player.getPlatform().move();
@@ -133,9 +134,11 @@ public class GameMechanicsImpl implements GameMechanics {
         webSocketService.notifyGameOver(session, firstPlayer);
         webSocketService.notifyGameOver(session, secondPlayer);
 
-        playerToGame.remove(firstPlayer);
-        playerToGame.remove(secondPlayer);
+        playerToGame.remove(firstPlayer.getName());
+        playerToGame.remove(secondPlayer.getName());
         allSessions.remove(session);
+        allPlayers.remove(firstPlayer);
+        allPlayers.remove(secondPlayer);
         webSocketService.removeWebSocket(firstPlayer);
         webSocketService.removeWebSocket(secondPlayer);
     }
@@ -146,8 +149,10 @@ public class GameMechanicsImpl implements GameMechanics {
     private void starGame(Player firstPlayer, Player secondPlayer) {
         GameSession gameSession = new GameSession(firstPlayer, secondPlayer);
         allSessions.add(gameSession);
-        playerToGame.put(firstPlayer, gameSession);
-        playerToGame.put(secondPlayer, gameSession);
+        playerToGame.put(firstPlayer.getName(), gameSession);
+        playerToGame.put(secondPlayer.getName(), gameSession);
+        allPlayers.add(firstPlayer);
+        allPlayers.add(secondPlayer);
 
         webSocketService.notifyStartGame(gameSession, firstPlayer);
         webSocketService.notifyStartGame(gameSession, secondPlayer);

@@ -21,7 +21,7 @@ public class GameSessionTest {
     @Before
     public void setUp() {
         final GamePosition myPosition = GamePosition.UPPER;
-        final GamePosition enemyPosition = myPosition.getOposite();
+        final GamePosition enemyPosition = GamePosition.LOWER;
 
         testPlayer1.setMyPosition(myPosition);
         testPlayer2.setMyPosition(enemyPosition);

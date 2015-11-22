@@ -12,34 +12,34 @@ import java.util.Map;
  */
 
 public class WebSocketServiceImpl implements WebSocketService {
-    private Map<Player, GameWebSocket> userSockets = new HashMap<>();
+    private Map<String, GameWebSocket> userSockets = new HashMap<>();
 
     @Override
     public void addPlayer(GameWebSocket user) {
-        userSockets.put(user.getMyPlayer(), user);
+        userSockets.put(user.getMyPlayer().getName(), user);
     }
 
     @Override
     public void notifyStartGame(GameSession session, Player player) {
-        userSockets.get(player).startGame(session);
+        userSockets.get(player.getName()).startGame(session);
     }
 
     @Override
     public void notifyGameOver(GameSession session, Player player) {
-        userSockets.get(player).gameOver(session);
+        userSockets.get(player.getName()).gameOver(session);
     }
 
     @Override
     public void notifySyncPlatformDirection(GameSession session, Player player) {
-        userSockets.get(player).syncPlatformDirection(session);
+        userSockets.get(player.getName()).syncPlatformDirection(session);
     }
 
     @Override
     public void notifySyncScore(GameSession session, Player player) {
-        userSockets.get(player).syncScore(session);
+        userSockets.get(player.getName()).syncScore(session);
     }
 
     public void removeWebSocket(Player player) {
-        userSockets.remove(player);
+        userSockets.remove(player.getName());
     }
 }
