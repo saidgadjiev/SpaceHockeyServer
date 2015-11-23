@@ -1,27 +1,8 @@
 package main;
 
-import admin.AdminPageServlet;
-import frontend.SignInServlet;
-import frontend.SignOutServlet;
-import frontend.SignUpServlet;
-import frontend.game.WebSocketGameServlet;
-import frontend.game.WebSocketServiceImpl;
-import gameMechanics.GameMechanicsImpl;
-import main.accountService.AccountService;
-import main.accountService.AccountServiceImpl;
-import main.gameService.GameMechanics;
-import main.gameService.WebSocketService;
-import org.eclipse.jetty.server.Handler;
-import org.eclipse.jetty.server.Server;
-import org.eclipse.jetty.server.handler.HandlerList;
-import org.eclipse.jetty.server.handler.ResourceHandler;
-import org.eclipse.jetty.servlet.ServletContextHandler;
-import org.eclipse.jetty.servlet.ServletHolder;
-import resource.GameMechanicsSettings;
-import resource.ResourceFactory;
-import resource.ServerSettings;
-
-import javax.servlet.Servlet;
+import DBService.DBService;
+import DBService.DBServiceImpl;
+import main.user.UserProfile;
 
 /**
  * @author S. Gadjiev
@@ -31,8 +12,9 @@ public class Main {
 
     @SuppressWarnings({"OverlyBroadThrowsClause", "SpellCheckingInspection"})
     public static void main(String[] args) throws Exception {
+        hibernateTest();
 
-        ResourceFactory resourceFactory = ResourceFactory.getInstance();
+        /*ResourceFactory resourceFactory = ResourceFactory.getInstance();
         resourceFactory.loadAllResources("cfg");
         resourceFactory.loadAllResources("data");
 
@@ -67,7 +49,25 @@ public class Main {
 
         server.start();
 
-        gameMechanics.run();
+        gameMechanics.run();*/
 
+    }
+
+    public static void hibernateTest() {
+        DBService dbService = new DBServiceImpl();
+
+        String status = dbService.getLocalStatus();
+        System.out.println("Status: " + status);
+
+        dbService.save(new UserProfile("said", "said1995", "said@mail.ru"));
+        dbService.save(new UserProfile("igor", "igor1992", "igor@mail.ru"));
+
+        //UserProfile dataSet = dbService.readByName("said");
+        //System.out.println(dataSet);
+
+        //List<UserDataSet> dataSets = dbService.readAll();
+        //dataSets.forEach(System.out::println);
+
+        dbService.shutdown();
     }
 }
