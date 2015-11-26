@@ -2,6 +2,8 @@ package gameMechanics;
 
 import frontend.game.GameWebSocket;
 import frontend.game.WebSocketServiceImpl;
+import main.accountService.AccountService;
+import main.accountService.AccountServiceImpl;
 import main.gameService.GameMechanics;
 import main.gameService.Player;
 import main.gameService.WebSocketService;
@@ -39,6 +41,7 @@ public class GameMechanicsImplTest {
 
     @Before
     public void setUp() {
+        AccountService accountService = new AccountServiceImpl();
         try {
             doNothing().when(remoteEndPointMock1).sendString(argumentCaptor1.capture());
             doNothing().when(remoteEndPointMock2).sendString(argumentCaptor2.capture());
@@ -47,7 +50,7 @@ public class GameMechanicsImplTest {
         }
         webSocketService = new WebSocketServiceImpl();
         GameMechanicsSettings gameMechanicsSettings = (GameMechanicsSettings) ResourceFactory.getInstance().loadResource("data/testSettings.xml");
-        gameMechanics = new GameMechanicsImpl(webSocketService, gameMechanicsSettings);
+        gameMechanics = new GameMechanicsImpl(accountService, webSocketService, gameMechanicsSettings);
         gameWebSocket = new GameWebSocket("myName", gameMechanics, webSocketService);
 
         Session testSession1 = mock(Session.class);

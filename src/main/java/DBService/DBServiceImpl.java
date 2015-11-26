@@ -1,6 +1,6 @@
-package DBService;
+package dbService;
 
-import DBService.DAO.UserProfileDAO;
+import dbService.dao.UserProfileDAO;
 import main.user.UserProfile;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -27,6 +27,7 @@ public class DBServiceImpl implements DBService {
         configuration.setProperty("hibernate.connection.username", "root");
         configuration.setProperty("hibernate.connection.password", "said1995");
         configuration.setProperty("hibernate.show_sql", "true");
+        //configuration.setProperty("hibernate.hbm2ddl.auto", "create");
 
         sessionFactory = createSessionFactory(configuration);
     }
@@ -46,6 +47,7 @@ public class DBServiceImpl implements DBService {
         UserProfileDAO dao = new UserProfileDAO(session);
         dao.save(dataSet);
         transaction.commit();
+        session.close();
     }
 
     public UserProfile read(long id) {
@@ -64,6 +66,28 @@ public class DBServiceImpl implements DBService {
         Session session = sessionFactory.openSession();
         UserProfileDAO dao = new UserProfileDAO(session);
         return dao.readAll();
+    }
+
+    public long readCountAll() {
+        Session session = sessionFactory.openSession();
+        UserProfileDAO dao = new UserProfileDAO(session);
+        return dao.readCountAll();
+    }
+
+    public void update(UserProfile dataSet) {
+        Session session = sessionFactory.openSession();
+        Transaction transaction = session.beginTransaction();
+        UserProfileDAO dao = new UserProfileDAO(session);
+        dao.update(dataSet);
+        session.update(dataSet);
+        transaction.commit();
+        session.close();
+    }
+
+    public List<UserProfile> readLimitOrder(int limit) {
+        Session session = sessionFactory.openSession();
+        UserProfileDAO dao = new UserProfileDAO(session);
+        return dao.readLimitOrder(limit);
     }
 
     public void shutdown() {

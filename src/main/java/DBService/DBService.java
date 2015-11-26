@@ -1,4 +1,4 @@
-package DBService;
+package dbService;
 
 import main.user.UserProfile;
 
@@ -18,6 +18,12 @@ public interface DBService {
     UserProfile readByName(String name);
 
     List<UserProfile> readAll();
+
+    long readCountAll();
+
+    void update(UserProfile dataSet);
+
+    List<UserProfile> readLimitOrder(int limit);
 
     void shutdown();
 }

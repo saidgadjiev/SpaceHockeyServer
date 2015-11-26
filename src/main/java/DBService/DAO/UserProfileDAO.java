@@ -1,8 +1,10 @@
-package DBService.DAO;
+package dbService.dao;
 
 import main.user.UserProfile;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
+import org.hibernate.criterion.Order;
+import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 
 import java.util.List;
@@ -20,7 +22,6 @@ public class UserProfileDAO {
 
     public void save(UserProfile dataSet) {
         session.save(dataSet);
-        session.close();
     }
 
     public UserProfile read(long id) {
@@ -36,5 +37,23 @@ public class UserProfileDAO {
     public List<UserProfile> readAll() {
         Criteria criteria = session.createCriteria(UserProfile.class);
         return (List<UserProfile>) criteria.list();
+    }
+
+    public void update(UserProfile dataSet) {
+        session.update(dataSet);
+    }
+
+    @SuppressWarnings("unchecked")
+    public List<UserProfile> readLimitOrder(int limit) {
+        Criteria criteria = session.createCriteria(UserProfile.class);
+        criteria.addOrder(Order.desc("score"));
+        criteria.setMaxResults(limit);
+        return (List<UserProfile>) criteria.list();
+    }
+
+    public long readCountAll() {
+        Criteria criteria = session.createCriteria(UserProfile.class);
+        criteria.setProjection(Projections.rowCount());
+        return (long) criteria.list().get(0);
     }
 }

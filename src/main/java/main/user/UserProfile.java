@@ -24,14 +24,31 @@ public class UserProfile implements Serializable {
     @Column(name = "email")
     private String email;
 
-    public UserProfile() {
+    @Column(name = "score")
+    private int score;
 
+    public UserProfile() {
+        this.id = -1;
+        this.login = null;
+        this.password = null;
+        this.email = null;
+        this.score = 0;
     }
 
     public UserProfile(String login, String password, String email) {
         this.login = login;
         this.password = password;
         this.email = email;
+        this.score = 0;
+        this.id = -1;
+    }
+
+    public UserProfile(long id, String login, String password, String email) {
+        this.id = id;
+        this.login = login;
+        this.password = password;
+        this.email = email;
+        this.score = 0;
     }
 
     public long getId() {
@@ -64,5 +81,25 @@ public class UserProfile implements Serializable {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public int getScore() {
+        return score;
+    }
+
+    public void setScore(int score) {
+        this.score = score;
+    }
+
+    public void incrementScore() {
+        this.score++;
+    }
+
+    @Override
+    public String toString() {
+        return "UserDataSet{" +
+                "id=" + id +
+                ", login='" + login + '\'' +
+                '}';
     }
 }

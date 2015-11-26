@@ -3,10 +3,13 @@ package gameMechanics;
 import com.google.gson.JsonObject;
 import gameMechanics.game.Direction;
 import main.TimeHelper;
+import main.accountService.AccountService;
 import main.gameService.GameMechanics;
 import main.gameService.GamePosition;
 import main.gameService.Player;
 import main.gameService.WebSocketService;
+import main.user.UserProfile;
+import org.jetbrains.annotations.TestOnly;
 import resource.GameMechanicsSettings;
 
 import java.util.*;
@@ -20,13 +23,15 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 public class GameMechanicsImpl implements GameMechanics {
     private final int stepTime;
     private final int gameTime;
+    private AccountService accountService;
     private WebSocketService webSocketService;
     private Map<String, GameSession> playerToGame = new HashMap<>();
     private List<Player> allPlayers = new LinkedList<>();
     private List<GameSession> allSessions = new LinkedList<>();
     private ConcurrentLinkedQueue<Player> waiters = new ConcurrentLinkedQueue<>();
 
-    public GameMechanicsImpl(WebSocketService webSocketService, GameMechanicsSettings gameMechanicsSettings) {
+    public GameMechanicsImpl(AccountService accountService, WebSocketService webSocketService, GameMechanicsSettings gameMechanicsSettings) {
+        this.accountService = accountService;
         this.webSocketService = webSocketService;
         this.stepTime = gameMechanicsSettings.getStepTime() / 60;
         this.gameTime = gameMechanicsSettings.getGameTime();
@@ -133,7 +138,6 @@ public class GameMechanicsImpl implements GameMechanics {
         session.determineWinner();
         webSocketService.notifyGameOver(session, firstPlayer);
         webSocketService.notifyGameOver(session, secondPlayer);
-
         playerToGame.remove(firstPlayer.getName());
         playerToGame.remove(secondPlayer.getName());
         allSessions.remove(session);
@@ -141,7 +145,24 @@ public class GameMechanicsImpl implements GameMechanics {
         allPlayers.remove(secondPlayer);
         webSocketService.removeWebSocket(firstPlayer);
         webSocketService.removeWebSocket(secondPlayer);
+
+        switch (session.getResultState()) {
+            case FIRST_WIN:
+                UserProfile firstProfile = accountService.getUser(firstPlayer.getName());
+                firstProfile.incrementScore();
+                accountService.updateUser(firstProfile);
+                break;
+            case SECOND_WIN:
+                UserProfile secondProfile = accountService.getUser(secondPlayer.getName());
+                secondProfile.incrementScore();
+                accountService.updateUser(secondProfile);
+                break;
+            default:
+                break;
+        }
     }
+
+    @TestOnly
     public List<GameSession> getAllSessions() {
         return allSessions;
     }

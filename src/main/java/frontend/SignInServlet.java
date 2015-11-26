@@ -52,7 +52,6 @@ public class SignInServlet extends HttpServlet {
                 password = "";
             }
         }
-        accountService.addUser(login, new UserProfile(login, password, email));
         if (status == HttpServletResponse.SC_OK) {
             if (request.getSession().getAttribute("login") != null) {
                 login = "";

@@ -1,15 +1,15 @@
 package templater;
 
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-import freemarker.template.Configuration;
+import main.user.UserProfile;
+
+import java.util.List;
 
 /**
  * @author said
  */
 public class PageGenerator {
-
-    private static final String HTML_DIR = "templates";
-    private static final Configuration CFG = new Configuration();
 
     public static String setResponseDataUser(int status, String login, String password, String email)
     {
@@ -25,14 +25,35 @@ public class PageGenerator {
         return jsonObject.toString();
     }
 
-    public static String setResponseDataAdmin(int status, int countUsers, int countOnlineUsers)
+    public static String setResponseDataAdmin(int status, long countUsers, long countOnlineUsers)
     {
         JsonObject jsonObject = new JsonObject();
         JsonObject jsonBody = new JsonObject();
 
         jsonObject.addProperty("status", Integer.toString(status));
-        jsonBody.addProperty("countUsers", Integer.toString(countUsers));
-        jsonBody.addProperty("countOnlineUsers", Integer.toString(countOnlineUsers));
+        jsonBody.addProperty("countUsers", Long.toString(countUsers));
+        jsonBody.addProperty("countOnlineUsers", Long.toString(countOnlineUsers));
+        jsonObject.add("body", jsonBody);
+
+        return jsonObject.toString();
+    }
+
+    public static String setResponseFromList(int status, List<UserProfile> userProfileList) {
+
+        JsonObject jsonObject = new JsonObject();
+        JsonObject jsonBody = new JsonObject();
+        JsonArray scoreList = new JsonArray();
+
+        jsonObject.addProperty("status", Integer.toString(status));
+
+        for (UserProfile profile: userProfileList) {
+            JsonObject scoreItem = new JsonObject();
+            scoreItem.addProperty("login", profile.getLogin());
+            scoreItem.addProperty("score", Integer.toString(profile.getScore()));
+            scoreList.add(scoreItem);
+            System.out.print(scoreList.toString());
+        }
+        jsonBody.add("scoreList", scoreList);
         jsonObject.add("body", jsonBody);
 
         return jsonObject.toString();
