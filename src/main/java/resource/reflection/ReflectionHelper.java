@@ -19,12 +19,16 @@ public class ReflectionHelper {
     }
 
     public static void setFieldValue(Object object,
-                                     String fieldName,
-                                     String value) {
+                                      String fieldName,
+                                      String value) {
         try {
             Field field = object.getClass().getDeclaredField(fieldName);
             field.setAccessible(true);
-            field.set(object, Integer.valueOf(value));
+            try {
+                field.set(object, Integer.valueOf(value));
+            } catch (NumberFormatException ex) {
+                field.set(object, value);
+            }
 
             field.setAccessible(false);
         } catch (SecurityException | NoSuchFieldException | IllegalArgumentException | IllegalAccessException e) {

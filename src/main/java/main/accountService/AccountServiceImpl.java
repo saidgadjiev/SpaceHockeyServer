@@ -1,25 +1,22 @@
 package main.accountService;
 
-import dbService.DBService;
-import dbService.DBServiceImpl;
 import main.user.UserProfile;
 
 import java.util.HashMap;
 import java.util.List;
 
 /**
- * Created by said on 13.09.2014.
+ * Created by said on 26.11.15.
  */
-
 public class AccountServiceImpl implements AccountService {
-    private DBService dbService = new DBServiceImpl();
+    private HashMap<String, UserProfile> users = new HashMap<>();
     private HashMap<String, UserProfile> sessions = new HashMap<>();
 
     @Override
     public boolean addUser(String userName, UserProfile userProfile) {
-        if (dbService.readByName(userName) != null)
+        if (users.containsKey(userName))
             return false;
-        dbService.save(userProfile);
+        users.put(userName, userProfile);
         return true;
     }
 
@@ -35,7 +32,7 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public UserProfile getUser(String login) {
-        return dbService.readByName(login);
+        return users.get(login);
     }
 
     @Override
@@ -45,7 +42,7 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public long getCountUsers() {
-        return dbService.readCountAll();
+        return users.size();
     }
 
     @Override
@@ -55,11 +52,11 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public void updateUser(UserProfile userProfile) {
-        dbService.update(userProfile);
+
     }
 
     @Override
     public List<UserProfile> getUsersByScore(int limit) {
-        return dbService.readLimitOrder(limit);
+        return null;
     }
 }

@@ -8,6 +8,7 @@ import org.hibernate.Transaction;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.cfg.Configuration;
 import org.hibernate.service.ServiceRegistry;
+import resource.DBServerSettings;
 
 import java.util.List;
 
@@ -17,17 +18,17 @@ import java.util.List;
 public class DBServiceImpl implements DBService {
     private SessionFactory sessionFactory;
 
-    public DBServiceImpl() {
+    public DBServiceImpl(DBServerSettings dbServerSettings) {
         Configuration configuration = new Configuration();
         configuration.addAnnotatedClass(UserProfile.class);
 
-        configuration.setProperty("hibernate.dialect", "org.hibernate.dialect.MySQLDialect");
-        configuration.setProperty("hibernate.connection.driver_class", "com.mysql.jdbc.Driver");
-        configuration.setProperty("hibernate.connection.url", "jdbc:mysql://localhost:3306/SpaceHockey");
-        configuration.setProperty("hibernate.connection.username", "root");
-        configuration.setProperty("hibernate.connection.password", "said1995");
-        configuration.setProperty("hibernate.show_sql", "true");
-        //configuration.setProperty("hibernate.hbm2ddl.auto", "create");
+        configuration.setProperty("hibernate.dialect", dbServerSettings.getDialect());
+        configuration.setProperty("hibernate.connection.driver_class", dbServerSettings.getDriverClass());
+        configuration.setProperty("hibernate.connection.url", dbServerSettings.getConnectionUrl());
+        configuration.setProperty("hibernate.connection.username", dbServerSettings.getUsername());
+        configuration.setProperty("hibernate.connection.password", dbServerSettings.getPassword());
+        configuration.setProperty("hibernate.show_sql", dbServerSettings.getShowSql());
+        configuration.setProperty("hibernate.hbm2ddl.auto", dbServerSettings.getMode());
 
         sessionFactory = createSessionFactory(configuration);
     }

@@ -39,6 +39,7 @@ public class ScoreServlet extends HttpServlet {
             }
         }
 
+        response.setStatus(HttpServletResponse.SC_OK);
         response.getWriter().write(setResponseFromList(status, accountService.getUsersByScore(limit)));
     }
 }

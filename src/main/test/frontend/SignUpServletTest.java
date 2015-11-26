@@ -27,7 +27,7 @@ public class SignUpServletTest extends ServletTest {
                         "{\"login\":\"" + login + "\"," +
                                 "\"password\":\"" + password + "\"," +
                                 "\"email\":\"" + email+  "\"}"
-                                )));
+                )));
     }
 
     private void setWrongDataToRequestReader(String login, String password, String email) throws IOException {

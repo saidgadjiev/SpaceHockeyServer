@@ -1,0 +1,9 @@
+<class type='resource.DBServerSettings'>
+    <dialect>org.hibernate.dialect.MySQLDialect</dialect>
+    <driverClass>com.mysql.jdbc.Driver</driverClass>
+    <connectionUrl>jdbc:mysql://localhost:3306/SpaceHockey</connectionUrl>
+    <username>root</username>
+    <password>said1995</password>
+    <showSql>false</showSql>
+    <mode>validate</mode>
+</class>

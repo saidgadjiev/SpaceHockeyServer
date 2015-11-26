@@ -9,10 +9,12 @@ import main.gameService.GamePosition;
 import main.gameService.Player;
 import main.gameService.WebSocketService;
 import main.user.UserProfile;
-import org.jetbrains.annotations.TestOnly;
 import resource.GameMechanicsSettings;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 /**
@@ -162,7 +164,6 @@ public class GameMechanicsImpl implements GameMechanics {
         }
     }
 
-    @TestOnly
     public List<GameSession> getAllSessions() {
         return allSessions;
     }
