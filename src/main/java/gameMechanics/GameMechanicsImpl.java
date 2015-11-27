@@ -2,7 +2,6 @@ package gameMechanics;
 
 import com.google.gson.JsonObject;
 import gameMechanics.game.Direction;
-import main.TimeHelper;
 import main.accountService.AccountService;
 import main.gameService.GameMechanics;
 import main.gameService.GamePosition;
@@ -27,8 +26,7 @@ public class GameMechanicsImpl implements GameMechanics {
     private final int gameTime;
     private AccountService accountService;
     private WebSocketService webSocketService;
-    private Map<String, GameSession> playerToGame = new HashMap<>();
-    private List<Player> allPlayers = new LinkedList<>();
+    private Map<Player, GameSession> playerToGame = new HashMap<>();
     private List<GameSession> allSessions = new LinkedList<>();
     private ConcurrentLinkedQueue<Player> waiters = new ConcurrentLinkedQueue<>();
 
@@ -50,7 +48,7 @@ public class GameMechanicsImpl implements GameMechanics {
     }
 
     public void incrementScore(Player myPlayer) {
-        GameSession myGameSession = playerToGame.get(myPlayer.getName());
+        GameSession myGameSession = playerToGame.get(myPlayer);
         myPlayer.incrementScore();
         Player enemyPlayer = myGameSession.getEnemyPlayer(myPlayer.getMyPosition());
         webSocketService.notifySyncScore(myGameSession, myPlayer);
@@ -74,24 +72,37 @@ public class GameMechanicsImpl implements GameMechanics {
     }
 
     public void analizeMessage(Player myPlayer, JsonObject message) {
-        GameSession myGameSession = playerToGame.get(myPlayer.getName());
-        Player enemyPlayer = myGameSession.getEnemyPlayer(myPlayer.getMyPosition());
         if (message.get("status").getAsString().equals("movePlatform")) {
             myPlayer.getPlatform().setDirection(getDirectionFromMessage(message));
-            if (myGameSession.isCollisionWithWall(myPlayer)) {
-                myPlayer.getPlatform().setDirection(Direction.STOP);
-            }
-            syncPlatformDirection(myGameSession, myPlayer, enemyPlayer);
         }
     }
 
     public void run() {
         //noinspection InfiniteLoopStatement
+        int fpsUpdate = 60;
+        double timePerTickUpdate = 1000000000 / fpsUpdate;
+        double deltaUpdate = 0;
+
+        int fpsSync = 20;
+        double timePerTickSync = 1000000000 / fpsSync;
+        double deltaSync = 0;
+        long now;
+        long lastTime = System.nanoTime();
+
         while (true) {
+            now = System.nanoTime();
+            deltaUpdate += (now - lastTime) / timePerTickUpdate;
+            deltaSync += (now - lastTime) / timePerTickSync;
+            lastTime = now;
             createGame();
-            gmStep();
-            makeStep();
-            TimeHelper.sleep(stepTime);
+            if (deltaUpdate >= 1) {
+                makeStep();
+                gmStep();
+                deltaUpdate--;
+            }
+            //if (deltaSync >= 1) {
+            //    deltaSync--;
+            //}
         }
     }
 
@@ -112,22 +123,29 @@ public class GameMechanicsImpl implements GameMechanics {
     private void gmStep() {
         for (GameSession session : allSessions) {
             if (!session.isFinished()) {
-                if (session.getSessionTime() > gameTime) {
-                    finishGame(session);
+                session.makeStep();
+                if (session.getSessionStep() == 2) {
+                    webSocketService.syncGameWorld(session, session.getFirstPlayer());
+                    webSocketService.syncGameWorld(session, session.getSecondPlayer());
+                    session.setStepCountZero();
                 }
+                //if (session.getSessionTime() > gameTime) {
+                //    finishGame(session);
+                //}
             }
         }
     }
 
     private void makeStep() {
-        for (Player player: allPlayers) {
-            GameSession session = playerToGame.get(player.getName());
+        for (GameSession session : allSessions) {
+            Player firstPlayer = session.getFirstPlayer();
+            Player secondPlayer = session.getSecondPlayer();
             if (!session.isFinished()) {
-                if (!session.isCollisionWithWall(player)) {
-                    player.getPlatform().move();
-                } else {
-                    player.getPlatform().setDirection(Direction.STOP);
-                    syncPlatformDirection(session, player, session.getEnemyPlayer(player.getMyPosition()));
+                if (!session.isCollisionWithWall(firstPlayer)) {
+                    firstPlayer.getPlatform().move();
+                }
+                if (!session.isCollisionWithWall(secondPlayer)) {
+                    secondPlayer.getPlatform().move();
                 }
             }
         }
@@ -140,11 +158,9 @@ public class GameMechanicsImpl implements GameMechanics {
         session.determineWinner();
         webSocketService.notifyGameOver(session, firstPlayer);
         webSocketService.notifyGameOver(session, secondPlayer);
-        playerToGame.remove(firstPlayer.getName());
-        playerToGame.remove(secondPlayer.getName());
+        playerToGame.remove(firstPlayer);
+        playerToGame.remove(secondPlayer);
         allSessions.remove(session);
-        allPlayers.remove(firstPlayer);
-        allPlayers.remove(secondPlayer);
         webSocketService.removeWebSocket(firstPlayer);
         webSocketService.removeWebSocket(secondPlayer);
 
@@ -171,10 +187,8 @@ public class GameMechanicsImpl implements GameMechanics {
     private void starGame(Player firstPlayer, Player secondPlayer) {
         GameSession gameSession = new GameSession(firstPlayer, secondPlayer);
         allSessions.add(gameSession);
-        playerToGame.put(firstPlayer.getName(), gameSession);
-        playerToGame.put(secondPlayer.getName(), gameSession);
-        allPlayers.add(firstPlayer);
-        allPlayers.add(secondPlayer);
+        playerToGame.put(firstPlayer, gameSession);
+        playerToGame.put(secondPlayer, gameSession);
 
         webSocketService.notifyStartGame(gameSession, firstPlayer);
         webSocketService.notifyStartGame(gameSession, secondPlayer);

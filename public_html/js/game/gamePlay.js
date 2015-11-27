@@ -89,8 +89,8 @@ define([
     	  }
     }
 	var gameField = new PlayField(40, 40, 500, 630);
-	var myPlatform = new Platform(235, 80, 100, 20, 4, Direction.STOP, "red");
-	var enemyPlatform = new Platform(235, 610, 100, 20, 4, Direction.STOP, "red");
+	var myPlatform = new Platform(236, 80, 100, 20, 4, Direction.STOP, "red");
+	var enemyPlatform = new Platform(236, 610, 100, 20, 4, Direction.STOP, "red");
     var ball = new Ball(100, 100, 10, 0, Math.PI*2, false);
     var left = false, right = false, send = false;
 	function start(canvas) {
@@ -139,7 +139,7 @@ define([
             send = false;
 		    var message = {
                 "status": "movePlatform",
-                "direction": "STOP"
+                "direction": "STOP",
             }
             gameWebSocket.sendMessage(ws, JSON.stringify(message));
         }
@@ -149,7 +149,7 @@ define([
             if (!send) {
     		var message = {
         		"status": "movePlatform",
-                "direction": "RIGHT"
+     			"direction": "RIGHT"
            	}
             gameWebSocket.sendMessage(ws, JSON.stringify(message));
             send = true;
@@ -169,9 +169,9 @@ define([
 		ws.onmessage = function (event) {
             var data = JSON.parse(event.data);
             console.log(data);
-            if (data.status == "movePlatform") {
-            	myPlatform.direction = parseInt(data.first.direction, 10);
-            	enemyPlatform.direction = parseInt(data.second.direction, 10);
+            if (data.status == "worldInfo") {
+            	myPlatform.x = parseInt(data.first.positionX, 10);
+            	enemyPlatform.x = parseInt(data.second.positionX, 10);
             }
             if(data.status == "start"){
                             document.getElementById("wait").style.display = "none";

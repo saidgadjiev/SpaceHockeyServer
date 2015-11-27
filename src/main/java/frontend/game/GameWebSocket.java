@@ -103,6 +103,27 @@ public class GameWebSocket {
         sendJSON(jsonSync);
     }
 
+    public void syncGameWorld(GameSession session) {
+        Player firstPlayer = session.getFirstPlayer();
+        Player secondPlayer = session.getSecondPlayer();
+
+        JsonObject jsonSync = new JsonObject();
+        jsonSync.addProperty("status", "worldInfo");
+
+        JsonObject jsonFirst = new JsonObject();
+        jsonFirst.addProperty("positionX", firstPlayer.getPlatform().getPosition().getX());
+        jsonFirst.addProperty("positionY", firstPlayer.getPlatform().getPosition().getY());
+
+        JsonObject jsonSecond = new JsonObject();
+        jsonSecond.addProperty("positionX", secondPlayer.getPlatform().getPosition().getX());
+        jsonSecond.addProperty("positionY", secondPlayer.getPlatform().getPosition().getY());
+
+        jsonSync.add("first", jsonFirst);
+        jsonSync.add("second", jsonSecond);
+        sendJSON(jsonSync);
+        //System.out.println(jsonSync);
+    }
+
     public void syncScore(GameSession session) {
         Player firstPlayer = session.getFirstPlayer();
         Player secondPlayer = session.getSecondPlayer();

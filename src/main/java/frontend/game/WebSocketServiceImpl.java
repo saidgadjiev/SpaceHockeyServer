@@ -39,6 +39,11 @@ public class WebSocketServiceImpl implements WebSocketService {
         userSockets.get(player.getName()).syncScore(session);
     }
 
+    @Override
+    public void syncGameWorld(GameSession session, Player player) {
+        userSockets.get(player.getName()).syncGameWorld(session);
+    }
+
     public void removeWebSocket(Player player) {
         userSockets.remove(player.getName());
     }

@@ -16,6 +16,8 @@ public interface WebSocketService {
 
     void notifySyncScore(GameSession session, Player player);
 
+    void syncGameWorld(GameSession session, Player player);
+
     void notifyGameOver(GameSession session, Player player);
 
     void removeWebSocket(Player player);

@@ -24,10 +24,10 @@ public class ReflectionHelper {
         try {
             Field field = object.getClass().getDeclaredField(fieldName);
             field.setAccessible(true);
-            try {
-                field.set(object, Integer.valueOf(value));
-            } catch (NumberFormatException ex) {
+            if (field.getType().equals(String.class)) {
                 field.set(object, value);
+            } else if (field.getType().equals(int.class)) {
+                field.set(object, Integer.parseInt(value));
             }
 
             field.setAccessible(false);

@@ -12,6 +12,7 @@ import java.util.Date;
  */
 
 public class GameSession {
+    private int sessionStep = 0;
     private final long startTime;
     private final Player first;
     private final Player second;
@@ -22,8 +23,8 @@ public class GameSession {
 
     public GameSession(Player player1, Player player2) {
         startTime = new Date().getTime();
-        player1.setPlatform(new Platform(new Position(235, 80), 100, 20, Direction.STOP, 4));
-        player2.setPlatform(new Platform(new Position(235, 610), 100, 20, Direction.STOP, 4));
+        player1.setPlatform(new Platform(new Position(236, 80), 100, 20, Direction.STOP, 4));
+        player2.setPlatform(new Platform(new Position(236, 610), 100, 20, Direction.STOP, 4));
 
         this.first = player1;
         this.second = player2;
@@ -35,6 +36,18 @@ public class GameSession {
         } else {
             return first;
         }
+    }
+
+    public void makeStep() {
+        sessionStep++;
+    }
+
+    public int getSessionStep() {
+        return sessionStep;
+    }
+
+    public void setStepCountZero() {
+        sessionStep = 0;
     }
 
     public long getSessionTime(){
