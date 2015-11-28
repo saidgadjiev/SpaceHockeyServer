@@ -14,6 +14,10 @@ define([
 		RIGHT: 1,
 		STOP: 2
 	};
+	var MoveState = {
+		MOVE: 0,
+		STOP: 1
+	};
 	var context;
 	var CANVAS_WIDTH;
 	var CANVAS_HEIGHT;
@@ -66,15 +70,17 @@ define([
 			}
 		} 
 	}
-	function Ball(centerX, centerY, radius, sAngle, eAngle) {
+
+	function Ball(centerX, centerY, radius, sAngle, eAngle, state) {
           this.centerX = centerX;
           this.centerY = centerY;
           this.radius = radius;
           this.sAngle = sAngle;
-          this.eAngl2e = eAngle;
+          this.eAngle = eAngle;
           this.color = "red";
           this.speedX = 5;
           this.speedY = 1;
+          this.state = state;
 
           this.draw = function() {
             context.beginPath();
@@ -96,14 +102,14 @@ define([
 	function start(canvas) {
 		ws = gameWebSocket.initConnect();
   		analizeMessage();
-		var FPS = 60;
+		var FPS = 30;
 		CANVAS_WIDTH = canvas.width;
 		CANVAS_HEIGHT = canvas.height;
 		context = canvas.getContext('2d');
+  			draw();
 
 		setInterval(function() {
   			update();
-  			draw();
 		}, 1000/FPS);
 	}
 	function collisionCheck() {
@@ -116,12 +122,9 @@ define([
       	gameField.draw();
 		myPlatform.draw();
 		enemyPlatform.draw();
-		collisionCheck();
-		//ball.draw();
+		ball.draw();
 	}
 	function update() {
-		myPlatform.move();
-		enemyPlatform.move();
 		if (input.isDown('LEFT') && !right) {
 		    left = true;
             right = false;
@@ -168,10 +171,12 @@ define([
 	function analizeMessage() {
 		ws.onmessage = function (event) {
             var data = JSON.parse(event.data);
-            console.log(data);
             if (data.status == "worldInfo") {
             	myPlatform.x = parseInt(data.first.positionX, 10);
             	enemyPlatform.x = parseInt(data.second.positionX, 10);
+            	ball.centerX = parseInt(data.ball.positionX, 10);
+            	ball.centerY = parseInt(data.ball.positionY, 10);
+  			draw();
             }
             if(data.status == "start"){
                             document.getElementById("wait").style.display = "none";

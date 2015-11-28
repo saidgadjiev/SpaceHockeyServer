@@ -3,6 +3,7 @@ package frontend.game;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import gameMechanics.GameSession;
+import gameMechanics.game.Ball;
 import main.gameService.GameMechanics;
 import main.gameService.Player;
 import main.gameService.WebSocketService;
@@ -11,8 +12,6 @@ import org.eclipse.jetty.websocket.api.annotations.OnWebSocketClose;
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketConnect;
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketMessage;
 import org.eclipse.jetty.websocket.api.annotations.WebSocket;
-
-import java.io.IOException;
 
 /**
   Created by said on 20.10.15.
@@ -36,10 +35,8 @@ public class GameWebSocket {
     }
 
     public void sendJSON(JsonObject jsonData) {
-        try {
-            session.getRemote().sendString(jsonData.toString());
-        } catch (IOException e) {
-            e.printStackTrace();
+        if (session.isOpen()) {
+            session.getRemote().sendStringByFuture(jsonData.toString());
         }
     }
 
@@ -106,6 +103,7 @@ public class GameWebSocket {
     public void syncGameWorld(GameSession session) {
         Player firstPlayer = session.getFirstPlayer();
         Player secondPlayer = session.getSecondPlayer();
+        Ball ball = session.getBall();
 
         JsonObject jsonSync = new JsonObject();
         jsonSync.addProperty("status", "worldInfo");
@@ -118,8 +116,13 @@ public class GameWebSocket {
         jsonSecond.addProperty("positionX", secondPlayer.getPlatform().getPosition().getX());
         jsonSecond.addProperty("positionY", secondPlayer.getPlatform().getPosition().getY());
 
+        JsonObject jsonBall = new JsonObject();
+        jsonBall.addProperty("positionX", ball.getPosition().getX());
+        jsonBall.addProperty("positionY", ball.getPosition().getY());
+
         jsonSync.add("first", jsonFirst);
         jsonSync.add("second", jsonSecond);
+        jsonSync.add("ball", jsonBall);
         sendJSON(jsonSync);
         //System.out.println(jsonSync);
     }

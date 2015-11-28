@@ -123,7 +123,7 @@ public class GameMechanicsImpl implements GameMechanics {
     private void gmStep() {
         for (GameSession session : allSessions) {
             if (!session.isFinished()) {
-                session.makeStep();
+                session.sessionStep();
                 if (session.getSessionStep() == 2) {
                     webSocketService.syncGameWorld(session, session.getFirstPlayer());
                     webSocketService.syncGameWorld(session, session.getSecondPlayer());
@@ -138,15 +138,8 @@ public class GameMechanicsImpl implements GameMechanics {
 
     private void makeStep() {
         for (GameSession session : allSessions) {
-            Player firstPlayer = session.getFirstPlayer();
-            Player secondPlayer = session.getSecondPlayer();
             if (!session.isFinished()) {
-                if (!session.isCollisionWithWall(firstPlayer)) {
-                    firstPlayer.getPlatform().move();
-                }
-                if (!session.isCollisionWithWall(secondPlayer)) {
-                    secondPlayer.getPlatform().move();
-                }
+                session.makeStep();
             }
         }
     }
