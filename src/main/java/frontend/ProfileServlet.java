@@ -35,9 +35,10 @@ public class ProfileServlet extends HttpServlet {
 
         if (userProfile == null) {
             status = HttpServletResponse.SC_UNAUTHORIZED;
-            login = "";
-            password = "";
-            email = "";
+        } else {
+            login = userProfile.getLogin();
+            password = userProfile.getPassword();
+            email = userProfile.getEmail();
         }
 
         response.setStatus(HttpServletResponse.SC_OK);

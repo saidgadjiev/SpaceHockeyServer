@@ -21,7 +21,7 @@ public class SignOutServlet extends HttpServlet {
     }
 
     @Override
-    public void doGet(HttpServletRequest request,
+    public void doPost(HttpServletRequest request,
                       HttpServletResponse response) throws ServletException, IOException {
         int status = HttpServletResponse.SC_OK;
         String login = "";
