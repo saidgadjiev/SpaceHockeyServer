@@ -5,12 +5,11 @@ import dbService.DBService;
 import dbService.DBServiceImpl;
 import frontend.*;
 import frontend.game.WebSocketGameServlet;
-import frontend.game.WebSocketServiceImpl;
+import frontend.transport.TransportSystem;
 import gameMechanics.GameMechanicsImpl;
 import main.accountService.AccountService;
 import main.accountService.AccountServiceMySQLImpl;
 import main.gameService.GameMechanics;
-import main.gameService.WebSocketService;
 import org.eclipse.jetty.server.Handler;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.handler.HandlerList;
@@ -33,11 +32,6 @@ public class Main {
     @SuppressWarnings({"OverlyBroadThrowsClause", "SpellCheckingInspection"})
     public static void main(String[] args) throws Exception {
 
-        /*DBService dbService = new DBServiceImpl((DBServerSettings) ResourceFactory.getInstance().loadResource("data/dbServerSettings.xml"));
-
-        main.user.UserProfile profile = dbService.read(1);
-        System.out.print(profile);
-        dbService.shutdown();*/
         ResourceFactory resourceFactory = ResourceFactory.getInstance();
         resourceFactory.loadAllResources("cfg");
         resourceFactory.loadAllResources("data");
@@ -49,8 +43,8 @@ public class Main {
         DBService dbService = new DBServiceImpl(dbServerSettings);
         AccountService accountService = new AccountServiceMySQLImpl(dbService);
 
-        WebSocketService webSocketService = new WebSocketServiceImpl();
-        GameMechanics gameMechanics = new GameMechanicsImpl(accountService, webSocketService, gameMechanicsSettings);
+        TransportSystem transportSystem = new TransportSystem();
+        GameMechanics gameMechanics = new GameMechanicsImpl(accountService, transportSystem, gameMechanicsSettings);
 
         Servlet signin = new SignInServlet(accountService);
         Servlet signUp = new SignUpServlet(accountService);
@@ -66,7 +60,7 @@ public class Main {
         context.addServlet(new ServletHolder(admin), "/admin");
         context.addServlet(new ServletHolder(score), "/score");
         context.addServlet(new ServletHolder(profile), "/profile");
-        context.addServlet(new ServletHolder(new WebSocketGameServlet(accountService, gameMechanics, webSocketService)), "/gameplay");
+        context.addServlet(new ServletHolder(new WebSocketGameServlet(accountService, transportSystem, gameMechanics)), "/gameplay");
 
         ResourceHandler resource_handler = new ResourceHandler();
         resource_handler.setResourceBase("public_html");
@@ -80,6 +74,5 @@ public class Main {
         server.start();
 
         gameMechanics.run();
-
     }
 }

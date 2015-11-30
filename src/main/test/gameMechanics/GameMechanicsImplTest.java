@@ -1,12 +1,10 @@
 package gameMechanics;
 
 import frontend.game.GameWebSocket;
-import frontend.game.WebSocketServiceImpl;
+import frontend.transport.TransportSystem;
 import main.accountService.AccountService;
 import main.accountService.AccountServiceImpl;
 import main.gameService.GameMechanics;
-import main.gameService.Player;
-import main.gameService.WebSocketService;
 import org.eclipse.jetty.websocket.api.RemoteEndpoint;
 import org.eclipse.jetty.websocket.api.Session;
 import org.junit.Before;
@@ -22,14 +20,14 @@ import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.*;
 
 /**
-  Created by said on 30.10.15.
+ * Created by said on 30.10.15.
  */
 
 public class GameMechanicsImplTest {
     @SuppressWarnings("FieldCanBeLocal")
     private GameMechanics gameMechanics;
     @SuppressWarnings("FieldCanBeLocal")
-    private WebSocketService webSocketService;
+    private TransportSystem transportSystem;
     @SuppressWarnings("FieldCanBeLocal")
     private GameWebSocket gameWebSocket;
     private final RemoteEndpoint remoteEndPointMock1 = mock(RemoteEndpoint.class);
@@ -46,17 +44,17 @@ public class GameMechanicsImplTest {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        webSocketService = new WebSocketServiceImpl();
+        transportSystem = new TransportSystem();
         GameMechanicsSettings gameMechanicsSettings = (GameMechanicsSettings) ResourceFactory.getInstance().loadResource("data/testSettings.xml");
-        gameMechanics = new GameMechanicsImpl(accountService, webSocketService, gameMechanicsSettings);
-        gameWebSocket = new GameWebSocket("myName", gameMechanics, webSocketService);
+        gameMechanics = new GameMechanicsImpl(accountService, transportSystem, gameMechanicsSettings);
+        gameWebSocket = new GameWebSocket("myName", transportSystem, gameMechanics);
 
         Session testSession1 = mock(Session.class);
         Session testSession2 = mock(Session.class);
         when(testSession1.getRemote()).thenReturn(remoteEndPointMock1);
         when(testSession2.getRemote()).thenReturn(remoteEndPointMock2);
         gameWebSocket.onOpen(testSession1);
-        gameWebSocket = new GameWebSocket("enemyName", gameMechanics, webSocketService);
+        gameWebSocket = new GameWebSocket("enemyName",  transportSystem, gameMechanics);
         gameWebSocket.onOpen(testSession2);
         gameMechanics.createGame();
     }
@@ -74,12 +72,8 @@ public class GameMechanicsImplTest {
         List<GameSession> allSessions = gameMechanics.getAllSessions();
         String testJson = "{\"status\":\"finish\",\"gameState\":0}";
 
-        for (GameSession session: allSessions) {
-            Player testPlayer1 = session.getFirstPlayer();
-            Player testPlayer2 = session.getSecondPlayer();
-
-            webSocketService.notifyGameOver(session, testPlayer1);
-            webSocketService.notifyGameOver(session, testPlayer2);
+        for (GameSession session : allSessions) {
+            transportSystem.gameOver(session);
         }
 
         assertEquals(testJson, argumentCaptor1.getValue());

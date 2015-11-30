@@ -19,8 +19,8 @@ public class ReflectionHelper {
     }
 
     public static void setFieldValue(Object object,
-                                      String fieldName,
-                                      String value) {
+                                     String fieldName,
+                                     String value) {
         try {
             Field field = object.getClass().getDeclaredField(fieldName);
             field.setAccessible(true);

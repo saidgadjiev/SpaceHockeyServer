@@ -23,7 +23,7 @@ public class ScoreServlet extends HttpServlet {
 
     @Override
     public void doGet(HttpServletRequest request,
-                       HttpServletResponse response) throws ServletException, IOException {
+                      HttpServletResponse response) throws ServletException, IOException {
         int status = HttpServletResponse.SC_OK;
         String limitFromRequest = request.getParameter("limit");
         int limit = 0;

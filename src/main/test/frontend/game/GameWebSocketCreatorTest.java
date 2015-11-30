@@ -1,10 +1,10 @@
 package frontend.game;
 
+import frontend.transport.TransportSystem;
 import gameMechanics.GameMechanicsImpl;
 import main.accountService.AccountService;
 import main.accountService.AccountServiceImpl;
 import main.gameService.GameMechanics;
-import main.gameService.WebSocketService;
 import main.user.UserProfile;
 import org.eclipse.jetty.websocket.servlet.ServletUpgradeRequest;
 import org.eclipse.jetty.websocket.servlet.ServletUpgradeResponse;
@@ -43,17 +43,17 @@ public class GameWebSocketCreatorTest {
         when(requestMock.getSession()).thenReturn(sessionMock);
         when(servletReqMock.getHttpServletRequest()).thenReturn(requestMock);
 
-        WebSocketService webSocketService = new WebSocketServiceImpl();
-        GameMechanics gameMechanics = new GameMechanicsImpl(webSocketService);
+        TransportSystem transportSystem = new TransportSystem();
+        GameMechanics gameMechanics = new GameMechanicsImpl(transportSystem);
         UserProfile testProfile = new UserProfile("test_login1", "test_password", "test@mail.ru");
 
         accountService.addSessions(sessionID, testProfile);
-        GameWebSocketCreator testCreator = new GameWebSocketCreator(accountService, gameMechanics, webSocketService);
-        Object object =  testCreator.createWebSocket(servletReqMock, servletRespMock);
+        GameWebSocketCreator testCreator = new GameWebSocketCreator(accountService, transportSystem, gameMechanics);
+        Object object = testCreator.createWebSocket(servletReqMock, servletRespMock);
 
         assertEquals(true, object instanceof GameWebSocket);
         //noinspection ConstantConditions
-        assertEquals(new GameWebSocket(testProfile.getLogin(), gameMechanics, webSocketService).getMyPlayer().getName(),
+        assertEquals(new GameWebSocket(testProfile.getLogin(), transportSystem, gameMechanics).getMyPlayer().getName(),
                 ((GameWebSocket) object).getMyPlayer().getName());
     }
 }

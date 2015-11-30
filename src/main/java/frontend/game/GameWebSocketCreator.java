@@ -3,7 +3,6 @@ package frontend.game;
 import frontend.transport.TransportSystem;
 import main.accountService.AccountService;
 import main.gameService.GameMechanics;
-import main.gameService.WebSocketService;
 import org.eclipse.jetty.websocket.servlet.ServletUpgradeRequest;
 import org.eclipse.jetty.websocket.servlet.ServletUpgradeResponse;
 import org.eclipse.jetty.websocket.servlet.WebSocketCreator;

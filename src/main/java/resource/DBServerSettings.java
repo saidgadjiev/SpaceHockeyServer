@@ -14,7 +14,8 @@ public class DBServerSettings implements Serializable, Resource {
     private String showSql;
     private String mode;
 
-    public DBServerSettings() {}
+    public DBServerSettings() {
+    }
 
     public String getDialect() {
         return dialect;

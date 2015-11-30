@@ -12,7 +12,7 @@ import org.eclipse.jetty.websocket.api.annotations.OnWebSocketMessage;
 import org.eclipse.jetty.websocket.api.annotations.WebSocket;
 
 /**
-  Created by said on 20.10.15.
+ * Created by said on 20.10.15.
  */
 
 @WebSocket
@@ -30,7 +30,7 @@ public class GameWebSocket {
 
     @OnWebSocketMessage
     public void onMessage(String data) {
-        JsonObject jsonObject  = new Gson().fromJson(data, JsonObject.class);
+        JsonObject jsonObject = new Gson().fromJson(data, JsonObject.class);
         transportSystem.analizeMessage(myPlayer, jsonObject);
     }
 

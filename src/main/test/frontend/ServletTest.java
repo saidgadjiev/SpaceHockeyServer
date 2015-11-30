@@ -28,7 +28,7 @@ public class ServletTest {
     }
 
     public HttpServletRequest getTestRequest(@Nullable String sessionID) {
-        HttpSession sessionMock =  mock(HttpSession.class);
+        HttpSession sessionMock = mock(HttpSession.class);
         HttpServletRequest requestMock = mock(HttpServletRequest.class);
 
         when(sessionMock.getAttribute("login")).thenReturn(sessionID);

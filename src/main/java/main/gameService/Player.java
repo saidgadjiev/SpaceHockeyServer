@@ -3,7 +3,7 @@ package main.gameService;
 import gameMechanics.game.Platform;
 
 /**
-  Created by said on 14.11.15.
+ * Created by said on 14.11.15.
  */
 
 public class Player {

@@ -1,7 +1,7 @@
 package gameMechanics.game;
 
 /**
-  Created by said on 18.11.15.
+ * Created by said on 18.11.15.
  */
 
 public class GameField {

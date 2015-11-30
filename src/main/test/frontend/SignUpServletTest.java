@@ -26,7 +26,7 @@ public class SignUpServletTest extends ServletTest {
                 new StringReader(
                         "{\"login\":\"" + login + "\"," +
                                 "\"password\":\"" + password + "\"," +
-                                "\"email\":\"" + email+  "\"}"
+                                "\"email\":\"" + email + "\"}"
                 )));
     }
 

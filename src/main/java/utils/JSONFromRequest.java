@@ -1,6 +1,8 @@
 package utils;
 
-import com.google.gson.*;
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonSyntaxException;
 import org.jetbrains.annotations.Nullable;
 
 import javax.servlet.http.HttpServletRequest;
@@ -27,7 +29,7 @@ public class JSONFromRequest {
 
         JsonObject jsonObject;
         try {
-            jsonObject  = new Gson().fromJson(parametersBuffer.toString(), JsonObject.class);
+            jsonObject = new Gson().fromJson(parametersBuffer.toString(), JsonObject.class);
         } catch (JsonSyntaxException e) {
             return null;
         }

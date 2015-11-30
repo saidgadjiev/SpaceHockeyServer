@@ -1,7 +1,7 @@
 package gameMechanics.game;
 
 /**
-  Created by said on 14.11.15.
+ * Created by said on 14.11.15.
  */
 
 public interface Sprite {

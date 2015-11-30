@@ -6,7 +6,6 @@ import main.accountService.AccountService;
 import main.gameService.GameMechanics;
 import main.gameService.GamePosition;
 import main.gameService.Player;
-import main.gameService.WebSocketService;
 import main.user.UserProfile;
 import resource.GameMechanicsSettings;
 
@@ -17,7 +16,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 /**
-  Created by said on 20.10.15.
+ * Created by said on 20.10.15.
  */
 
 @SuppressWarnings("SpellCheckingInspection")
@@ -25,22 +24,20 @@ public class GameMechanicsImpl implements GameMechanics {
     private final int stepTime;
     private final int gameTime;
     private AccountService accountService;
-    private WebSocketService webSocketService;
     private TransportSystem transportSystem;
     private Map<Player, GameSession> playerToGame = new HashMap<>();
     private List<GameSession> allSessions = new LinkedList<>();
     private ConcurrentLinkedQueue<Player> waiters = new ConcurrentLinkedQueue<>();
 
-    public GameMechanicsImpl(AccountService accountService, WebSocketService webSocketService, TransportSystem transportSystem, GameMechanicsSettings gameMechanicsSettings) {
+    public GameMechanicsImpl(AccountService accountService,TransportSystem transportSystem, GameMechanicsSettings gameMechanicsSettings) {
         this.accountService = accountService;
-        this.webSocketService = webSocketService;
         this.transportSystem = transportSystem;
         this.stepTime = gameMechanicsSettings.getStepTime() / 60;
         this.gameTime = gameMechanicsSettings.getGameTime();
     }
 
-    public GameMechanicsImpl(WebSocketService webSocketService) {
-        this.webSocketService = webSocketService;
+    public GameMechanicsImpl(TransportSystem transportSystem) {
+        this.transportSystem = transportSystem;
         this.stepTime = 1000 / 60;
         this.gameTime = 10000;
     }
@@ -101,9 +98,9 @@ public class GameMechanicsImpl implements GameMechanics {
                     transportSystem.syncGameWorld(session);
                     session.setStepCountZero();
                 }
-                //if (session.getSessionTime() > gameTime) {
-                //    finishGame(session);
-                //}
+                if (session.getSessionTime() > gameTime) {
+                    finishGame(session);
+                }
             }
         }
     }
@@ -124,8 +121,6 @@ public class GameMechanicsImpl implements GameMechanics {
         playerToGame.remove(secondPlayer);
         allSessions.remove(session);
         transportSystem.removeWebSocket(session);
-        webSocketService.removeWebSocket(firstPlayer);
-        webSocketService.removeWebSocket(secondPlayer);
     }
 
     private void finishGame(GameSession session) {

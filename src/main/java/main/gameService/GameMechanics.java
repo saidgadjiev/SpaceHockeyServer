@@ -6,7 +6,7 @@ import gameMechanics.game.Direction;
 import java.util.List;
 
 /**
-  Created by said on 20.10.15.
+ * Created by said on 20.10.15.
  */
 
 public interface GameMechanics {

@@ -4,7 +4,7 @@ import frontend.game.GameWebSocket;
 import gameMechanics.GameSession;
 
 /**
-  Created by said on 20.10.15.
+ * Created by said on 20.10.15.
  */
 public interface WebSocketService {
 

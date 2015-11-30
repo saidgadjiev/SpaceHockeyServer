@@ -8,7 +8,7 @@ import main.gameService.Player;
 import java.util.Date;
 
 /**
-  Created by said on 20.10.15.
+ * Created by said on 20.10.15.
  */
 
 public class GameSession {
@@ -20,7 +20,8 @@ public class GameSession {
     private GameResultState resultState = GameResultState.DEAD_HEAT;
     private GameField gameField = new GameField(500, 630);
     private Ball ball = new Ball(new Position(100, 100), 5, 5);
-    private enum State { PLAY, FINISH }
+
+    private enum State {PLAY, FINISH}
 
     public GameSession(Player player1, Player player2) {
         startTime = new Date().getTime();
@@ -62,7 +63,7 @@ public class GameSession {
         sessionStep = 0;
     }
 
-    public long getSessionTime(){
+    public long getSessionTime() {
         return new Date().getTime() - startTime;
     }
 
@@ -73,7 +74,7 @@ public class GameSession {
     public void determineWinner() {
         if (firstPlayer.getScore() > secondPlayer.getScore()) {
             resultState = GameResultState.FIRST_WIN;
-        }  else if (firstPlayer.getScore() < secondPlayer.getScore()) {
+        } else if (firstPlayer.getScore() < secondPlayer.getScore()) {
             resultState = GameResultState.SECOND_WIN;
         }
 
@@ -89,7 +90,7 @@ public class GameSession {
 
         //noinspection RedundantIfStatement
         if ((x <= gameField.getPosition().getX() && player.getPlatform().getDirection() == Direction.LEFT)
-                ||(x >= gameField.getPosition().getX() + gameField.getWidth() - 100
+                || (x >= gameField.getPosition().getX() + gameField.getWidth() - 100
                 && player.getPlatform().getDirection() == Direction.RIGHT)) {
             return true;
         }

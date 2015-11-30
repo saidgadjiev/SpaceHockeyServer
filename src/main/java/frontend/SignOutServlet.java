@@ -22,7 +22,7 @@ public class SignOutServlet extends HttpServlet {
 
     @Override
     public void doPost(HttpServletRequest request,
-                      HttpServletResponse response) throws ServletException, IOException {
+                       HttpServletResponse response) throws ServletException, IOException {
         int status = HttpServletResponse.SC_OK;
         String login = "";
         String password = "";

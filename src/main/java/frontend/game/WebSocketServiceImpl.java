@@ -8,7 +8,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
-  Created by said on 20.10.15.
+ * Created by said on 20.10.15.
  */
 
 public class WebSocketServiceImpl implements WebSocketService {

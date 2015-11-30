@@ -7,7 +7,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 /**
-  Created by said on 09.10.15.
+ * Created by said on 09.10.15.
  */
 
 public class AccountServiceImplTest {

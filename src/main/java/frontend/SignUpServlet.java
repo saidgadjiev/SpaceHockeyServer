@@ -15,7 +15,7 @@ import static templater.PageGenerator.setResponseDataUser;
 import static utils.JSONFromRequest.getJSONFromRequest;
 
 /**
-  Created by g.said on 13.09.2014.
+ * Created by g.said on 13.09.2014.
  */
 public class SignUpServlet extends HttpServlet {
     private AccountService accountService;

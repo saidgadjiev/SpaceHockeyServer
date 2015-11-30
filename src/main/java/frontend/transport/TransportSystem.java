@@ -5,7 +5,6 @@ import frontend.game.GameWebSocket;
 import gameMechanics.GameSession;
 import gameMechanics.game.Ball;
 import gameMechanics.game.Direction;
-import main.gameService.GameMechanics;
 import main.gameService.Player;
 import org.eclipse.jetty.websocket.api.Session;
 
@@ -16,12 +15,7 @@ import java.util.Map;
  * Created by said on 30.11.15.
  */
 public class TransportSystem {
-    private GameMechanics gameMechanics;
     private Map<String, GameWebSocket> userSockets = new HashMap<>();
-
-    public TransportSystem(GameMechanics gameMechanics) {
-        this.gameMechanics = gameMechanics;
-    }
 
     public void addWebSocket(GameWebSocket gameWebSocket) {
         userSockets.put(gameWebSocket.getMyPlayer().getName(), gameWebSocket);
@@ -46,7 +40,7 @@ public class TransportSystem {
 
     public void analizeMessage(Player myPlayer, JsonObject message) {
         if (message.get("status").getAsString().equals("movePlatform")) {
-            gameMechanics.changePlatformDirection(myPlayer, getDirectionFromMessage(message));
+            myPlayer.getPlatform().setDirection(getDirectionFromMessage(message));
         }
     }
 

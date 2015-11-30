@@ -46,57 +46,59 @@ public class DBServiceImpl implements DBService {
     }
 
     public void save(UserProfile dataSet) {
-        Session session = sessionFactory.openSession();
-        Transaction transaction = session.beginTransaction();
-        UserProfileDAO dao = new UserProfileDAO(session);
-        dao.save(dataSet);
-        transaction.commit();
-        session.close();
+        tExecutor.execUpdate(
+                (session, parameter) -> {
+                    UserProfileDAO dao = new UserProfileDAO(session);
+                    dao.save(dataSet);
+                }, dataSet);
     }
 
     public UserProfile read(long id) {
-        /*return tExecutor.execQuery(
+        return tExecutor.execQuery(
                 (session, parameter) -> {
                     UserProfileDAO dao = new UserProfileDAO(session);
                     return dao.read(parameter);
-                }, id);*/
-        Session session = sessionFactory.openSession();
-        UserProfileDAO dao = new UserProfileDAO(session);
-        return dao.read(id);
+                }, id);
     }
 
     public UserProfile readByName(String name) {
-        Session session = sessionFactory.openSession();
-        UserProfileDAO dao = new UserProfileDAO(session);
-        return dao.readByName(name);
+        return tExecutor.execQuery(
+                (session, parameter) -> {
+                    UserProfileDAO dao = new UserProfileDAO(session);
+                    return dao.readByName(parameter);
+                }, name);
     }
 
     public List<UserProfile> readAll() {
-        Session session = sessionFactory.openSession();
-        UserProfileDAO dao = new UserProfileDAO(session);
-        return dao.readAll();
+        return tExecutor.execQuery(
+                (session, parameter) -> {
+                    UserProfileDAO dao = new UserProfileDAO(session);
+                    return dao.readAll();
+                }, null);
     }
 
     public long readCountAll() {
-        Session session = sessionFactory.openSession();
-        UserProfileDAO dao = new UserProfileDAO(session);
-        return dao.readCountAll();
+        return tExecutor.execQuery(
+                (session, parameter) -> {
+                    UserProfileDAO dao = new UserProfileDAO(session);
+                    return dao.readCountAll();
+                }, null);
     }
 
     public void update(UserProfile dataSet) {
-        Session session = sessionFactory.openSession();
-        Transaction transaction = session.beginTransaction();
-        UserProfileDAO dao = new UserProfileDAO(session);
-        dao.update(dataSet);
-        session.update(dataSet);
-        transaction.commit();
-        session.close();
+        tExecutor.execUpdate(
+                (session, parameter) -> {
+                    UserProfileDAO dao = new UserProfileDAO(session);
+                    dao.update(dataSet);
+                }, dataSet);
     }
 
     public List<UserProfile> readLimitOrder(int limit) {
-        Session session = sessionFactory.openSession();
-        UserProfileDAO dao = new UserProfileDAO(session);
-        return dao.readLimitOrder(limit);
+        return tExecutor.execQuery(
+                (session, parameter) -> {
+                    UserProfileDAO dao = new UserProfileDAO(session);
+                    return dao.readLimitOrder(limit);
+                }, limit);
     }
 
     public void shutdown() {

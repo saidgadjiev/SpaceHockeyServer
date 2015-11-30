@@ -11,8 +11,7 @@ import java.util.List;
  */
 public class PageGenerator {
 
-    public static String setResponseDataUser(int status, String login, String password, String email)
-    {
+    public static String setResponseDataUser(int status, String login, String password, String email) {
         JsonObject jsonObject = new JsonObject();
         JsonObject jsonBody = new JsonObject();
 
@@ -25,8 +24,7 @@ public class PageGenerator {
         return jsonObject.toString();
     }
 
-    public static String setResponseDataAdmin(int status, long countUsers, long countOnlineUsers)
-    {
+    public static String setResponseDataAdmin(int status, long countUsers, long countOnlineUsers) {
         JsonObject jsonObject = new JsonObject();
         JsonObject jsonBody = new JsonObject();
 
@@ -46,7 +44,7 @@ public class PageGenerator {
 
         jsonObject.addProperty("status", Integer.toString(status));
 
-        for (UserProfile profile: userProfileList) {
+        for (UserProfile profile : userProfileList) {
             JsonObject scoreItem = new JsonObject();
             scoreItem.addProperty("login", profile.getLogin());
             scoreItem.addProperty("score", Integer.toString(profile.getScore()));

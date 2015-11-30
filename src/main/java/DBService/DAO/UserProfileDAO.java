@@ -25,7 +25,7 @@ public class UserProfileDAO {
     }
 
     public UserProfile read(long id) {
-        return (UserProfile) session.load(UserProfile.class, id);
+        return (UserProfile) session.get(UserProfile.class, id);
     }
 
     public UserProfile readByName(String name) {
