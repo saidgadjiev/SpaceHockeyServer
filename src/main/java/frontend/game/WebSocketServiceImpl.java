@@ -16,35 +16,35 @@ public class WebSocketServiceImpl implements WebSocketService {
 
     @Override
     public void addPlayer(GameWebSocket user) {
-        userSockets.put(user.getMyPlayer().getName(), user);
+        //userSockets.put(user.getMyPlayer().getName(), user);
     }
 
     @Override
     public void notifyStartGame(GameSession session, Player player) {
-        userSockets.get(player.getName()).startGame(session);
+        //userSockets.get(player.getName()).startGame(session);
     }
 
     @Override
     public void notifyGameOver(GameSession session, Player player) {
-        userSockets.get(player.getName()).gameOver(session);
+        //userSockets.get(player.getName()).gameOver(session);
     }
 
     @Override
     public void notifySyncPlatformDirection(GameSession session, Player player) {
-        userSockets.get(player.getName()).syncPlatformDirection(session);
+        //userSockets.get(player.getName()).syncPlatformDirection(session);
     }
 
     @Override
     public void notifySyncScore(GameSession session, Player player) {
-        userSockets.get(player.getName()).syncScore(session);
+        //userSockets.get(player.getName()).syncScore(session);
     }
 
     @Override
     public void syncGameWorld(GameSession session, Player player) {
-        userSockets.get(player.getName()).syncGameWorld(session);
+        //userSockets.get(player.getName()).syncGameWorld(session);
     }
 
     public void removeWebSocket(Player player) {
-        userSockets.remove(player.getName());
+        //userSockets.remove(player.getName());
     }
 }

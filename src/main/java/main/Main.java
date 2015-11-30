@@ -33,6 +33,11 @@ public class Main {
     @SuppressWarnings({"OverlyBroadThrowsClause", "SpellCheckingInspection"})
     public static void main(String[] args) throws Exception {
 
+        /*DBService dbService = new DBServiceImpl((DBServerSettings) ResourceFactory.getInstance().loadResource("data/dbServerSettings.xml"));
+
+        main.user.UserProfile profile = dbService.read(1);
+        System.out.print(profile);
+        dbService.shutdown();*/
         ResourceFactory resourceFactory = ResourceFactory.getInstance();
         resourceFactory.loadAllResources("cfg");
         resourceFactory.loadAllResources("data");

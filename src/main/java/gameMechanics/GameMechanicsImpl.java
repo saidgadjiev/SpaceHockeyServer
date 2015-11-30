@@ -1,6 +1,6 @@
 package gameMechanics;
 
-import com.google.gson.JsonObject;
+import frontend.transport.TransportSystem;
 import gameMechanics.game.Direction;
 import main.accountService.AccountService;
 import main.gameService.GameMechanics;
@@ -26,13 +26,15 @@ public class GameMechanicsImpl implements GameMechanics {
     private final int gameTime;
     private AccountService accountService;
     private WebSocketService webSocketService;
+    private TransportSystem transportSystem;
     private Map<Player, GameSession> playerToGame = new HashMap<>();
     private List<GameSession> allSessions = new LinkedList<>();
     private ConcurrentLinkedQueue<Player> waiters = new ConcurrentLinkedQueue<>();
 
-    public GameMechanicsImpl(AccountService accountService, WebSocketService webSocketService, GameMechanicsSettings gameMechanicsSettings) {
+    public GameMechanicsImpl(AccountService accountService, WebSocketService webSocketService, TransportSystem transportSystem, GameMechanicsSettings gameMechanicsSettings) {
         this.accountService = accountService;
         this.webSocketService = webSocketService;
+        this.transportSystem = transportSystem;
         this.stepTime = gameMechanicsSettings.getStepTime() / 60;
         this.gameTime = gameMechanicsSettings.getGameTime();
     }
@@ -48,51 +50,25 @@ public class GameMechanicsImpl implements GameMechanics {
     }
 
     public void incrementScore(Player myPlayer) {
-        GameSession myGameSession = playerToGame.get(myPlayer);
         myPlayer.incrementScore();
-        Player enemyPlayer = myGameSession.getEnemyPlayer(myPlayer.getMyPosition());
-        webSocketService.notifySyncScore(myGameSession, myPlayer);
-        webSocketService.notifySyncScore(myGameSession, enemyPlayer);
+        transportSystem.syncScore(playerToGame.get(myPlayer));
     }
 
-    private void syncPlatformDirection(GameSession session, Player myPlayer, Player enemyPlayer) {
-        webSocketService.notifySyncPlatformDirection(session, myPlayer);
-        webSocketService.notifySyncPlatformDirection(session, enemyPlayer);
+    public void changePlatformDirection(Player player, Direction direction) {
+        player.getPlatform().setDirection(direction);
     }
 
-    private Direction getDirectionFromMessage(JsonObject message) {
-        switch (message.get("direction").getAsString()) {
-            case "LEFT":
-                return Direction.LEFT;
-            case "RIGHT":
-                return Direction.RIGHT;
-            default:
-                return Direction.STOP;
-        }
-    }
-
-    public void analizeMessage(Player myPlayer, JsonObject message) {
-        if (message.get("status").getAsString().equals("movePlatform")) {
-            myPlayer.getPlatform().setDirection(getDirectionFromMessage(message));
-        }
-    }
-
+    @SuppressWarnings("InfiniteLoopStatement")
     public void run() {
-        //noinspection InfiniteLoopStatement
         int fpsUpdate = 60;
         double timePerTickUpdate = 1000000000 / fpsUpdate;
         double deltaUpdate = 0;
-
-        int fpsSync = 20;
-        double timePerTickSync = 1000000000 / fpsSync;
-        double deltaSync = 0;
         long now;
         long lastTime = System.nanoTime();
 
         while (true) {
             now = System.nanoTime();
             deltaUpdate += (now - lastTime) / timePerTickUpdate;
-            deltaSync += (now - lastTime) / timePerTickSync;
             lastTime = now;
             createGame();
             if (deltaUpdate >= 1) {
@@ -100,9 +76,6 @@ public class GameMechanicsImpl implements GameMechanics {
                 gmStep();
                 deltaUpdate--;
             }
-            //if (deltaSync >= 1) {
-            //    deltaSync--;
-            //}
         }
     }
 
@@ -125,8 +98,7 @@ public class GameMechanicsImpl implements GameMechanics {
             if (!session.isFinished()) {
                 session.sessionStep();
                 if (session.getSessionStep() == 2) {
-                    webSocketService.syncGameWorld(session, session.getFirstPlayer());
-                    webSocketService.syncGameWorld(session, session.getSecondPlayer());
+                    transportSystem.syncGameWorld(session);
                     session.setStepCountZero();
                 }
                 //if (session.getSessionTime() > gameTime) {
@@ -144,19 +116,24 @@ public class GameMechanicsImpl implements GameMechanics {
         }
     }
 
+    private void freeResource(GameSession session) {
+        Player firstPlayer = session.getFirstPlayer();
+        Player secondPlayer = session.getSecondPlayer();
+
+        playerToGame.remove(firstPlayer);
+        playerToGame.remove(secondPlayer);
+        allSessions.remove(session);
+        transportSystem.removeWebSocket(session);
+        webSocketService.removeWebSocket(firstPlayer);
+        webSocketService.removeWebSocket(secondPlayer);
+    }
+
     private void finishGame(GameSession session) {
         Player firstPlayer = session.getFirstPlayer();
         Player secondPlayer = session.getSecondPlayer();
 
         session.determineWinner();
-        webSocketService.notifyGameOver(session, firstPlayer);
-        webSocketService.notifyGameOver(session, secondPlayer);
-        playerToGame.remove(firstPlayer);
-        playerToGame.remove(secondPlayer);
-        allSessions.remove(session);
-        webSocketService.removeWebSocket(firstPlayer);
-        webSocketService.removeWebSocket(secondPlayer);
-
+        transportSystem.gameOver(session);
         switch (session.getResultState()) {
             case FIRST_WIN:
                 UserProfile firstProfile = accountService.getUser(firstPlayer.getName());
@@ -171,10 +148,7 @@ public class GameMechanicsImpl implements GameMechanics {
             default:
                 break;
         }
-    }
-
-    public List<GameSession> getAllSessions() {
-        return allSessions;
+        freeResource(session);
     }
 
     private void starGame(Player firstPlayer, Player secondPlayer) {
@@ -183,7 +157,10 @@ public class GameMechanicsImpl implements GameMechanics {
         playerToGame.put(firstPlayer, gameSession);
         playerToGame.put(secondPlayer, gameSession);
 
-        webSocketService.notifyStartGame(gameSession, firstPlayer);
-        webSocketService.notifyStartGame(gameSession, secondPlayer);
+        transportSystem.startGame(gameSession);
+    }
+
+    public List<GameSession> getAllSessions() {
+        return allSessions;
     }
 }

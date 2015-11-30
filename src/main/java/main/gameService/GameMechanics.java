@@ -1,7 +1,7 @@
 package main.gameService;
 
-import com.google.gson.JsonObject;
 import gameMechanics.GameSession;
+import gameMechanics.game.Direction;
 
 import java.util.List;
 
@@ -17,10 +17,9 @@ public interface GameMechanics {
 
     void run();
 
-    @SuppressWarnings("SpellCheckingInspection")
-    void analizeMessage(Player myPlayer, JsonObject message);
-
     void createGame();
 
     List<GameSession> getAllSessions();
+
+    void changePlatformDirection(Player player, Direction direction);
 }

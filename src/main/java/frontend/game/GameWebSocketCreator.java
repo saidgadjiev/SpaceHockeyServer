@@ -1,5 +1,6 @@
 package frontend.game;
 
+import frontend.transport.TransportSystem;
 import main.accountService.AccountService;
 import main.gameService.GameMechanics;
 import main.gameService.WebSocketService;
@@ -12,21 +13,19 @@ import org.eclipse.jetty.websocket.servlet.WebSocketCreator;
  */
 public class GameWebSocketCreator implements WebSocketCreator {
     private AccountService accountService;
+    private TransportSystem transportSystem;
     private GameMechanics gameMechanics;
-    private WebSocketService webSocketService;
 
-    public GameWebSocketCreator(AccountService accountService,
-                                GameMechanics gameMechanics,
-                                WebSocketService webSocketService) {
+    public GameWebSocketCreator(AccountService accountService, TransportSystem transportSystem, GameMechanics gameMechanics) {
         this.accountService = accountService;
+        this.transportSystem = transportSystem;
         this.gameMechanics = gameMechanics;
-        this.webSocketService = webSocketService;
     }
 
     @Override
     public Object createWebSocket(ServletUpgradeRequest req, ServletUpgradeResponse resp) {
         String sessionId = req.getHttpServletRequest().getSession().getId();
         String name = accountService.getSessions(sessionId).getLogin();
-        return new GameWebSocket(name, gameMechanics, webSocketService);
+        return new GameWebSocket(name, transportSystem, gameMechanics);
     }
 }

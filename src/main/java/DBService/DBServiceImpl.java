@@ -1,6 +1,7 @@
 package dbService;
 
 import dbService.dao.UserProfileDAO;
+import dbService.executor.TExecutor;
 import main.user.UserProfile;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -17,6 +18,7 @@ import java.util.List;
  */
 public class DBServiceImpl implements DBService {
     private SessionFactory sessionFactory;
+    private TExecutor tExecutor;
 
     public DBServiceImpl(DBServerSettings dbServerSettings) {
         Configuration configuration = new Configuration();
@@ -31,6 +33,7 @@ public class DBServiceImpl implements DBService {
         configuration.setProperty("hibernate.hbm2ddl.auto", dbServerSettings.getMode());
 
         sessionFactory = createSessionFactory(configuration);
+        tExecutor = new TExecutor(sessionFactory);
     }
 
     public String getLocalStatus() {
@@ -52,6 +55,11 @@ public class DBServiceImpl implements DBService {
     }
 
     public UserProfile read(long id) {
+        /*return tExecutor.execQuery(
+                (session, parameter) -> {
+                    UserProfileDAO dao = new UserProfileDAO(session);
+                    return dao.read(parameter);
+                }, id);*/
         Session session = sessionFactory.openSession();
         UserProfileDAO dao = new UserProfileDAO(session);
         return dao.read(id);
