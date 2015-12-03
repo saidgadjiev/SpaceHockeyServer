@@ -9,10 +9,11 @@ public class Ball {
     private int radius;
     private Position position;
 
-    public Ball(Position position, int velocityX, int velocityY) {
+    public Ball(Position position, int radius, int velocityX, int velocityY) {
         this.position = position;
         this.velocityX = velocityX;
         this.velocityY = velocityY;
+        this.radius = radius;
     }
 
     public Direction getDirection() {

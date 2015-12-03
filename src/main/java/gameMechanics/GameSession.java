@@ -19,7 +19,7 @@ public class GameSession {
     private State sessionState = State.PLAY;
     private GameResultState resultState = GameResultState.DEAD_HEAT;
     private GameField gameField = new GameField(500, 630);
-    private Ball ball = new Ball(new Position(100, 100), 5, 5);
+    private Ball ball = new Ball(new Position(100, 100), 10, 5, 5);
 
     private enum State {PLAY, FINISH}
 
@@ -101,28 +101,42 @@ public class GameSession {
         int ballX = ball.getPosition().getX();
         int ballY = ball.getPosition().getY();
 
-        if (ballX + ball.getRadius() >= gameField.getPosition().getX() + gameField.getWidth() - ball.getVelocityX()) {
+        if (ballX + ball.getRadius() >= gameField.getPosition().getX() + gameField.getWidth()) {
             ball.setVelocityX(-ball.getVelocityX());
+            System.out.println("ballX" + ballX);
+            System.out.println("ballY" + ballY);
         }
-        if (ballX - ball.getRadius() <= gameField.getPosition().getX() - ball.getVelocityX()) {
+        if (ballX - ball.getRadius() <= gameField.getPosition().getX()) {
             ball.setVelocityX(-ball.getVelocityX());
+            System.out.println("ballX" + ballX);
+            System.out.println("ballY" + ballY);
         }
-        if (ballY + ball.getRadius() >= gameField.getPosition().getY() + gameField.getHeight() - ball.getVelocityY()) {
+        if (ballY + ball.getRadius() >= gameField.getPosition().getY() + gameField.getHeight()) {
             ball.setVelocityY(-ball.getVelocityY());
+            System.out.println("ballX" + ballX);
+            System.out.println("ballY" + ballY);
         }
-        if (ballY - ball.getRadius() <= gameField.getPosition().getY() - ball.getVelocityY()) {
+        if (ballY - ball.getRadius() <= gameField.getPosition().getY()) {
             ball.setVelocityY(-ball.getVelocityY());
+            System.out.println("ballX" + ballX);
+            System.out.println("ballY" + ballY);
         }
         if (ballX >= secondPlayer.getPlatform().getPosition().getX() &&
                 ballX <= secondPlayer.getPlatform().getPosition().getX() + secondPlayer.getPlatform().getWidth() &&
-                ballY + ball.getRadius() >= secondPlayer.getPlatform().getPosition().getY() - ball.getVelocityY()) {
-            ball.setVelocityY(-ball.getVelocityY());
+                ballY + ball.getRadius() >= secondPlayer.getPlatform().getPosition().getY()) {
+            /*if (secondPlayer.getPlatform().getDirection() != Direction.STOP)
+                ball.setVelocityY(-(ball.getVelocityY() - secondPlayer.getPlatform().getVelocity() / 2));
+            else*/
+                ball.setVelocityY(-ball.getVelocityY());
         }
         if (ballX >= firstPlayer.getPlatform().getPosition().getX() &&
                 ballX <= firstPlayer.getPlatform().getPosition().getX() + firstPlayer.getPlatform().getWidth() &&
                 ballY - ball.getRadius() <= firstPlayer.getPlatform().getPosition().getY() +
-                        firstPlayer.getPlatform().getHeight() - ball.getVelocityY()) {
-            ball.setVelocityY(-ball.getVelocityY());
+                        firstPlayer.getPlatform().getHeight()) {
+            /*if (firstPlayer.getPlatform().getDirection() != Direction.STOP)
+                ball.setVelocityY(-(ball.getVelocityY() - firstPlayer.getPlatform().getVelocity() / 2));
+            else*/
+                ball.setVelocityY(-ball.getVelocityY());
         }
     }
 
