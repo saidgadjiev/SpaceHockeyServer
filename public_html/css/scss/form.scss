@@ -1,0 +1,41 @@
+
+.form {
+  font-size: $font-size-s;
+  color: #380570;
+  text-shadow: #ccc 2px 2px 0, #ccc -1px -1px 0,
+  #ccc -1px 1px 0, #ccc 1px -1px 0;
+  letter-spacing: 4px;
+}
+
+.form__row {
+  margin: 7px;
+}
+
+.form__row_errors {
+  max-width: 300px;
+  margin: 0 auto;
+  display: none;
+}
+
+.form__input {
+  min-width: 150px;
+  max-width: 250px;
+  border-radius: 10px;
+  height: 40px;
+  color: #000;
+}
+
+.submit-btn {
+  min-width: 250px;
+  height: 46px;
+  box-shadow: inset 0 0 6px;
+  background-color: #380570;
+  font-size: $font-size-s;
+  color: #FCF371;
+  text-shadow: none;
+  border-radius: 10px;
+}
+
+.submit-btn_go {
+  background-color: $green-color;
+}

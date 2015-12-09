@@ -1,5 +1,0 @@
-<fest:template xmlns:fest="http://fest.mail.ru" context_name="json">
-	<form action="/#menu" method="get">
-		<button type="submit" class="button-menu">Menu</button>
-	</form>
-</fest:template>

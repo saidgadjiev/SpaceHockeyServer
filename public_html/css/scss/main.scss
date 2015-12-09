@@ -1,0 +1,59 @@
+@import 'variables';
+@import 'menu';
+@import 'form';
+@import 'scoreboard';
+@import 'gameField';
+
+body {
+  background-image: url(../img/prosto_cosmos.jpg);
+  color: #fff;
+  font-family: Canossa-Ultra;
+}
+
+.page {
+  margin: 20px;
+}
+
+.header {
+  margin: 0 auto;
+  padding: 10px;
+  max-width: 600px;
+  min-width: 300px;
+  background-color: rgba(56, 6, 112, 0.6);
+  color: #B0EC00;
+  text-shadow: #8841D4 2px 2px 0, #8841D4 -1px -1px 0,
+  #8841D4 -1px 1px 0, #8841D4 1px -1px 0;
+  text-align: center;
+  font-size: $font-size-xl;
+  letter-spacing: 12px;
+  border-radius: 30px;
+  box-shadow: 0 0 7px 3px #ff5588;
+}
+
+.head-title {
+  text-align: center;
+  font-size: $font-size-l;
+  color: #9C68D4;
+  text-shadow: #FCEF3F 2px 2px 0, #FCEF3F -1px -1px 0,
+  #FCEF3F -1px 1px 0, #FCEF3F 1px -1px 0;
+}
+
+.container {
+  text-align: center;
+  background: rgba(55, 75, 255, 0.2);
+  max-width: 400px;
+  min-width: 300px;
+  min-height: 310px;
+  padding: 20px;
+  border-radius: 15px;
+}
+
+.back-button {
+  margin-top: 10px;
+  float: left;
+  box-shadow: inset 0 0 6px;
+  background-color: #380570;
+  color: #FCF371;
+  font-size: $font-size-m;
+  border-radius: 10px;
+}

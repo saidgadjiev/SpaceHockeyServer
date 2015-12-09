@@ -1,59 +1,57 @@
 define([
 	'backbone',
 	'tmpl/login',
-	'views/ajax',
-    'views/showError',
-    'models/userProfile'
-], function(
-	Backbone,
-	tmpl,
-	ajax,
-    error,
-    userModel
-){
-	var View =  Backbone.View.extend({
-		el: $("#page"),
-		template: tmpl,
-		model: userModel,
-		events: {
-			"submit .form_signin": "submitSignin",
-			"click a": "hide"
-		},
-		render: function(){
-			$(this.el).html(this.template());
+	'utils/validator',
+	'utils/signin',
+	'models/userProfile'
+], function (Backbone,
+             tmpl,
+             Validator,
+             SigninManager,
+             User) {
+	var form_class = ".form_signin";
+	var validator = new Validator(form_class);
 
+	var View = Backbone.View.extend({
+		template: tmpl,
+		model: User,
+
+		events: {
+			"submit .form_signin": "submitSignin"
+		},
+
+		initialize: function () {
+			this.render();
+			SigninManager.saveCache();
+		},
+
+		render: function () {
+			$(this.el).html(this.template());
 			return this;
 		},
-		submitSignin: function(event){
-			var dataAjax = {
-				'login': $("input[name = login]").val(),
-				'password': $("input[name = password]").val()
-			};
-			$.when(ajax.sendAjax(dataAjax, "/auth/signin", "POST")).then(
-				function (response) {
-		  			response = JSON.parse(response);
-		  			if (response.status == "200") {
-		  				userModel.set({
-		  					"login": response.body.login
-		  				});
-		  				Backbone.history.navigate('game', {trigger: true});
-		  			} else {
-		  				error.showLoginError(response);
-		  			}
-				},
-				function (error) {
-		 		 	console.log(error.statusText);
-				}
-  			);			
 
-            return false;
+		submitSignin: function (event) {
+			validator.clearErrors();
+			validator.validateForm();
+
+
+			if (validator.form_valid) {
+				SigninManager.signinRequest(this.model);
+			}
+			return false;
+
 		},
-		show: function(){
-			this.$el.render();
+
+		show: function () {
+			validator.clearErrors()
+			this.$el.show();
+			this.trigger("show", this);
 		},
-		hide: function(){
-			this.$el.empty();
+
+		hide: function () {
+			this.$el.hide();
 		}
+
 	});
 
 	return new View();

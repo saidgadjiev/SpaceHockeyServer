@@ -1,23 +1,31 @@
-<fest:template xmlns:fest="http://fest.mail.ru" context_name="json">
-    <div id="body">
-        <div id="hello">
-            <p class="gameplay">Hello, <fest:value>json.login</fest:value>!</p>
-        </div>
+<fest:template xmlns:fest="http://fest.mail.ru" context_name="json">    
+	<div class = "gameField">        
+		<div class="hello">
+			<p>Hello, <fest:space/> <fest:value>json.login</fest:value></p>
+		</div>
 
-        <div id="wait">
-            <p class="gameplay">Prepare yourself. Wait for enemy!</p>
-        </div>
+		<div class="wait">
+			<p>Prepare yourself. Wait for enemy!</p>
+		</div>
 
-        <div id="gameplay" style="display: none">
-            <div id="score">
-                <p class="gameplay"><span id="myName"></span>: <span id="myScore">0</span></p>
+		<div class="gameplay">
+			<div class="score">
+				<p class="score__player score__player_first">
+					<span class="firstPlayer"></span>:<fest:space/><span class="myScore">0</span>
+				</p>
+				<p class="score__player score__player_second">
+					<span class="secondPlayer"></span>:<fest:space/><span class="enemyScore">0</span>
+				</p>
+			</div>
+		</div>
 
-                <p class="gameplay"><span id="enemyName"></span>: <span id="enemyScore">0</span></p>
-            </div>
-        </div>
-        <div id="gameOver" style="display: none">
-            <p>Result: <span id="win"></span></p>
-        </div>
-    </div>
-    <canvas width="600" height="700" id="gamefield"></canvas>
+		<div class="gameOver">
+			<p>Game over! You are <span class="win"></span></p>
+			<p>Result: <span class = "win"></span></p>
+			<a class="submit-btn btn btn-primary" href="#game">Restart</a>
+		</div>                    
+		<canvas width="600" height="700" id="gamefield"></canvas>
+		<fest:include src="./backbutton.xml" context="json"/>
+	</div>
+  
 </fest:template>

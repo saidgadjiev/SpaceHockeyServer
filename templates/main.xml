@@ -1,30 +1,37 @@
-<fest:template xmlns:fest="http://fest.mail.ru" context_name="json">
-	<fest:include src="./space_sky.xml" context="json"/>
-	<fest:include src="./logoutButton.xml" context="json"/>
-	<script type="text/javascript">
+<fest:template xmlns:fest="http://fest.mail.ru" context_name="user">
+<fest:script>var json = {title: 'Main Menu' };</fest:script>
+<fest:include src="./header.xml" context="json"/>
+<fest:script>
       Cufon.replace("h1", {fontFamily: 'CalgaryShadow-Heavy'});
-    </script>
-	<div class = "container">
-		<h1 class="menu-header">Main Menu</h1>
-		<div class = "menu-item">
-			<a href = "#scoreboard">
-				<h1 class="menu__item1">ScoreBoard</h1>
-			</a>
-		</div>  
-		<div class = "menu-item">
-			<a href = "#game">
-				<h1 class="menu__item2">Start Game</h1>
-			</a>
-		</div>
-		<div class = "menu-item">
-			<a href = "#login">
-				<h1 class="menu__item3">Login</h1>
-			</a>
-		</div>
-		<div class = "menu-item">
-			<a href = "#register">
-				<h1 class="menu__item4">Registration</h1>
-			</a>
-		</div>
-	</div>
+</fest:script>
+<div class = "container">
+  <div class = "menu">
+    <div class = "menu__item">
+      <a href = "#scoreboard" class="menu__link">ScoreBoard</a>
+    </div>
+
+    <fest:if test="!user.login">
+      <div class = "menu__item">     
+        <a href = "#login" class="menu__link">Start Game</a>
+      </div>
+      <div class = "menu__item menu__item_login">
+        <a href = "#login" class="menu__link">Login</a>
+      </div>
+      
+      <div class = "menu__item menu__item_reg">
+        <a href = "#register" class="menu__link">Registration</a>
+      </div>
+    </fest:if>
+
+    <fest:if test="user.login">
+      <div class = "menu__item">      
+        <a href = "#game" class="menu__link">Start Game</a>
+      </div>
+      <div class = "menu__item  menu__item_logout">
+        <a href = "#" class="menu__link">Logout</a>
+      </div>
+    </fest:if>
+  </div>
+</div>
+
 </fest:template>

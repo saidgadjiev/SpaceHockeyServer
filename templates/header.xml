@@ -1,0 +1,6 @@
+<fest:template xmlns:fest="http://fest.mail.ru" context_name="json">
+  <div class = "header"> Space Hockey </div>
+  <div class="head-title">
+    <fest:value output="text">json.title</fest:value>
+  </div>
+</fest:template>
