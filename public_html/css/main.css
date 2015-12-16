@@ -1,187 +1,202 @@
+#page{
+	margin: 20px;
+	min-width: 800px;
+}
+
+.gameplay {
+	color: black;
+}
+
+#body {
+	float: right;
+}
+
+.header{
+	background-color: #0660ff;
+	color:	#fff; 
+	margin: 0 auto;
+	text-align: center;
+	padding: 20px;
+	font-size: 36px;
+	border-radius: 15px;
+}
+
+.button-signout {
+	text-align: center;
+	float: right;
+	margin-top: 10px;
+	width: 170px;
+	height: 60px;
+	font-family: Canossa-Ultra;
+	font-size: 40px;
+	border: none;
+	background-color: green;
+	border-radius: 10px;
+}
+
+.button-gameMechanics {
+	text-align: center;
+	margin-top: 10px;
+	width: 300px;
+	height: 60px;
+	font-family: Canossa-Ultra;
+	font-size: 40px;
+	border: none;
+	background-color: green;
+	border-radius: 10px;
+}
+
+.button-signout:focus {
+	outline: none;
+}
+
+.form-signup-signin__header {
+	font-size:70px;
+	color: #9AFE2E;
+}
+
 @font-face {
-  font-family: Canossa-Ultra;
-  src: url(../js/fonts/7fonts.ru_Canossa-Ultra.ttf);
+    font-family: Canossa-Ultra;
+    src: url(../js/fonts/7fonts.ru_Canossa-Ultra.ttf);
 }
 
-.menu__item {
-  margin: 10px;
+.button-menu {
+	text-align: center;
+	float: left;
+	margin-top: 10px;
+	width: 170px;
+	height: 60px;
+	font-family: Canossa-Ultra;
+	font-size: 40px;
+	border: none;
+	background-color: green;
+	border-radius: 10px;
 }
 
-.menu__link {
-  width: 100%;
-  max-width: 300px;
-  min-width: 100px;
-  border: none;
-  font-size: 34px;
-  color: rgba(10, 10, 10, 0.8);
-  background: none;
-  text-shadow: #7C0059 2px 2px 0, #7C0059 -1px -1px 0, #7C0059 -1px 1px 0, #7C0059 1px -1px 0;
-  outline: none;
+.button-menu:focus {
+	outline: none;
 }
 
-.menu__link:hover {
-  font-size: 46px;
-  text-decoration: none;
-  text-shadow: #7C0059 2px 2px 0, #7C0059 -2px -2px 0, #7C0059 -2px 2px 0, #7C0059 2px -2px 0;
-  color: #9C68D4;
+.button-submit {
+	margin-top: 10px;
+	width: 340px;
+	height: 60px;
+	font-family: Canossa-Ultra;
+	font-size: 40px;
+	border: none;
+	background-color: green;
+	border-radius: 10px;
 }
 
-.form {
-  font-size: 26px;
-  color: #380570;
-  text-shadow: #ccc 2px 2px 0, #ccc -1px -1px 0, #ccc -1px 1px 0, #ccc 1px -1px 0;
-  letter-spacing: 4px;
+.button-submit:focus {
+	outline: none;
 }
 
-.form__row {
-  margin: 7px;
+canvas {
+	position:absolute;
+	z-index: -5;
 }
 
-.form__row_errors {
-  max-width: 300px;
-  margin: 0 auto;
-  display: none;
+input {
+	font-size:30px;
+  	font-weight:bold;
+	color:#000000;
 }
 
-.form__input {
-  min-width: 150px;
-  max-width: 250px;
-  border-radius: 10px;
-  height: 40px;
-  color: #000;
+.form-signup-signin {
+	text-align: center;
+}
+
+.body_space_sky {
+	margin:0;
+	padding:0;
+	background-color:#fff;
+	overflow:hidden;
+}
+
+.div_space_sky {
+	margin:0;
+	padding:0;
+	position:absolute;
+	font-size:0;
+	overflow:hidden;
+}
+
+#starfield {
+	background-color:#000000';
+	position:absolute;
+	overflow:hidden;
+}
+
+.form__input-item {
+	color: blue;
+}
+
+.menu-header {
+	font-size:70px;
+	color: #9AFE2E;
+}
+
+.container{
+	text-align: center;
+}
+
+.menu-item{
+	margin: 10px;
+
+}
+
+.menu__item1:hover, .menu__item2:hover, .menu__item3:hover, .menu__item4:hover {
+	transform: scale(1.5);
+}
+
+.menu-item__link{
+	width: 100%;
+	max-width: 300px;
+	min-width: 100px;
+	padding: 15px !important;
+	border-radius: 10px/15px !important;
+}
+
+.form-div{
+	margin: 10px;
+}
+
+.form-div_errors{
+	max-width: 300px;
+	margin: 0 auto;
+	display: none;
+}
+
+.form-div__input {
+	min-width: 200px;	
+	border-radius: 5px;
 }
 
 .submit-btn {
-  min-width: 250px;
-  height: 46px;
-  box-shadow: inset 0 0 6px;
-  background-color: #380570;
-  font-size: 26px;
-  color: #FCF371;
-  text-shadow: none;
-  border-radius: 10px;
+	min-width: 200px;
 }
 
-.submit-btn_go {
-  background-color: #759d00;
+.score-list{
+	/*min-width: 100px;*/
+	max-width: 400px !important;
+	margin: 0 auto;
+	text-align: left;
+	background-color: #d0e3f7;
+	border-radius: 10px;
 }
 
-.score-list {
-  width: 100%;
-  max-width: 380px;
-  margin: 0 auto;
-  background-color: #7182d9;
-  border-radius: 10px;
-  box-shadow: 0 0 7px 3px;
+.score-list__item{
+
+	/*border: black 1px solid;*/
 }
 
-.score-list__cell {
-  text-align: center;
-  padding: 5px;
-  border-top: gray 2px solid;
+.score-list__item_head{
+	/*background-color: #a358e8;
+	border-radius: 20px;*/
 }
 
-.score-list__cell_head {
-  border-top: 0px;
-}
 
-.score-list__item_head {
-  color: mediumvioletred;
-  font-size: 20px;
-}
-
-/* Game */
-.gameplay {
-  font-size: 20px;
-  display: none;
-}
-
-.gameField {
-  text-align: center;
-  margin: 0 auto;
-  width: 580px;
-}
-
-.gameOver {
-  display: none;
-}
-
-.score__player {
-  width: 100px;
-  padding: 10px;
-  border-radius: 7px;
-  background-color: rgba(56, 6, 112, 0.7);
-  box-shadow: 0 0 7px 3px #ff5588;
-}
-
-.score__player_first {
-  text-align: left;
-  /*background-color: $red-violet-color;	*/
-}
-
-.score__player_second {
-  position: relative;
-  top: -58px;
-  right: -480px;
-  text-align: right;
-  /*background-color: $green-color;	*/
-}
-
-.win_button {
-  padding-top: 40px;
-  padding-bottom: 40px;
-  border-radius: 50px;
-  box-shadow: inset 0 0 8px;
-}
-
-body {
-  background-image: url(../img/prosto_cosmos.jpg);
-  color: #fff;
-  font-family: Canossa-Ultra;
-}
-
-.page {
-  margin: 20px;
-}
-
-.header {
-  margin: 0 auto;
-  padding: 10px;
-  max-width: 600px;
-  min-width: 300px;
-  background-color: rgba(56, 6, 112, 0.6);
-  color: #B0EC00;
-  text-shadow: #8841D4 2px 2px 0, #8841D4 -1px -1px 0, #8841D4 -1px 1px 0, #8841D4 1px -1px 0;
-  text-align: center;
-  font-size: 56px;
-  letter-spacing: 12px;
-  border-radius: 30px;
-  box-shadow: 0 0 7px 3px #ff5588;
-}
-
-.head-title {
-  text-align: center;
-  font-size: 46px;
-  color: #9C68D4;
-  text-shadow: #FCEF3F 2px 2px 0, #FCEF3F -1px -1px 0, #FCEF3F -1px 1px 0, #FCEF3F 1px -1px 0;
-}
-
-.container {
-  text-align: center;
-  background: rgba(55, 75, 255, 0.2);
-  max-width: 400px;
-  min-width: 300px;
-  min-height: 310px;
-  padding: 20px;
-  border-radius: 15px;
-}
-
-.back-button {
-  margin-top: 10px;
-  float: left;
-  box-shadow: inset 0 0 6px;
-  background-color: #380570;
-  color: #FCF371;
-  font-size: 34px;
-  border-radius: 10px;
+.back-button{
+	margin-top: 10px;
 }

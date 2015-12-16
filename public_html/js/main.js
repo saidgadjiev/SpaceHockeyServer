@@ -1,32 +1,28 @@
 require.config({
-	// urlUrgs - доп. параметры для скрипта(решает вопрос кэширования)
-	urlArgs: "_=" + (new Date()).getTime(),
-
-	// базовый путь, где лежат все модули
-	baseUrl: "js",
-	paths: {
-		// пути для модулей, которые находятся не в baseUrl
+	urlArgs: "_=" + (new Date()).getTime(), //Для кеширования дополнительные параметры
+	baseUrl: "js", //Базовый путь, где лежат все модули
+	paths: { //Пути для модулей, которые находятся не в baseUrl
 		jquery: "lib/jquery",
 		underscore: "lib/underscore",
 		backbone: "lib/backbone",
 	},
-	shim: {
-		// параметр shim позволяет добавить сторонние модули
-		// (который без метода define)
-		'backbone': {
+	shim: {  //Для поддержки модулей сторонних модулей описанных не через define
+		backbone: {
 			deps: ['underscore', 'jquery'],
-			exports: 'Backbone'
+			exports: 'Backbone' //Имя модуля
 		},
-		'underscore': {
+		underscore: {
 			exports: '_'
 		}
 	}
 });
 
-define([
+define ([//Описание модуля
 	'backbone',
 	'router'
-], function (Backbone,
-             router) {
+], function(  //Функция выполняется после загрузки всех модулей
+	Backbone,
+	router
+){
 	Backbone.history.start();
 });

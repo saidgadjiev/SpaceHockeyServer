@@ -1,56 +1,36 @@
 define([
 	'backbone',
-	'views/game',
 	'views/main',
+	'views/game',
 	'views/login',
-	'views/scoreboard',
-	'views/register',
-	'views/manager'
-], function (Backbone,
-             gamePage,
-             mainPage,
-             loginPage,
-             scoreboardPage,
-             registerPage,
-             viewManager) {
-
+	'views/register'
+], function(
+	Backbone,
+	main,
+	game,
+	login,
+	register
+){
 	var Router = Backbone.Router.extend({
 		routes: {
-			'scoreboard': 'scoreboardAction',
-			'game': 'gameAction',
-			'login': 'loginAction',
-			'register': 'registerAction',
-			'*default': 'defaultActions'
+			'game': 'gameController',
+			'login': 'loginController',
+			'register': 'registerController',
+			'*default': 'defaultController'
 		},
-
-		initialize: function () {
-			viewManager.addView(scoreboardPage);
-			viewManager.addView(loginPage);
-			viewManager.addView(mainPage);
-			viewManager.addView(gamePage);
-			viewManager.addView(registerPage);
+		defaultController: function(){
+			main.render();
 		},
-
-		defaultActions: function () {
-			mainPage.show();
+		gameController: function(){
+			game.render();
 		},
-
-		scoreboardAction: function () {
-			scoreboardPage.show();
+		loginController: function(){
+			login.render();
 		},
-
-		gameAction: function () {
-			gamePage.show();
-		},
-
-		loginAction: function () {
-			loginPage.show();
-		},
-
-		registerAction: function () {
-			registerPage.show();
+		registerController: function(){
+			register.render();
 		}
 	});
-
-	return new Router();
+	
+	return new Router();	
 });
