@@ -1,73 +1,54 @@
 define([
-    'backbone',
-    'tmpl/register',
-    'views/ajax',
-    'views/showError',
-    'models/userProfile'
-], function(
-    Backbone,
-    tmpl,
-    ajax,
-    error,
-    userModel
-){
-    var View = Backbone.View.extend({
-		el: $("#page"),
-        template: tmpl,		
+	'backbone',
+	'tmpl/register',
+	'utils/validator',
+	'utils/signup',
+	'models/userProfile'
+], function (Backbone,
+             tmpl,
+             Validator,
+             SignupManager,
+             User) {
+	var formClass = ".form_signup";
+	var validator = new Validator(formClass);
+
+	var View = Backbone.View.extend({
+		template: tmpl,
+
 		events: {
-            "submit #form_signup": "submitSignup",
-            "submit #form_signout": "submitSignout",
-            "click a": "hide"
+			"submit .form_signup": "submitSignup"
 		},
-        render: function () {
-            $(this.el).html(this.template());
 
-            return this;
+		initialize: function () {
+			this.render();
+			SignupManager.saveCache();
 		},
-		submitSignup: function(event) {
-			var dataAjax = {
-				'login': $("input[name = login]").val(),
-				'password': $("input[name = password]").val(),
-				'email': $("input[name = email]").val()
+
+		render: function () {
+			$(this.el).html(this.template());
+			return this;
+		},
+
+		submitSignup: function (event) {
+			validator.clearErrors();
+			validator.validateForm();
+			if (validator.form_valid) {
+				SignupManager.signupRequest();
 			}
-			$.when(ajax.sendAjax(dataAjax, "/auth/signup", "POST")).then(
-				function (response) {
-		  			response = JSON.parse(response);
-		  			if (response.status == "200") {
-		  				Backbone.history.navigate('login', {trigger: true});
-		  			} else {
-		  				error.showRegistrationError(response);
-		  			}
-				},
-				function (error) {
-		 		 	console.log(error.statusText);
-				}
-  			);								
-            return false;
-        },
-        submitSignout: function(event) {
-            $.when(ajax.sendAjax('', "/auth/signout", "GET")).then(
-                function (response) {
-                    response = JSON.parse(response);
-                    if (response.status == "200") {
-                        userModel.clear();
-                    } else {
-                        error.showLogoutError();
-                    }
-                },
-                function (error) {
-                    console.log(error.statusText);
-                }
-            );                             
-            return false;
-        },
-        show: function () {
-            this.$el.render();
-        },
-        hide: function () {
-            this.$el.empty();
-        }
-    });
+			return false;
+		},
 
-    return new View();
+		show: function () {
+			validator.clearErrors()
+			this.$el.show();
+			this.trigger("show", this);
+		},
+
+		hide: function () {
+			this.$el.hide();
+		}
+
+	});
+
+	return new View();
 });

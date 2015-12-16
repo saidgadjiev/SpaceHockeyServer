@@ -1,25 +1,52 @@
 define([
 	'backbone',
-	'tmpl/main'
-], function(
-	Backbone,
-	tmpl
-){
-	var View = Backbone.View.extend({
-		el: $('#page'),
+	'tmpl/main',
+	'models/userProfile',
+	'utils/signout'
+], function (Backbone,
+             tmpl,
+             User,
+             SignoutManager) {
+
+	var Main = Backbone.View.extend({
 		template: tmpl,
-		render: function() {
-			this.$el.html(this.template);
-			
-			return this;
+		model: User,
+
+		events: {
+			"click .menu__item_logout": "logout"
 		},
-		show: function() {
-			this.$el.render();
+
+		initialize: function () {
+			this.render();
+			that = this;
+			this.listenTo(User, 'change', function () {
+				that.render();
+			});
 		},
-		hide: function() {
-			this.$el.empty();
-		}
+
+		logout: function () {
+			SignoutManager.exitRequest(this.model);
+			this.render();
+		},
+
+		render: function () {
+			userlogin = User.get('login');
+			var userData = {
+				"login": userlogin
+			}
+			this.$el.html(this.template(userData));
+		},
+
+		show: function () {
+			this.trigger('show', this);
+			this.$el.show();
+		},
+
+		hide: function () {
+			this.$el.hide();
+		},
+
 	});
 
-	return new View();;
+	return new Main();
 });
