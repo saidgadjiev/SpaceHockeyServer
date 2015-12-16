@@ -121,7 +121,13 @@ public class TransportSystem {
 
         JsonObject jsonFinish = new JsonObject();
         jsonFinish.addProperty("status", "finish");
-        jsonFinish.addProperty("gameState", session.getResultState().ordinal());
+        if (session.getResultState().ordinal() == 0) {
+            jsonFinish.addProperty("winner", "dead heat");
+        } else if (session.getResultState().ordinal() == 1) {
+            jsonFinish.addProperty("winner", firstPlayer.getName());
+        } else {
+            jsonFinish.addProperty("winner", secondPlayer.getName());
+        }
 
         sendJSON(userSockets.get(firstPlayer.getName()).getSession(), jsonFinish);
         sendJSON(userSockets.get(secondPlayer.getName()).getSession(), jsonFinish);

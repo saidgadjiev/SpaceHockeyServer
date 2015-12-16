@@ -1,7 +1,10 @@
 package gameMechanics;
 
 import frontend.transport.TransportSystem;
+import gameMechanics.game.Ball;
 import gameMechanics.game.Direction;
+import gameMechanics.game.GameField;
+import gameMechanics.game.Position;
 import main.accountService.AccountService;
 import main.gameService.GameMechanics;
 import main.gameService.GamePosition;
@@ -108,8 +111,96 @@ public class GameMechanicsImpl implements GameMechanics {
     private void makeStep() {
         for (GameSession session : allSessions) {
             if (!session.isFinished()) {
-                session.makeStep();
+                session.getBall().move();
+                collisionDetectionBall(session);
+                if (!isCollisionWithWall(session.getFirstPlayer(), session.getGameField())) {
+                    session.getFirstPlayer().getPlatform().move();
+                }
+                if (!isCollisionWithWall(session.getSecondPlayer(), session.getGameField())) {
+                    session.getSecondPlayer().getPlatform().move();
+                }
             }
+        }
+    }
+
+    public boolean isCollisionWithWall(Player player, GameField gameField) {
+        int x = player.getPlatform().getPosition().getX();
+
+        //noinspection RedundantIfStatement
+        if ((x <= gameField.getPosition().getX() && player.getPlatform().getDirection() == Direction.LEFT)
+                || (x >= gameField.getPosition().getX() + gameField.getWidth() - 100
+                && player.getPlatform().getDirection() == Direction.RIGHT)) {
+            return true;
+        }
+        return false;
+    }
+
+    public void collisionDetectionBall(GameSession session) {
+        Ball ball = session.getBall();
+        Player firstPlayer = session.getFirstPlayer();
+        Player secondPlayer = session.getSecondPlayer();
+        GameField gameField = session.getGameField();
+        int ballX = ball.getPosition().getX();
+        int ballY = ball.getPosition().getY();
+
+        if (ballX + ball.getRadius() >= gameField.getPosition().getX() + gameField.getWidth()) {
+            ball.setVelocityX(-ball.getVelocityX());
+        }
+        if (ballX - ball.getRadius() <= gameField.getPosition().getX()) {
+            ball.setVelocityX(-ball.getVelocityX());
+        }
+        if (ballY + ball.getRadius() >= gameField.getPosition().getY() + gameField.getHeight()) {
+            ball.setVelocityY(-ball.getVelocityY());
+        }
+        if (ballY - ball.getRadius() <= gameField.getPosition().getY()) {
+            ball.setVelocityY(-ball.getVelocityY());
+        }
+
+        if (ballX >= secondPlayer.getPlatform().getPosition().getX() &&
+                ballX <= secondPlayer.getPlatform().getPosition().getX() + secondPlayer.getPlatform().getWidth() &&
+                ballY + ball.getRadius() >= secondPlayer.getPlatform().getPosition().getY()) {
+            ball.setVelocityY(-ball.getVelocityY());
+        }
+
+        if (ballX >= firstPlayer.getPlatform().getPosition().getX() &&
+                ballX <= firstPlayer.getPlatform().getPosition().getX() + firstPlayer.getPlatform().getWidth() &&
+                ballY - ball.getRadius() <= firstPlayer.getPlatform().getPosition().getY() +
+                        firstPlayer.getPlatform().getHeight()) {
+            ball.setVelocityY(-ball.getVelocityY());
+        }
+
+        if ((ballX < firstPlayer.getPlatform().getPosition().getX() ||
+                ballX > firstPlayer.getPlatform().getPosition().getX() + firstPlayer.getPlatform().getWidth()) &&
+                ballY <= firstPlayer.getPlatform().getPosition().getY() +
+                        firstPlayer.getPlatform().getHeight()) {
+            int zn = (int) (Math.random() * 2);
+            if (zn == 0) {
+                zn = -1;
+            } else {
+                zn = 1;
+            }
+
+            ball.setPosition(new Position(250, 310));
+            ball.setVelocityX(zn * ball.getVelocityX());
+            ball.setVelocityY((-zn) * ball.getVelocityY());
+            secondPlayer.incrementScore();
+            transportSystem.syncScore(session);
+        }
+        if ((ballX  < secondPlayer.getPlatform().getPosition().getX() ||
+                ballX > secondPlayer.getPlatform().getPosition().getX() + secondPlayer.getPlatform().getWidth()) &&
+                ballY >= secondPlayer.getPlatform().getPosition().getY()) {
+            int zn = (int) (Math.random() * 2);
+            if (zn == 0) {
+                zn = -1;
+            } else {
+                zn = 1;
+            }
+
+            ball.setPosition(new Position(250, 310));
+            ball.setVelocityX(zn * ball.getVelocityX());
+            ball.setVelocityY((-zn) * ball.getVelocityY());
+            firstPlayer.incrementScore();
+            transportSystem.syncScore(session);
         }
     }
 

@@ -1,4 +1,4 @@
 <class type='resource.GameMechanicsSettings'>
-    <gameTime>100000</gameTime>
+    <gameTime>10000</gameTime>
     <stepTime>1000</stepTime>
 </class>

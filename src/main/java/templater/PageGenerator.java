@@ -49,7 +49,6 @@ public class PageGenerator {
             scoreItem.addProperty("login", profile.getLogin());
             scoreItem.addProperty("score", Integer.toString(profile.getScore()));
             scoreList.add(scoreItem);
-            System.out.print(scoreList.toString());
         }
         jsonBody.add("scoreList", scoreList);
         jsonObject.add("body", jsonBody);

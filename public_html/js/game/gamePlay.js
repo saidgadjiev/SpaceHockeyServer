@@ -161,13 +161,10 @@ define([
 			if (data.status == "finish") {
 				$(".gameOver").show();
 				$(".gameplay").hide()
-				if (data.gameState == 0)
+				if (data.winner == "dead heat")
 					$(".win").html("dead heat!");
-				else if (data.gameState == 1)
-					$(".win").html("first winner!");
-				else if (data.gameState == 2)
-					$(".win").html("second winner!");
-				gameStarted = false;
+				else
+					$(".win").html(data.winner);
 			}
 			if (data.status == "incrementScore") {
 				$(".myScore").html(data.first.score);
