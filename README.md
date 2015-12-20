@@ -1,2 +1,2 @@
 # SpaceHockeyServer
-Java
+Java, Hibernate ORM
