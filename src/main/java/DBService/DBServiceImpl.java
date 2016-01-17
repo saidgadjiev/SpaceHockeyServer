@@ -94,11 +94,9 @@ public class DBServiceImpl implements DBService {
     }
 
     public List<UserProfile> readLimitOrder(int limit) {
-        return tExecutor.execQuery(
-                (session, parameter) -> {
-                    UserProfileDAO dao = new UserProfileDAO(session);
-                    return dao.readLimitOrder(limit);
-                }, limit);
+            Session session = sessionFactory.openSession();
+            UserProfileDAO dao = new UserProfileDAO(session);
+            return dao.readLimitOrder(limit);
     }
 
     public void shutdown() {

@@ -10,6 +10,7 @@ import gameMechanics.GameMechanicsImpl;
 import main.accountService.AccountService;
 import main.accountService.AccountServiceMySQLImpl;
 import main.gameService.GameMechanics;
+import main.user.UserProfile;
 import org.eclipse.jetty.server.Handler;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.handler.HandlerList;
@@ -22,6 +23,7 @@ import resource.ResourceFactory;
 import resource.ServerSettings;
 
 import javax.servlet.Servlet;
+import java.util.List;
 
 /**
  * @author S. Gadjiev
@@ -41,6 +43,7 @@ public class Main {
         DBServerSettings dbServerSettings = (DBServerSettings) resourceFactory.loadResource("data/dbServerSettings.xml");
 
         DBService dbService = new DBServiceImpl(dbServerSettings);
+
         AccountService accountService = new AccountServiceMySQLImpl(dbService);
 
         TransportSystem transportSystem = new TransportSystem();
