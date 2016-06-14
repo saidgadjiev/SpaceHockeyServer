@@ -34,12 +34,14 @@ public class UserProfileDAO {
 
     public UserProfile readByName(String name) {
         Criteria criteria = session.createCriteria(UserProfile.class);
+
         return (UserProfile) criteria.add(Restrictions.eq("login", name)).uniqueResult();
     }
 
     @SuppressWarnings("unchecked")
     public List<UserProfile> readAll() {
         Criteria criteria = session.createCriteria(UserProfile.class);
+
         return (List<UserProfile>) criteria.list();
     }
 
@@ -53,12 +55,14 @@ public class UserProfileDAO {
                 "CALL proc(:var)")
                 .addEntity(UserProfile.class)
                 .setParameter("var", limit);
+
         return (List<UserProfile>) query.list();
     }
 
     public long readCountAll() {
         Criteria criteria = session.createCriteria(UserProfile.class);
         criteria.setProjection(Projections.rowCount());
+
         return (long) criteria.list().get(0);
     }
 }

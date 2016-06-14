@@ -22,8 +22,8 @@ public class DBServiceImpl implements DBService {
 
     public DBServiceImpl(DBServerSettings dbServerSettings) {
         Configuration configuration = new Configuration();
-        configuration.addAnnotatedClass(UserProfile.class);
 
+        configuration.addAnnotatedClass(UserProfile.class);
         configuration.setProperty("hibernate.dialect", dbServerSettings.getDialect());
         configuration.setProperty("hibernate.connection.driver_class", dbServerSettings.getDriverClass());
         configuration.setProperty("hibernate.connection.url", dbServerSettings.getConnectionUrl());
@@ -56,7 +56,8 @@ public class DBServiceImpl implements DBService {
     public UserProfile read(long id) {
         return tExecutor.execQuery(
                 (session, parameter) -> {
-                    UserProfileDAO dao = new UserProfileDAO(session);
+                    dbService.dao.UserProfileDAO dao = new UserProfileDAO(session);
+
                     return dao.read(parameter);
                 }, id);
     }
@@ -65,6 +66,7 @@ public class DBServiceImpl implements DBService {
         return tExecutor.execQuery(
                 (session, parameter) -> {
                     UserProfileDAO dao = new UserProfileDAO(session);
+
                     return dao.readByName(parameter);
                 }, name);
     }
@@ -73,6 +75,7 @@ public class DBServiceImpl implements DBService {
         return tExecutor.execQuery(
                 (session, parameter) -> {
                     UserProfileDAO dao = new UserProfileDAO(session);
+
                     return dao.readAll();
                 }, null);
     }
@@ -81,6 +84,7 @@ public class DBServiceImpl implements DBService {
         return tExecutor.execQuery(
                 (session, parameter) -> {
                     UserProfileDAO dao = new UserProfileDAO(session);
+
                     return dao.readCountAll();
                 }, null);
     }
@@ -96,6 +100,7 @@ public class DBServiceImpl implements DBService {
     public List<UserProfile> readLimitOrder(int limit) {
             Session session = sessionFactory.openSession();
             UserProfileDAO dao = new UserProfileDAO(session);
+
             return dao.readLimitOrder(limit);
     }
 
@@ -105,8 +110,10 @@ public class DBServiceImpl implements DBService {
 
     private static SessionFactory createSessionFactory(Configuration configuration) {
         StandardServiceRegistryBuilder builder = new StandardServiceRegistryBuilder();
+
         builder.applySettings(configuration.getProperties());
         ServiceRegistry serviceRegistry = builder.build();
+
         return configuration.buildSessionFactory(serviceRegistry);
     }
 }
