@@ -1,18 +1,19 @@
 package gameMechanics.game;
 
 /**
-  Created by said on 07.11.15.
+ * Created by said on 28.11.15.
  */
-
-public class Ball implements Sprite {
+public class Ball {
     private int velocityX;
     private int velocityY;
+    private int radius;
     private Position position;
 
-    public Ball(Position position, int velocityX, int velocityY) {
+    public Ball(Position position, int radius, int velocityX, int velocityY) {
         this.position = position;
         this.velocityX = velocityX;
         this.velocityY = velocityY;
+        this.radius = radius;
     }
 
     public Direction getDirection() {
@@ -56,6 +57,15 @@ public class Ball implements Sprite {
     }
 
     public void move() {
+        position.setX(position.getX() + velocityX);
+        position.setY(position.getY() + velocityY);
+    }
 
+    public int getRadius() {
+        return radius;
+    }
+
+    public void setRadius(int radius) {
+        this.radius = radius;
     }
 }

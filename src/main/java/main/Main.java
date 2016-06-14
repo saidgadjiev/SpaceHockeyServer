@@ -1,22 +1,23 @@
 package main;
 
 import admin.AdminPageServlet;
-import frontend.SignInServlet;
-import frontend.SignOutServlet;
-import frontend.SignUpServlet;
+import dbService.DBService;
+import dbService.DBServiceImpl;
+import frontend.*;
 import frontend.game.WebSocketGameServlet;
-import frontend.game.WebSocketServiceImpl;
+import frontend.transport.TransportSystem;
 import gameMechanics.GameMechanicsImpl;
 import main.accountService.AccountService;
-import main.accountService.AccountServiceImpl;
+import main.accountService.AccountServiceMySQLImpl;
 import main.gameService.GameMechanics;
-import main.gameService.WebSocketService;
+import main.user.UserProfile;
 import org.eclipse.jetty.server.Handler;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.handler.HandlerList;
 import org.eclipse.jetty.server.handler.ResourceHandler;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
+import resource.DBServerSettings;
 import resource.GameMechanicsSettings;
 import resource.ResourceFactory;
 import resource.ServerSettings;
@@ -38,23 +39,30 @@ public class Main {
 
         ServerSettings serverSettings = (ServerSettings) resourceFactory.loadResource("cfg/server.properties");
         GameMechanicsSettings gameMechanicsSettings = (GameMechanicsSettings) resourceFactory.loadResource("data/gameMechanicsSettings.xml");
+        DBServerSettings dbServerSettings = (DBServerSettings) resourceFactory.loadResource("data/dbServerSettings.xml");
 
-        AccountService accountService = new AccountServiceImpl();
+        DBService dbService = new DBServiceImpl(dbServerSettings);
 
-        WebSocketService webSocketService = new WebSocketServiceImpl();
-        GameMechanics gameMechanics = new GameMechanicsImpl(webSocketService, gameMechanicsSettings);
+        AccountService accountService = new AccountServiceMySQLImpl(dbService);
+
+        TransportSystem transportSystem = new TransportSystem();
+        GameMechanics gameMechanics = new GameMechanicsImpl(accountService, transportSystem, gameMechanicsSettings);
 
         Servlet signin = new SignInServlet(accountService);
         Servlet signUp = new SignUpServlet(accountService);
         Servlet signOut = new SignOutServlet(accountService);
         Servlet admin = new AdminPageServlet(accountService);
+        Servlet score = new ScoreServlet(accountService);
+        Servlet profile = new ProfileServlet(accountService);
 
         ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);
         context.addServlet(new ServletHolder(signin), "/auth/signin");
         context.addServlet(new ServletHolder(signUp), "/auth/signup");
         context.addServlet(new ServletHolder(signOut), "/auth/signout");
         context.addServlet(new ServletHolder(admin), "/admin");
-        context.addServlet(new ServletHolder(new WebSocketGameServlet(accountService, gameMechanics, webSocketService)), "/gameplay");
+        context.addServlet(new ServletHolder(score), "/score");
+        context.addServlet(new ServletHolder(profile), "/profile");
+        context.addServlet(new ServletHolder(new WebSocketGameServlet(accountService, transportSystem, gameMechanics)), "/gameplay");
 
         ResourceHandler resource_handler = new ResourceHandler();
         resource_handler.setResourceBase("public_html");
@@ -68,6 +76,5 @@ public class Main {
         server.start();
 
         gameMechanics.run();
-
     }
 }

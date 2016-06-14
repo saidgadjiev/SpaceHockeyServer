@@ -1,7 +1,7 @@
 package frontend;
 
-import main.user.UserProfile;
 import main.accountService.AccountServiceImpl;
+import main.user.UserProfile;
 import org.jetbrains.annotations.Nullable;
 
 import javax.servlet.http.HttpServletRequest;
@@ -10,6 +10,7 @@ import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -27,7 +28,7 @@ public class ServletTest {
     }
 
     public HttpServletRequest getTestRequest(@Nullable String sessionID) {
-        HttpSession sessionMock =  mock(HttpSession.class);
+        HttpSession sessionMock = mock(HttpSession.class);
         HttpServletRequest requestMock = mock(HttpServletRequest.class);
 
         when(sessionMock.getAttribute("login")).thenReturn(sessionID);

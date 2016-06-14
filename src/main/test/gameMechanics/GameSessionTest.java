@@ -1,5 +1,7 @@
 package gameMechanics;
 
+import main.gameService.GamePosition;
+import main.gameService.GameResultState;
 import main.gameService.Player;
 import org.junit.Before;
 import org.junit.Test;
@@ -8,7 +10,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 /**
-  Created by said on 31.10.15.
+ * Created by said on 31.10.15.
  */
 
 public class GameSessionTest {
@@ -18,8 +20,11 @@ public class GameSessionTest {
 
     @Before
     public void setUp() {
-        testPlayer1.setMyPosition(1);
-        testPlayer2.setMyPosition(2);
+        final GamePosition myPosition = GamePosition.UPPER;
+        final GamePosition enemyPosition = GamePosition.LOWER;
+
+        testPlayer1.setMyPosition(myPosition);
+        testPlayer2.setMyPosition(enemyPosition);
         gameSession = new GameSession(testPlayer1, testPlayer2);
     }
 
@@ -27,12 +32,6 @@ public class GameSessionTest {
     public void testGetEnemyPlayer() throws Exception {
         assertEquals(testPlayer2.getName(), gameSession.getEnemyPlayer(testPlayer1.getMyPosition()).getName());
         assertEquals(testPlayer1.getName(), gameSession.getEnemyPlayer(testPlayer2.getMyPosition()).getName());
-    }
-
-    @Test
-    public void testGetSelf() throws Exception {
-        assertEquals(testPlayer1.getName(), gameSession.getSelfPlayer(testPlayer1.getMyPosition()).getName());
-        assertEquals(testPlayer2.getName(), gameSession.getSelfPlayer(testPlayer2.getMyPosition()).getName());
     }
 
     @Test
@@ -45,8 +44,7 @@ public class GameSessionTest {
         gameSession.getFirstPlayer().incrementScore();
         gameSession.determineWinner();
 
-        assertEquals(1, gameSession.getFirstPlayer().getResultStatus());
-        assertEquals(2, gameSession.getSecondPlayer().getResultStatus());
+        assertEquals(GameResultState.FIRST_WIN, gameSession.getResultState());
     }
 
     @Test
@@ -54,8 +52,7 @@ public class GameSessionTest {
         gameSession.getSecondPlayer().incrementScore();
         gameSession.determineWinner();
 
-        assertEquals(1, gameSession.getSecondPlayer().getResultStatus());
-        assertEquals(2, gameSession.getFirstPlayer().getResultStatus());
+        assertEquals(GameResultState.SECOND_WIN, gameSession.getResultState());
     }
 
     @Test
@@ -64,7 +61,7 @@ public class GameSessionTest {
         gameSession.getSecondPlayer().incrementScore();
         gameSession.determineWinner();
 
-        assertEquals(gameSession.getSecondPlayer().getResultStatus(), gameSession.getFirstPlayer().getResultStatus());
+        assertEquals(GameResultState.DEAD_HEAT, gameSession.getResultState());
     }
 
     @Test

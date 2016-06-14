@@ -29,7 +29,7 @@ public class JSONFromRequest {
 
         JsonObject jsonObject;
         try {
-            jsonObject  = new Gson().fromJson(parametersBuffer.toString(), JsonObject.class);
+            jsonObject = new Gson().fromJson(parametersBuffer.toString(), JsonObject.class);
         } catch (JsonSyntaxException e) {
             return null;
         }

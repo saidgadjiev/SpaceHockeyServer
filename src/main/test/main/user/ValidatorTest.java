@@ -2,11 +2,11 @@ package main.user;
 
 import org.junit.Test;
 
-import static org.junit.Assert.assertFalse;
 import static main.user.Validator.*;
+import static org.junit.Assert.assertFalse;
 
 /**
- Created by said on 17.10.15.
+ * Created by said on 17.10.15.
  */
 
 public class ValidatorTest {

@@ -12,7 +12,7 @@ public class Validator {
     private static Pattern loginRegex = Pattern.compile("^\\w{4,20}$");
     private static Pattern passwordRegex = Pattern.compile("^\\w{6,20}$");
 
-    public static boolean  isValidLogin(String login) {
+    public static boolean isValidLogin(String login) {
         Matcher matcher = loginRegex.matcher(login);
 
         return matcher.matches();

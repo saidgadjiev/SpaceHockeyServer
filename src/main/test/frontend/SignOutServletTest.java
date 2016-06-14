@@ -33,14 +33,14 @@ public class SignOutServletTest extends ServletTest {
 
         request = getTestRequest(getTestUser().getLogin());
         accountService.addSessions(login, getTestUser());
-        signout.doGet(request, response);
+        signout.doPost(request, response);
         assertEquals(setResponseDataUser(HttpServletResponse.SC_OK, login, password, email), stringWriter.toString());
     }
 
     @Test
     public void testDoGetUnauthorized() throws ServletException, IOException {
         request = getTestRequest(null);
-        signout.doGet(request, response);
+        signout.doPost(request, response);
         assertEquals(setResponseDataUser(HttpServletResponse.SC_UNAUTHORIZED, "", "", ""), stringWriter.toString());
     }
 }

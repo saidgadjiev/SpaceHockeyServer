@@ -7,7 +7,7 @@ import resource.sax.SettingsFileNotFoundException;
 import static junit.framework.Assert.assertEquals;
 
 /**
-  Created by said on 10.11.15.
+ * Created by said on 10.11.15.
  */
 
 public class ResourceFactoryTest {

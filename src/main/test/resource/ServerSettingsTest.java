@@ -6,7 +6,7 @@ import org.junit.Test;
 import static org.junit.Assert.assertEquals;
 
 /**
-  Created by said on 30.10.15.
+ * Created by said on 30.10.15.
  */
 
 public class ServerSettingsTest {

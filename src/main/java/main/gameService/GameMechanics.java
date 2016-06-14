@@ -1,12 +1,12 @@
 package main.gameService;
 
-import com.google.gson.JsonObject;
 import gameMechanics.GameSession;
+import gameMechanics.game.Direction;
 
 import java.util.List;
 
 /**
-  Created by said on 20.10.15.
+ * Created by said on 20.10.15.
  */
 
 public interface GameMechanics {
@@ -17,10 +17,9 @@ public interface GameMechanics {
 
     void run();
 
-    @SuppressWarnings("SpellCheckingInspection")
-    void analizeMessage(Player myPlayer, JsonObject message);
-
     void createGame();
 
     List<GameSession> getAllSessions();
+
+    void changePlatformDirection(Player player, Direction direction);
 }

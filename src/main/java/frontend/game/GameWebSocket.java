@@ -2,79 +2,43 @@ package frontend.game;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
-import gameMechanics.GameSession;
+import frontend.transport.TransportSystem;
 import main.gameService.GameMechanics;
 import main.gameService.Player;
-import main.gameService.WebSocketService;
 import org.eclipse.jetty.websocket.api.Session;
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketClose;
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketConnect;
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketMessage;
 import org.eclipse.jetty.websocket.api.annotations.WebSocket;
 
-import java.io.IOException;
-
 /**
-  Created by said on 20.10.15.
+ * Created by said on 20.10.15.
  */
 
 @WebSocket
 public class GameWebSocket {
     private Player myPlayer;
     private Session session;
+    private TransportSystem transportSystem;
     private GameMechanics gameMechanics;
-    private WebSocketService webSocketService;
 
-    public GameWebSocket(String myName, GameMechanics gameMechanics, WebSocketService webSocketService) {
+    public GameWebSocket(String myName, TransportSystem transportSystem, GameMechanics gameMechanics) {
         this.myPlayer = new Player(myName);
+        this.transportSystem = transportSystem;
         this.gameMechanics = gameMechanics;
-        this.webSocketService = webSocketService;
-    }
-
-    public Player getMyPlayer() {
-        return myPlayer;
-    }
-
-    public void sendJSON(JsonObject jsonData) {
-        try {
-            session.getRemote().sendString(jsonData.toString());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public void startGame(GameSession session) {
-        Player firstPlayer = session.getFirstPlayer();
-        Player secondPlayer = session.getSecondPlayer();
-
-        JsonObject jsonStart = new JsonObject();
-        jsonStart.addProperty("status", "start");
-
-        JsonObject jsonFirst = new JsonObject();
-        jsonFirst.addProperty("position", firstPlayer.getMyPosition());
-        jsonFirst.addProperty("name", firstPlayer.getName());
-
-        JsonObject jsonSecond = new JsonObject();
-        jsonSecond.addProperty("position", secondPlayer.getMyPosition());
-        jsonSecond.addProperty("name", secondPlayer.getName());
-
-        jsonStart.add("first", jsonFirst);
-        jsonStart.add("second", jsonSecond);
-        sendJSON(jsonStart);
     }
 
     @OnWebSocketMessage
     public void onMessage(String data) {
-        JsonObject jsonObject  = new Gson().fromJson(data, JsonObject.class);
-        gameMechanics.analizeMessage(myPlayer, jsonObject);
-        gameMechanics.incrementScore(myPlayer);
+        JsonObject jsonObject = new Gson().fromJson(data, JsonObject.class);
+        transportSystem.analizeMessage(myPlayer, jsonObject);
     }
 
     @OnWebSocketConnect
     public void onOpen(Session userSession) {
         //noinspection CallToSimpleSetterFromWithinClass
         setSession(userSession);
-        webSocketService.addPlayer(this);
+        transportSystem.addWebSocket(this);
         gameMechanics.addPlayer(myPlayer);
     }
 
@@ -83,6 +47,7 @@ public class GameWebSocket {
         System.out.print("Close\n");
     }
 
+<<<<<<< HEAD
     public void syncPlatformDirection(GameSession session) {
         Player firstPlayer = session.getFirstPlayer();
         Player secondPlayer = session.getSecondPlayer();
@@ -138,6 +103,10 @@ public class GameWebSocket {
         jsonFinish.addProperty("status", "finish");
         jsonFinish.addProperty("gameState", gameState);
         sendJSON(jsonFinish);
+=======
+    public Player getMyPlayer() {
+        return myPlayer;
+>>>>>>> RK3
     }
 
     public Session getSession() {

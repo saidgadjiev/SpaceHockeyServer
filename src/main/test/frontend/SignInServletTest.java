@@ -25,13 +25,13 @@ public class SignInServletTest extends ServletTest {
                 new StringReader(
                         "{\"login\":\"" + login + "\"," +
                                 "\"password\":\"" + password + "\"}"
-                                )));
+                )));
     }
 
     private void setWrongDataToReader(String login, String password) throws IOException {
         when(request.getReader()).thenReturn(new BufferedReader(
-                new StringReader(
-                        "\"login\":" + login + "\"&" + "\"password\":" + password)
+                        new StringReader(
+                                "\"login\":" + login + "\"&" + "\"password\":" + password)
                 )
         );
     }

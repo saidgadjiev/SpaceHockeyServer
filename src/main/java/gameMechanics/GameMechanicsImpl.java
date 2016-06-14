@@ -1,36 +1,46 @@
 package gameMechanics;
 
-import com.google.gson.JsonObject;
+import frontend.transport.TransportSystem;
+import gameMechanics.game.Ball;
 import gameMechanics.game.Direction;
-import main.TimeHelper;
+import gameMechanics.game.GameField;
+import gameMechanics.game.Position;
+import main.accountService.AccountService;
 import main.gameService.GameMechanics;
+import main.gameService.GamePosition;
 import main.gameService.Player;
-import main.gameService.WebSocketService;
+import main.user.UserProfile;
 import resource.GameMechanicsSettings;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 /**
-  Created by said on 20.10.15.
+ * Created by said on 20.10.15.
  */
 
 @SuppressWarnings("SpellCheckingInspection")
 public class GameMechanicsImpl implements GameMechanics {
     private final int stepTime;
     private final int gameTime;
-    private WebSocketService webSocketService;
+    private AccountService accountService;
+    private TransportSystem transportSystem;
     private Map<Player, GameSession> playerToGame = new HashMap<>();
     private List<GameSession> allSessions = new LinkedList<>();
-    private Queue<Player> waiters = new LinkedList<>();
+    private ConcurrentLinkedQueue<Player> waiters = new ConcurrentLinkedQueue<>();
 
-    public GameMechanicsImpl(WebSocketService webSocketService, GameMechanicsSettings gameMechanicsSettings) {
-        this.webSocketService = webSocketService;
+    public GameMechanicsImpl(AccountService accountService, TransportSystem transportSystem, GameMechanicsSettings gameMechanicsSettings) {
+        this.accountService = accountService;
+        this.transportSystem = transportSystem;
         this.stepTime = gameMechanicsSettings.getStepTime() / 60;
         this.gameTime = gameMechanicsSettings.getGameTime();
     }
 
-    public GameMechanicsImpl(WebSocketService webSocketService) {
-        this.webSocketService = webSocketService;
+    public GameMechanicsImpl(TransportSystem transportSystem) {
+        this.transportSystem = transportSystem;
         this.stepTime = 1000 / 60;
         this.gameTime = 10000;
     }
@@ -40,46 +50,31 @@ public class GameMechanicsImpl implements GameMechanics {
     }
 
     public void incrementScore(Player myPlayer) {
-        GameSession myGameSession = playerToGame.get(myPlayer);
         myPlayer.incrementScore();
-        Player enemyPlayer = myGameSession.getEnemyPlayer(myPlayer.getMyPosition());
-        webSocketService.notifySyncScore(myGameSession, myPlayer);
-        webSocketService.notifySyncScore(myGameSession, enemyPlayer);
+        transportSystem.syncScore(playerToGame.get(myPlayer));
     }
 
-    private void syncPlatformDirection(GameSession session, Player myPlayer, Player enemyPlayer) {
-        webSocketService.notifySyncPlatformDirection(session, myPlayer);
-        webSocketService.notifySyncPlatformDirection(session, enemyPlayer);
+    public void changePlatformDirection(Player player, Direction direction) {
+        player.getPlatform().setDirection(direction);
     }
 
-    private Direction getDirectionFromMessage(JsonObject message) {
-        switch (message.get("direction").getAsString()) {
-            case "LEFT":
-                return Direction.LEFT;
-            case "RIGHT":
-                return Direction.RIGHT;
-            default:
-                return Direction.STOP;
-        }
-    }
-
-    public void analizeMessage(Player myPlayer, JsonObject message) {
-        GameSession myGameSession = playerToGame.get(myPlayer);
-        Player enemyPlayer = myGameSession.getEnemyPlayer(myPlayer.getMyPosition());
-        if (message.get("status").getAsString().equals("movePlatform")) {
-            myPlayer.getPlatform().setDirection(getDirectionFromMessage(message));
-            if (myGameSession.isCollisionWithWall(myPlayer)) {
-                myPlayer.getPlatform().setDirection(Direction.STOP);
-            }
-            syncPlatformDirection(myGameSession, myPlayer, enemyPlayer);
-        }
-    }
     public void run() {
-        //noinspection InfiniteLoopStatement
+        int fpsUpdate = 60;
+        double timePerTickUpdate = 1000000000 / fpsUpdate;
+        double deltaUpdate = 0;
+        long now;
+        long lastTime = System.nanoTime();
+
         while (true) {
+            now = System.nanoTime();
+            deltaUpdate += (now - lastTime) / timePerTickUpdate;
+            lastTime = now;
             createGame();
-            gmStep();
-            TimeHelper.sleep(stepTime);
+            if (deltaUpdate >= 1) {
+                makeStep();
+                gmStep();
+                deltaUpdate--;
+            }
         }
     }
 
@@ -87,10 +82,11 @@ public class GameMechanicsImpl implements GameMechanics {
         while (waiters.size() > 1) {
             Player first = waiters.poll();
             Player second = waiters.poll();
+            final GamePosition myPosition = GamePosition.UPPER;
+            final GamePosition enemyPosition = GamePosition.LOWER;
 
-            first.setMyPosition(1);
-            second.setMyPosition(2);
-
+            first.setMyPosition(myPosition);
+            second.setMyPosition(enemyPosition);
             starGame(first, second);
         }
     }
@@ -98,39 +94,158 @@ public class GameMechanicsImpl implements GameMechanics {
     private void gmStep() {
         for (GameSession session : allSessions) {
             if (!session.isFinished()) {
-                makeStep();
+                session.sessionStep();
+                if (session.getSessionStep() == 2) {
+                    transportSystem.syncGameWorld(session);
+                    session.setStepCountZero();
+                }
                 if (session.getSessionTime() > gameTime) {
-                    session.determineWinner();
-                    webSocketService.notifyGameOver(session, session.getFirstPlayer());
-                    webSocketService.notifyGameOver(session, session.getSecondPlayer());
+                    finishGame(session);
                 }
             }
         }
     }
 
     private void makeStep() {
-        for (Player player: playerToGame.keySet()) {
-            GameSession session = playerToGame.get(player);
-            if (!session.isCollisionWithWall(player)) {
-                player.getPlatform().move();
-            } else {
-                player.getPlatform().setDirection(Direction.STOP);
-                syncPlatformDirection(session, player, session.getEnemyPlayer(player.getMyPosition()));
+        for (GameSession session : allSessions) {
+            if (!session.isFinished()) {
+                session.getBall().move();
+                collisionDetectionBall(session);
+                if (!isCollisionWithWall(session.getFirstPlayer(), session.getGameField())) {
+                    session.getFirstPlayer().getPlatform().move();
+                }
+                if (!isCollisionWithWall(session.getSecondPlayer(), session.getGameField())) {
+                    session.getSecondPlayer().getPlatform().move();
+                }
             }
         }
     }
 
-    public List<GameSession> getAllSessions() {
-        return allSessions;
+    public boolean isCollisionWithWall(Player player, GameField gameField) {
+        int x = player.getPlatform().getPosition().getX();
+
+        //noinspection RedundantIfStatement
+        if ((x <= gameField.getPosition().getX() && player.getPlatform().getDirection() == Direction.LEFT)
+                || (x >= gameField.getPosition().getX() + gameField.getWidth() - 100
+                && player.getPlatform().getDirection() == Direction.RIGHT)) {
+            return true;
+        }
+        return false;
+    }
+
+    public void collisionDetectionBall(GameSession session) {
+        Ball ball = session.getBall();
+        Player firstPlayer = session.getFirstPlayer();
+        Player secondPlayer = session.getSecondPlayer();
+        GameField gameField = session.getGameField();
+        int ballX = ball.getPosition().getX();
+        int ballY = ball.getPosition().getY();
+
+        if (ballX + ball.getRadius() >= gameField.getPosition().getX() + gameField.getWidth()) {
+            ball.setVelocityX(-ball.getVelocityX());
+        }
+        if (ballX - ball.getRadius() <= gameField.getPosition().getX()) {
+            ball.setVelocityX(-ball.getVelocityX());
+        }
+        if (ballY + ball.getRadius() >= gameField.getPosition().getY() + gameField.getHeight()) {
+            ball.setVelocityY(-ball.getVelocityY());
+        }
+        if (ballY - ball.getRadius() <= gameField.getPosition().getY()) {
+            ball.setVelocityY(-ball.getVelocityY());
+        }
+
+        if (ballX >= secondPlayer.getPlatform().getPosition().getX() &&
+                ballX <= secondPlayer.getPlatform().getPosition().getX() + secondPlayer.getPlatform().getWidth() &&
+                ballY + ball.getRadius() >= secondPlayer.getPlatform().getPosition().getY()) {
+            ball.setVelocityY(-ball.getVelocityY());
+        }
+
+        if (ballX >= firstPlayer.getPlatform().getPosition().getX() &&
+                ballX <= firstPlayer.getPlatform().getPosition().getX() + firstPlayer.getPlatform().getWidth() &&
+                ballY - ball.getRadius() <= firstPlayer.getPlatform().getPosition().getY() +
+                        firstPlayer.getPlatform().getHeight()) {
+            ball.setVelocityY(-ball.getVelocityY());
+        }
+
+        if ((ballX < firstPlayer.getPlatform().getPosition().getX() ||
+                ballX > firstPlayer.getPlatform().getPosition().getX() + firstPlayer.getPlatform().getWidth()) &&
+                ballY <= firstPlayer.getPlatform().getPosition().getY() +
+                        firstPlayer.getPlatform().getHeight()) {
+            int zn = (int) (Math.random() * 2);
+
+            if (zn == 0) {
+                zn = -1;
+            } else {
+                zn = 1;
+            }
+            ball.setPosition(new Position(250, 310));
+            ball.setVelocityX(zn * ball.getVelocityX());
+            ball.setVelocityY((-zn) * ball.getVelocityY());
+            secondPlayer.incrementScore();
+            transportSystem.syncScore(session);
+        }
+        if ((ballX < secondPlayer.getPlatform().getPosition().getX() ||
+                ballX > secondPlayer.getPlatform().getPosition().getX() + secondPlayer.getPlatform().getWidth()) &&
+                ballY >= secondPlayer.getPlatform().getPosition().getY()) {
+            int zn = (int) (Math.random() * 2);
+            if (zn == 0) {
+                zn = -1;
+            } else {
+                zn = 1;
+            }
+            ball.setPosition(new Position(250, 310));
+            ball.setVelocityX(zn * ball.getVelocityX());
+            ball.setVelocityY((-zn) * ball.getVelocityY());
+            firstPlayer.incrementScore();
+            transportSystem.syncScore(session);
+        }
+    }
+
+    private void freeResource(GameSession session) {
+        Player firstPlayer = session.getFirstPlayer();
+        Player secondPlayer = session.getSecondPlayer();
+
+        playerToGame.remove(firstPlayer);
+        playerToGame.remove(secondPlayer);
+        allSessions.remove(session);
+        transportSystem.removeWebSocket(session);
+    }
+
+    private void finishGame(GameSession session) {
+        Player firstPlayer = session.getFirstPlayer();
+        Player secondPlayer = session.getSecondPlayer();
+
+        session.determineWinner();
+        transportSystem.gameOver(session);
+        switch (session.getResultState()) {
+            case FIRST_WIN:
+                UserProfile firstProfile = accountService.getUser(firstPlayer.getName());
+
+                firstProfile.incrementScore();
+                accountService.updateUser(firstProfile);
+                break;
+            case SECOND_WIN:
+                UserProfile secondProfile = accountService.getUser(secondPlayer.getName());
+
+                secondProfile.incrementScore();
+                accountService.updateUser(secondProfile);
+                break;
+            default:
+                break;
+        }
+        freeResource(session);
     }
 
     private void starGame(Player firstPlayer, Player secondPlayer) {
         GameSession gameSession = new GameSession(firstPlayer, secondPlayer);
+
         allSessions.add(gameSession);
         playerToGame.put(firstPlayer, gameSession);
         playerToGame.put(secondPlayer, gameSession);
+        transportSystem.startGame(gameSession);
+    }
 
-        webSocketService.notifyStartGame(gameSession, firstPlayer);
-        webSocketService.notifyStartGame(gameSession, secondPlayer);
+    public List<GameSession> getAllSessions() {
+        return allSessions;
     }
 }

@@ -1,5 +1,12 @@
 package resource;
 
+<<<<<<< HEAD
+=======
+/**
+ * Created by said on 30.10.15.
+ */
+
+>>>>>>> RK3
 import resource.properties.ParsePropertiesFile;
 import resource.sax.ReadXMLFileSAX;
 import utils.VFS.VFS;
