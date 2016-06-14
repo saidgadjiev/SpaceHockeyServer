@@ -32,7 +32,7 @@ public class GameMechanicsImpl implements GameMechanics {
     private List<GameSession> allSessions = new LinkedList<>();
     private ConcurrentLinkedQueue<Player> waiters = new ConcurrentLinkedQueue<>();
 
-    public GameMechanicsImpl(AccountService accountService,TransportSystem transportSystem, GameMechanicsSettings gameMechanicsSettings) {
+    public GameMechanicsImpl(AccountService accountService, TransportSystem transportSystem, GameMechanicsSettings gameMechanicsSettings) {
         this.accountService = accountService;
         this.transportSystem = transportSystem;
         this.stepTime = gameMechanicsSettings.getStepTime() / 60;
@@ -83,12 +83,11 @@ public class GameMechanicsImpl implements GameMechanics {
         while (waiters.size() > 1) {
             Player first = waiters.poll();
             Player second = waiters.poll();
-
             final GamePosition myPosition = GamePosition.UPPER;
             final GamePosition enemyPosition = GamePosition.LOWER;
+
             first.setMyPosition(myPosition);
             second.setMyPosition(enemyPosition);
-
             starGame(first, second);
         }
     }
@@ -174,19 +173,19 @@ public class GameMechanicsImpl implements GameMechanics {
                 ballY <= firstPlayer.getPlatform().getPosition().getY() +
                         firstPlayer.getPlatform().getHeight()) {
             int zn = (int) (Math.random() * 2);
+
             if (zn == 0) {
                 zn = -1;
             } else {
                 zn = 1;
             }
-
             ball.setPosition(new Position(250, 310));
             ball.setVelocityX(zn * ball.getVelocityX());
             ball.setVelocityY((-zn) * ball.getVelocityY());
             secondPlayer.incrementScore();
             transportSystem.syncScore(session);
         }
-        if ((ballX  < secondPlayer.getPlatform().getPosition().getX() ||
+        if ((ballX < secondPlayer.getPlatform().getPosition().getX() ||
                 ballX > secondPlayer.getPlatform().getPosition().getX() + secondPlayer.getPlatform().getWidth()) &&
                 ballY >= secondPlayer.getPlatform().getPosition().getY()) {
             int zn = (int) (Math.random() * 2);
@@ -195,7 +194,6 @@ public class GameMechanicsImpl implements GameMechanics {
             } else {
                 zn = 1;
             }
-
             ball.setPosition(new Position(250, 310));
             ball.setVelocityX(zn * ball.getVelocityX());
             ball.setVelocityY((-zn) * ball.getVelocityY());
@@ -223,11 +221,13 @@ public class GameMechanicsImpl implements GameMechanics {
         switch (session.getResultState()) {
             case FIRST_WIN:
                 UserProfile firstProfile = accountService.getUser(firstPlayer.getName());
+
                 firstProfile.incrementScore();
                 accountService.updateUser(firstProfile);
                 break;
             case SECOND_WIN:
                 UserProfile secondProfile = accountService.getUser(secondPlayer.getName());
+
                 secondProfile.incrementScore();
                 accountService.updateUser(secondProfile);
                 break;
@@ -239,10 +239,10 @@ public class GameMechanicsImpl implements GameMechanics {
 
     private void starGame(Player firstPlayer, Player secondPlayer) {
         GameSession gameSession = new GameSession(firstPlayer, secondPlayer);
+
         allSessions.add(gameSession);
         playerToGame.put(firstPlayer, gameSession);
         playerToGame.put(secondPlayer, gameSession);
-
         transportSystem.startGame(gameSession);
     }
 

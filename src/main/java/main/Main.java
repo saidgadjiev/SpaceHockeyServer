@@ -23,7 +23,6 @@ import resource.ResourceFactory;
 import resource.ServerSettings;
 
 import javax.servlet.Servlet;
-import java.util.List;
 
 /**
  * @author S. Gadjiev
