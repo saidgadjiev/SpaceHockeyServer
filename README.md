@@ -1,2 +1,2 @@
 Сервер бразуерной онлайн игры.
-Технологии: Jetty, MySQL, Hibernate.
+Технологии: Java, Jetty, MySQL, Hibernate, Java Servlet, Java WebSocket.
